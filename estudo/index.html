@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Caderno de estudo pessoal: reproduz figuras de obra protegida
+     (Ross, Academic Press / Elsevier) para uso próprio. Fora dos buscadores. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Processos Estocásticos — percurso de estudo</title>
+<link rel="stylesheet" href="assets/tema.css?v=1">
+<link rel="stylesheet" href="assets/estilo.css?v=1">
+</head>
+<body>
+
+<details class="menu-lateral" open>
+  <summary>Capítulos</summary>
+  <nav class="painel">
+    <p class="painel-titulo">Capítulos</p>
+    <ol>
+      <li class="adiante">Introdução à Teoria da Probabilidade</li>
+      <li class="adiante">Variáveis Aleatórias</li>
+      <li class="adiante">Probabilidade e Esperança Condicionais</li>
+      <li><a href="cap04/04-00-cadeias-de-markov.html">Cadeias de Markov</a></li>
+      <li class="adiante">A Distribuição Exponencial e o Processo de Poisson</li>
+      <li class="adiante">Cadeias de Markov a Tempo Contínuo</li>
+      <li class="adiante">Teoria da Renovação e Aplicações</li>
+      <li class="adiante">Teoria de Filas</li>
+      <li class="adiante">Teoria da Confiabilidade</li>
+      <li class="adiante">Movimento Browniano e Processos Estacionários</li>
+      <li class="adiante">Simulação</li>
+      <li class="adiante">Acoplamento</li>
+      <li class="adiante">Martingais</li>
+    </ol>
+    <p class="extras">
+      <a href="#topo">↑ Topo</a>
+      <a href="#menu">Menu</a>
+    </p>
+  </nav>
+</details>
+
+<div class="pagina" id="topo">
+
+<header class="topo">
+  <p class="migalha">Sheldon M. Ross · <em>Introduction to Probability Models</em> · 13ª ed., Academic Press / Elsevier, 2024</p>
+  <h1>Processos Estocásticos</h1>
+  <p class="subtitulo">Percurso pelos capítulos de processos do Ross, começando pelas cadeias de Markov (cap. 4). Aulas em português, com as demonstrações que a disciplina exige, o código em R e exercícios resolvidos.</p>
+</header>
+
+
+<h2>Aulas disponíveis</h2>
+
+<div class="cartoes">
+
+  <a class="cartao" href="cap04/04-00-cadeias-de-markov.html">
+    <span class="cap">Capítulo 4 · págs. 201–299</span>
+    <p class="tit">Cadeias de Markov</p>
+    <p class="desc">A propriedade de Markov e a matriz <math><mi mathvariant="bold">P</mi></math>. Chapman–Kolmogorov e <math><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math>. Classes, recorrência e transiência — com o passeio aleatório e Stirling. Proporções de longo prazo, <math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><msub><mi>m</mi><mi>j</mi></msub></math> e o Teorema 4.1. Ruína do jogador, estados transientes, ramificação, reversibilidade, MCMC e cadeias ocultas.</p>
+  </a>
+
+  <span class="cartao pendente">
+    <span class="cap">Capítulo 5 · págs. 300–380</span>
+    <p class="tit">A Distribuição Exponencial e o Processo de Poisson</p>
+    <p class="desc">Falta de memória, mínimo de exponenciais, o processo de Poisson pelas três definições, tempos de chegada e as generalizações (não homogêneo, composto, Hawkes).</p>
+  </span>
+
+  <span class="cartao pendente">
+    <span class="cap">Capítulo 6 · págs. 381–435</span>
+    <p class="tit">Cadeias de Markov a Tempo Contínuo</p>
+    <p class="desc">Nascimento e morte, as equações de Kolmogorov, probabilidades limite, reversibilidade e uniformização.</p>
+  </span>
+
+</div>
+
+<h2 id="menu">Menu</h2>
+
+<div class="rolagem">
+<table>
+  <caption>Página de abertura de cada capítulo, na numeração do livro e na do PDF (PDF = livro + 16).</caption>
+  <thead>
+    <tr><th>Cap.</th><th class="txt">Título</th><th>Livro</th><th>PDF</th><th>Situação</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td class="txt">Introdução à Teoria da Probabilidade</td><td>3</td><td>19</td><td>— (pré-requisito)</td></tr>
+    <tr><td>2</td><td class="txt">Variáveis Aleatórias</td><td>24</td><td>40</td><td>— (pré-requisito)</td></tr>
+    <tr><td>3</td><td class="txt">Probabilidade e Esperança Condicionais</td><td>103</td><td>119</td><td>— (pré-requisito)</td></tr>
+    <tr><td>4</td><td class="txt"><a href="cap04/04-00-cadeias-de-markov.html">Cadeias de Markov</a></td><td>201</td><td>217</td><td>✅ pronto</td></tr>
+    <tr><td>5</td><td class="txt">A Distribuição Exponencial e o Processo de Poisson</td><td>300</td><td>316</td><td>—</td></tr>
+    <tr><td>6</td><td class="txt">Cadeias de Markov a Tempo Contínuo</td><td>381</td><td>397</td><td>—</td></tr>
+    <tr><td>7</td><td class="txt">Teoria da Renovação e Aplicações</td><td>436</td><td>452</td><td>—</td></tr>
+    <tr><td>8</td><td class="txt">Teoria de Filas</td><td>516</td><td>532</td><td>—</td></tr>
+    <tr><td>9</td><td class="txt">Teoria da Confiabilidade</td><td>600</td><td>616</td><td>—</td></tr>
+    <tr><td>10</td><td class="txt">Movimento Browniano e Processos Estacionários</td><td>649</td><td>665</td><td>—</td></tr>
+    <tr><td>11</td><td class="txt">Simulação</td><td>688</td><td>704</td><td>—</td></tr>
+    <tr><td>12</td><td class="txt">Acoplamento</td><td>751</td><td>767</td><td>—</td></tr>
+    <tr><td>13</td><td class="txt">Martingais</td><td>780</td><td>796</td><td>—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="caixa definicao">
+  <span class="rotulo">Por que começar pelo capítulo 4</span>
+  <p>Os três primeiros capítulos do Ross são a probabilidade que a disciplina de Processos Estocásticos supõe conhecida — espaço amostral, variáveis aleatórias, funções geradoras e, sobretudo, <strong>esperança e probabilidade condicionais</strong> (cap. 3). O percurso começa onde começa a matéria nova: as <em>cadeias de Markov</em>. Quando uma aula precisar de algo dos capítulos 1–3 (a fórmula da variância condicional, o teorema central do limite, a lei forte dos grandes números, a soma de Poissons independentes), o resultado é enunciado no ponto em que é usado, com a referência ao capítulo de origem.</p>
+</div>
+
+<h2>Como as aulas são organizadas</h2>
+
+<p>Cada aula segue sempre a mesma ordem, para que o percurso fique previsível:</p>
+
+<ol>
+  <li><strong>Objetivo da aula</strong> — o que se deve saber fazer ao final.</li>
+  <li><strong>Conceito</strong> em português, com a matemática escrita em MathML nativo (sem biblioteca, sem internet).</li>
+  <li><strong>Enunciados, demonstrações e exemplos em caixas de cores distintas</strong>, para se distinguirem ao folhear:</li>
+</ol>
+
+<div class="caixa teorema">
+  <span class="rotulo">Teorema · Proposição · Corolário</span>
+  <p>Caixa <strong>azul</strong>: o enunciado exato, como no livro, com o número do Ross para se achar de volta.</p>
+</div>
+
+<div class="caixa demonstracao">
+  <span class="rotulo">Demonstração</span>
+  <p>Caixa <strong>verde</strong>: as demonstrações que agregam à disciplina — as que usam a propriedade de Markov, Chapman–Kolmogorov, condicionamento, a lei forte dos grandes números ou o teorema central do limite. As que são pura manipulação algébrica ficam resumidas na prosa.<span class="qed">∎</span></p>
+</div>
+
+<div class="caixa exemplo">
+  <span class="rotulo">Exemplo</span>
+  <p>Caixa <strong>âmbar</strong>: os exemplos do livro selecionados, resolvidos passo a passo, com o código em R e a saída comentada quando há conta a fazer.</p>
+</div>
+
+<ol start="4">
+  <li><strong>Figuras</strong> recortadas do PDF do livro e <strong>diagramas de estados</strong> desenhados para a aula.</li>
+  <li><strong>Cartões de recall ativo</strong> — pergunta com a resposta escondida.</li>
+  <li><strong>Exercícios selecionados</strong> do fim do capítulo, com gabarito comentado.</li>
+</ol>
+
+<p>Todo resultado numérico das resoluções é <em>calculado</em>, nunca copiado de memória, e conferido contra o livro quando há valor publicado.</p>
+
+
+<div class="nota">
+  <p>Material de estudo produzido a partir de Ross, S. M., <em>Introduction to Probability Models</em>, 13ª edição, Academic Press / Elsevier, 2024. Figuras e enunciados reproduzidos do original para fins de estudo pessoal.</p>
+</div>
+
+</div>
+<script>
+/* Em tela larga a barra lateral fica sempre aberta (o CSS esconde o
+   alternador). Abaixo de 62rem ela vira aba: aí começa fechada e fecha
+   sozinha ao escolher um link. Nada aqui depende de rede ou biblioteca —
+   sem JavaScript a barra apenas fica sempre aberta, que é o estado bom. */
+(function () {
+  var menu = document.querySelector(".menu-lateral");
+  if (!menu) return;
+
+  menu.querySelectorAll("details.sub > summary > a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      var d = a.closest("details.sub");
+      if (d) d.open = true;
+    });
+  });
+
+  if (!window.matchMedia) return;
+  var estreito = window.matchMedia("(max-width: 62rem)");
+  function ajustar() { menu.open = !estreito.matches; }
+  ajustar();
+  estreito.addEventListener("change", ajustar);
+  menu.querySelectorAll(".painel a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      if (estreito.matches) menu.open = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

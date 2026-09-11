@@ -1,0 +1,107 @@
+/* ==========================================================================
+   ESTOCASTICOS — tema "vermelho-carmim"
+   --------------------------------------------------------------------------
+   Este arquivo é a ÚNICA fonte de cores, fontes e medidas do projeto.
+   `estilo.css` cuida só de estrutura e nunca traz cor literal — sempre
+   var(--…) declarada aqui. (Única exceção: a regra @media print, que força
+   fundo branco porque papel é branco.)
+
+   REGRA DO TEMA: as superfícies gerais são neutras. O vermelho aparece só em
+   TIPOGRAFIA e em FILETES — títulos, links, rótulos, bordas de destaque.
+
+   EXCEÇÃO DELIBERADA (pedido do usuário para este caderno): as três caixas
+   matemáticas — enunciado de teorema/proposição/corolário, demonstração e
+   exemplo — têm cada uma a SUA cor, com fundo levemente tingido, para que se
+   distingam à primeira vista ao folhear a página:
+
+       .teorema       azul-índigo   (enunciados: teoremas, proposições, corolários, lemas)
+       .demonstracao  verde-musgo   (demonstrações)
+       .exemplo       âmbar         (exemplos do livro, resolvidos)
+
+   As demais caixas (definição, aviso, prática, objetivo) seguem a regra
+   geral: fundo cinza neutro, cor só no filete e no rótulo.
+
+   Para trocar de tema:
+     1. copie este arquivo para assets/temas/<nome>.css
+     2. mude os valores lá
+     3. troque o href do primeiro <link> das páginas para o novo arquivo
+   Nenhuma outra alteração é necessária: estilo.css continua igual.
+   ========================================================================== */
+
+:root {
+  /* ---- superfícies: cinzas neutros, sem tingimento ---- */
+  --fundo:        #fdfcfc;
+  --fundo-caixa:  #ffffff;
+  --fundo-suave:  #f5f3f3;   /* caixas neutras, cabeçalho de tabela, hover */
+  --texto:        #1c1a1a;
+  --texto-fraco:  #5c5556;
+  --linha:        #e0d9da;
+
+  /* ---- cores semânticas: SÓ em texto e filetes ---- */
+  --realce:       #a4162f;   /* vermelho-carmim — h1, h2, links e destaques */
+  --realce-2:     #b8364b;   /* vermelho médio — h3 (subtópicos) */
+  --realce-3:     #b76472;   /* rosa-fosco — h4 (rótulos de sub-bloco) */
+  --azul:         #1f6b78;   /* petróleo — definições e saída do R */
+  --verde:        #587a1e;   /* verde-oliva — código R / respostas */
+  --ambar:        #7a4a8f;   /* roxo-uva — avisos e armadilhas (o âmbar de
+                                 verdade ficou para os exemplos) */
+
+  /* ---- as três caixas matemáticas: cor do filete/rótulo e fundo tingido ---- */
+  --teorema:        #2f4d9c;   /* azul-índigo */
+  --teorema-fundo:  #eef2fb;
+  --demo:           #4f7220;   /* verde-musgo */
+  --demo-fundo:     #f1f6e8;
+  --exemplo:        #a9600c;   /* âmbar */
+  --exemplo-fundo:  #fdf4e6;
+
+  /* ---- cores de peças específicas ---- */
+  --menu-fundo:   #f8f5f5;   /* barra lateral fixa */
+  --menu-texto:   #ffffff;   /* texto sobre o alternador do menu (fundo --realce) */
+  --fundo-figura: #ffffff;   /* recortes do PDF têm fundo branco */
+
+  /* ---- tipografia ---- */
+  --serif:  Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  --sans:   "Segoe UI", -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:   "Cascadia Mono", Consolas, "SF Mono", "Liberation Mono", monospace;
+  --corpo-tamanho: 18px;
+  --corpo-altura:  1.72;
+
+  /* ---- medidas da grade (ver estilo.css) ---- */
+  --largura-leitura: 46rem;   /* coluna de prosa */
+  --largura-sangria: 10rem;   /* quanto figuras/tabelas avançam para cada lado */
+  --largura-menu:    17rem;   /* barra lateral fixa, sempre aberta */
+  --desloca-texto:   4.5rem;  /* quanto o bloco de conteúdo anda para a direita
+                                 além da barra lateral */
+
+  /* ---- figuras ---- */
+  --figura-largura: 34rem;    /* teto de largura dos recortes do livro */
+  --figura-altura:  52vh;     /* teto de altura, para nenhuma figura dominar a tela */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo:        #171516;
+    --fundo-caixa:  #1f1c1d;
+    --fundo-suave:  #282425;
+    --texto:        #e8e4e5;
+    --texto-fraco:  #a8a0a2;
+    --linha:        #3b3436;
+    --realce:       #ef8a9a;
+    --realce-2:     #e8788b;
+    --realce-3:     #cf95a0;
+    --azul:         #7fc8d4;
+    --verde:        #adc96c;
+    --ambar:        #c9a3dc;
+
+    --teorema:        #9fb4f0;
+    --teorema-fundo:  #1c2031;
+    --demo:           #b3cf7c;
+    --demo-fundo:     #1f2619;
+    --exemplo:        #e7b26b;
+    --exemplo-fundo:  #2c2419;
+
+    --menu-fundo:   #1c191a;
+    --menu-texto:   #171516;   /* o realce clareia no escuro: texto escuro sobre ele */
+    /* --fundo-figura continua branco: as figuras vêm do PDF com fundo branco */
+  }
+}
