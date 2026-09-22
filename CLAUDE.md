@@ -27,7 +27,7 @@ Não há páginas faltando.
 | 1 | Introduction to Probability Theory | 3 | 19 | — (pré-requisito) |
 | 2 | Random Variables | 24 | 40 | — (pré-requisito) |
 | 3 | Conditional Probability and Conditional Expectation | 103 | 119 | — (pré-requisito) |
-| 4 | Markov Chains | 201 | 217 | ✅ aula `estudo/cap04/04-00-cadeias-de-markov.html` + folha `04-99-guia-de-prova.html` |
+| 4 | Markov Chains | 201 | 217 | ✅ aula `04-00-cadeias-de-markov.html` + folhas `04-98-definicoes-e-resultados.html` e `04-99-guia-de-prova.html` |
 | 5 | The Exponential Distribution and the Poisson Process | 300 | 316 | — |
 | 6 | Continuous-Time Markov Chains | 381 | 397 | — |
 | 7 | Renewal Theory and Its Applications | 436 | 452 | — |
@@ -116,12 +116,18 @@ Dependências: `pymupdf` (instalado). Python 3.13.
 O cap. 4 tem uma única figura (Fig. 4.1, PDF p. 278, recorte
 `115 478 305 590`). Os demais diagramas de estados são SVG desenhados na aula.
 
-## Folha de consulta (guia de prova)
+## Folhas de consulta
 
-Cada capítulo pode ter, além da aula, uma **folha de consulta** para levar
-impressa na prova: `capNN/NN-99-guia-de-prova.html`. O modelo foi um guia de
-MS512 que o usuário trouxe — A4, duas colunas, densa, caixas coloridas com
-barra de título.
+Cada capítulo pode ter, além da aula, **duas** folhas para levar impressas na
+prova. O modelo foi um guia de MS512 que o usuário trouxe — A4, duas colunas,
+densa, caixas coloridas com barra de título.
+
+| Arquivo | O que é | Cap. 4 |
+|---|---|---|
+| `NN-98-definicoes-e-resultados.html` | **só enunciados**: definição, teorema, proposição, corolário e fórmula numerada, na ordem do livro, com hipóteses explícitas e a página do Ross em cada caixa. **Sem exemplo, sem exercício** — é a cola para consultar no meio de uma questão. | 5 pág. |
+| `NN-99-guia-de-prova.html` | guia de estudo: mapa de decisão, receitas, exemplos numéricos, "fato ou fake", fórmulas de bolso. | 6 pág. |
+
+As duas usam o mesmo `guia.css`; mudam as classes de caixa e a legenda.
 
 **Ela não usa `estilo.css`.** Carrega `tema.css` + **`assets/guia.css`**, que é
 o layout próprio da folha: uma coluna na tela, `columns: 2` A4 na impressão,
@@ -135,10 +141,25 @@ corpo 8,2 pt. Cinco caixas, cada uma com `--cor`/`--cor-fundo` próprias:
 | `.bloco.rec` | carmim | receita: passo a passo para a prova |
 | `.bloco.arm` | roxo-uva | armadilha, "fato ou fake", erro clássico |
 
-O título da caixa é um `<h4>` (barra sólida, texto em `--menu-texto`). Outras
-peças: `.chave` (destaque carmim inline), `.miudo` (corpo menor para o detalhe),
-`.rot-e`/`.rot-s` (Enunciado./Solução.), `.qed`, `.so-tela` (aviso que some no
-papel), `.legenda` (a tira de cores do cabeçalho).
+A folha `NN-98` usa outras três classes sobre as mesmas paletas: `.def`
+(azul, definição), `.res` (carmim, teorema/proposição/corolário/fórmula) e
+`.obs` (roxo, as *Remarks* do próprio livro).
+
+**O título da caixa tem estrutura fixa** — o `h4` é `display:flex` e precisa de
+**exatamente dois filhos**:
+
+```html
+<h4><span class="tit">Proposição 4.4</span><span class="pg">livro 224</span></h4>
+```
+
+Sem o `.tit`, um `<math>` dentro do título vira um item de flex à parte e o
+`gap` rasga a frase no meio. (O `.pg` já foi `float: right` e sumia em título
+longo: o float ia para a segunda linha e o `overflow: hidden` da caixa o
+cortava.)
+
+Outras peças: `.chave` (destaque carmim inline), `.miudo` (corpo menor para o
+detalhe), `.rot-e`/`.rot-s` (Enunciado./Solução.), `.qed`, `.so-tela` (aviso
+que some no papel), `.legenda` (a tira de cores do cabeçalho).
 
 **Conteúdo do cap. 4** (o molde para os próximos): mapa de decisão "o que a
 questão pede × que ferramenta usar" → montar a cadeia → *n* passos → classificação
@@ -151,15 +172,21 @@ exercícios, nem uma prova toda corrigida").
 
 O Chrome está instalado e faz a impressão sem abrir janela:
 
-```bash
-python -m http.server 8765            # servir a pasta (ou use .claude/launch.json)
-"/c/Program Files/Google/Chrome/Application/chrome.exe" --headless=new --disable-gpu   --no-pdf-header-footer --print-to-pdf="estudo/cap04/04-99-guia-de-prova.pdf"   "http://localhost:8765/estudo/cap04/04-99-guia-de-prova.html"
+```powershell
+# servir a pasta (ou use .claude/launch.json) e imprimir sem abrir janela
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu `
+  --no-pdf-header-footer --print-to-pdf="estudo\cap04\04-98-definicoes-e-resultados.pdf" `
+  "http://localhost:8765/estudo/cap04/04-98-definicoes-e-resultados.html"
 ```
 
+**Espere ~4 s** antes de ler o arquivo: o Chrome devolve o prompt antes de
+terminar de escrever o PDF.
+
 Precisa ser por **http://**, não `file://` (o CSS relativo não carrega no
-headless a partir de file). O PDF fica **fora do git** (`*.pdf` no
-`.gitignore`) — é artefato derivado, regenerável no comando acima. O do cap. 4
-tem 6 páginas A4.
+headless a partir de file). Os PDFs ficam **fora do git** (`*.pdf` no
+`.gitignore`) — são artefatos derivados. Entregue-os também em
+`C:\Users\gabri\Downloads\`, que é onde o usuário guarda esse tipo de
+guia (e onde estava o MS512 que serviu de modelo).
 
 **Armadilha da impressão:** no papel nada rola. `overflow-x: auto` (código,
 `.rolagem`, `math[display="block"]`) vira *conteúdo cortado* no PDF. O
@@ -177,7 +204,8 @@ hífen entre palavras.
 |---|---|---|
 | Pasta do capítulo | `capNN/` | `cap04/` |
 | Página do capítulo inteiro | `NN-00-titulo.html` | `cap04/04-00-cadeias-de-markov.html` |
-| Folha de consulta do capítulo | `NN-99-guia-de-prova.html` (`99` = apêndice, ordena por último) | `cap04/04-99-guia-de-prova.html` |
+| Folha só de enunciados | `NN-98-definicoes-e-resultados.html` | `cap04/04-98-definicoes-e-resultados.html` |
+| Guia de prova do capítulo | `NN-99-guia-de-prova.html` (`9x` = apêndice, ordena por último) | `cap04/04-99-guia-de-prova.html` |
 | Figura | `img/fig-NN-MM.png` | `cap04/img/fig-04-01.png` |
 
 Ao criar uma aula nova, acrescentar o link em **três** lugares de
@@ -264,8 +292,8 @@ ESTOCASTICOS/
     │   └── guia.css        layout da folha de consulta (A4, 2 colunas)
     └── cap04/
         ├── 04-00-cadeias-de-markov.html
-        ├── 04-99-guia-de-prova.html
-        ├── 04-99-guia-de-prova.pdf   (fora do git: gerado pelo Chrome headless)
+        ├── 04-98-definicoes-e-resultados.html   (+ .pdf, fora do git)
+        ├── 04-99-guia-de-prova.html             (+ .pdf, fora do git)
         └── img/fig-04-01.png
 ```
 
@@ -276,8 +304,11 @@ Pages servir o site, ativar em Settings → Pages → branch `main`, pasta `/`
 
 ## Progresso
 
-**Capítulo 4 pronto** (2026-09-11): aula completa. **Folha de consulta do
-cap. 4 pronta** (2026-09-22): `04-99-guia-de-prova.html`, 6 páginas A4.
+**Capítulo 4 pronto** (2026-09-11): aula completa. **Duas folhas de consulta
+do cap. 4 prontas** (2026-09-22): `04-99-guia-de-prova.html` (6 pág.) e
+`04-98-definicoes-e-resultados.html` (5 pág., só enunciados — pedido explícito
+do usuário: "uma cola rápida para olhar se esquecer algo durante a resolução
+do exercício").
 
 Próximo: capítulo 5 (The Exponential Distribution and the Poisson Process,
 livro 300–380, PDF 316–396). Ao gerar, retomar os ganchos: falta de memória

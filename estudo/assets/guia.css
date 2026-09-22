@@ -175,6 +175,10 @@ em.en { font-style: italic; color: var(--texto-fraco); }
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.7rem;
 }
 
 .bloco > *:not(h4) { margin-left: 0.6rem; margin-right: 0.6rem; }
@@ -185,6 +189,29 @@ em.en { font-style: italic; color: var(--texto-fraco); }
 .bloco.ex  { --cor: var(--exemplo); --cor-fundo: var(--exemplo-fundo); }
 .bloco.rec { --cor: var(--realce);  --cor-fundo: color-mix(in srgb, var(--realce) 7%, var(--fundo-caixa)); }
 .bloco.arm { --cor: var(--ambar);   --cor-fundo: color-mix(in srgb, var(--ambar) 8%, var(--fundo-caixa)); }
+
+/* A folha `NN-98` (só enunciados) usa as mesmas três paletas com outra
+   semântica — por isso os apelidos, em vez de repetir as cores:
+     .def  definição      .res  teorema/proposição/corolário/fórmula
+     .obs  observação (as "Remarks" do próprio livro)
+   A legenda de cada folha diz o que a cor significa naquela página. */
+.bloco.def { --cor: var(--teorema); --cor-fundo: var(--teorema-fundo); }
+.bloco.res { --cor: var(--realce);  --cor-fundo: color-mix(in srgb, var(--realce) 7%, var(--fundo-caixa)); }
+.bloco.obs { --cor: var(--ambar);   --cor-fundo: color-mix(in srgb, var(--ambar) 8%, var(--fundo-caixa)); }
+
+/* Referência do livro no canto direito da barra de título. Nada de `float`:
+   num título longo o float era empurrado para baixo e o `overflow: hidden`
+   da caixa o cortava. Como o h4 é flex, a página fica presa à direita e o
+   título quebra sozinho. */
+.bloco > h4 .tit { flex: 1 1 auto; }
+
+.bloco > h4 .pg {
+  flex: 0 0 auto;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  opacity: 0.85;
+  white-space: nowrap;
+}
 
 /* rótulos internos dos exemplos: "Enunciado." / "Solução." */
 .rot-e { color: var(--exemplo); font-weight: 700; }

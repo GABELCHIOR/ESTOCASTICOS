@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Folha de consulta pessoal: condensa enunciados de obra protegida
+     (Ross, Academic Press / Elsevier) para uso próprio. Fora dos buscadores. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Cadeias de Markov — definições e resultados</title>
+<link rel="stylesheet" href="../assets/tema.css?v=1">
+<link rel="stylesheet" href="../assets/guia.css?v=2">
+</head>
+<body>
+
+<div class="folha">
+
+<header class="topo-folha">
+  <p class="migalha"><a href="../index.html">Menu</a> · <a href="04-00-cadeias-de-markov.html">Aula</a> · <a href="04-99-guia-de-prova.html">Guia de prova</a> · Ross, 13ª ed., cap. 4</p>
+  <h1>Cadeias de Markov — definições e resultados</h1>
+  <p class="sub">Só os enunciados, do 4.1 ao 4.11, na ordem do livro e com as hipóteses explícitas. Sem exemplo, sem exercício. O número entre parênteses é o do Ross; a página à direita de cada caixa é a do livro.</p>
+  <p class="legenda">
+    <span><i class="l-teo"></i> definição</span>
+    <span><i class="l-rec"></i> teorema · proposição · corolário · fórmula</span>
+    <span><i class="l-arm"></i> observação do livro</span>
+  </p>
+  <p class="so-tela"><strong>Para levar impresso:</strong> Ctrl+P → “Salvar como PDF”. Sai em duas colunas A4; esta caixa não é impressa.</p>
+</header>
+
+<h2>Índice dos resultados numerados</h2>
+
+<div class="rolagem">
+<table>
+  <thead><tr><th class="c">Nº</th><th>O que dá</th><th class="c">Livro</th><th class="c">§</th></tr></thead>
+  <tbody>
+    <tr><td class="c">(4.1)</td><td>define cadeia de Markov</td><td class="c">201</td><td class="c">4.1</td></tr>
+    <tr><td class="c">(4.2)</td><td>Chapman–Kolmogorov</td><td class="c">205</td><td class="c">4.2</td></tr>
+    <tr><td class="c">(4.3)</td><td>aproximação de Stirling</td><td class="c">217</td><td class="c">4.3</td></tr>
+    <tr><td class="c">Prop. 4.1</td><td>recorrência ⟺ <math><mo>∑</mo><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>∞</mi></math></td><td class="c">215</td><td class="c">4.3</td></tr>
+    <tr><td class="c">Cor. 4.2</td><td>recorrência é propriedade de classe</td><td class="c">215</td><td class="c">4.3</td></tr>
+    <tr><td class="c">Prop. 4.3</td><td><math><msub><mi>f</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mn>1</mn></math> se <math><mi>i</mi></math> recorrente e <math><mi>i</mi><mo>↔</mo><mi>j</mi></math></td><td class="c">223</td><td class="c">4.4</td></tr>
+    <tr><td class="c">Prop. 4.4</td><td><math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><msub><mi>m</mi><mi>j</mi></msub></math></td><td class="c">224</td><td class="c">4.4</td></tr>
+    <tr><td class="c">Prop. 4.5</td><td>recorrência positiva é propriedade de classe</td><td class="c">224</td><td class="c">4.4</td></tr>
+    <tr><td class="c">Teo. 4.1</td><td>as equações <math><mi>π</mi><mo>=</mo><mi>π</mi><mi mathvariant="bold">P</mi></math> e sua unicidade</td><td class="c">226</td><td class="c">4.4</td></tr>
+    <tr><td class="c">(4.13)</td><td>tempo médio entre ocorrências de um padrão</td><td class="c">236</td><td class="c">4.4</td></tr>
+    <tr><td class="c">Prop. 4.6</td><td>recompensa média <math><mo>=</mo><mo>∑</mo><mi>r</mi><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>π</mi><mi>j</mi></msub></math></td><td class="c">238</td><td class="c">4.4</td></tr>
+    <tr><td class="c">(4.14)</td><td>ruína do jogador</td><td class="c">242</td><td class="c">4.5.1</td></tr>
+    <tr><td class="c">Prop. 4.7</td><td><math><msub><mi>I</mi><mi>j</mi></msub></math> independentes, <math><mi>P</mi><mo>{</mo><msub><mi>I</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>}</mo><mo>=</mo><mn>1</mn><mo>/</mo><mi>j</mi></math></td><td class="c">246</td><td class="c">4.5.2</td></tr>
+    <tr><td class="c">Cor. 4.8</td><td>média, variância e normalidade de <math><msub><mi>T</mi><mi>N</mi></msub></math></td><td class="c">246</td><td class="c">4.5.2</td></tr>
+    <tr><td class="c">(4.18)</td><td><math><mi mathvariant="bold">S</mi><mo>=</mo><msup><mrow><mo>(</mo><mi mathvariant="bold">I</mi><mo>−</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></math></td><td class="c">253</td><td class="c">4.6</td></tr>
+    <tr><td class="c">(4.19)</td><td>variância da geração <math><mi>n</mi></math></td><td class="c">257</td><td class="c">4.7</td></tr>
+    <tr><td class="c">(4.20)</td><td>probabilidade de extinção</td><td class="c">258</td><td class="c">4.7</td></tr>
+    <tr><td class="c">(4.21)</td><td>balanço detalhado</td><td class="c">259</td><td class="c">4.8</td></tr>
+    <tr><td class="c">(4.22)</td><td>condição suficiente para reversibilidade</td><td class="c">259</td><td class="c">4.8</td></tr>
+    <tr><td class="c">(4.23–24)</td><td><math><mi>π</mi></math> da cadeia de nascimento e morte</td><td class="c">261</td><td class="c">4.8</td></tr>
+    <tr><td class="c">Teo. 4.2</td><td>critério de Kolmogorov (ciclos)</td><td class="c">264</td><td class="c">4.8</td></tr>
+    <tr><td class="c">Prop. 4.9</td><td>adivinhar a cadeia reversa</td><td class="c">267</td><td class="c">4.8</td></tr>
+    <tr><td class="c">(4.32)</td><td>aceitação de Hastings–Metropolis</td><td class="c">270</td><td class="c">4.9</td></tr>
+    <tr><td class="c">(4.33–34)</td><td>MDP: restrições e programa linear</td><td class="c">274</td><td class="c">4.10</td></tr>
+    <tr><td class="c">(4.35)</td><td>recursão <em>forward</em></td><td class="c">278</td><td class="c">4.11</td></tr>
+    <tr><td class="c">(4.36)</td><td>recursão <em>backward</em></td><td class="c">280</td><td class="c">4.11</td></tr>
+    <tr><td class="c">(4.37)</td><td>recursão de Viterbi</td><td class="c">282</td><td class="c">4.11.1</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>4.1 · Definições básicas</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Cadeia de Markov</span><span class="pg">livro 201</span></h4>
+  <p><math><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>,</mo><mi>n</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mo>…</mo><mo>}</mo></math> é um processo estocástico com espaço de estados <strong>finito ou enumerável</strong> (tomado como <math><mo>{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mo>…</mo><mo>}</mo></math>). Ele é uma <strong>cadeia de Markov</strong> se existem números <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> tais que</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>i</mi><mo>,</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>i</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><msub><mi>i</mi><mn>0</mn></msub><mo>}</mo><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></math><span class="num">(4.1)</span></div>
+  <p><strong>para todos</strong> os estados <math><msub><mi>i</mi><mn>0</mn></msub><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi></math> e <strong>todo</strong> <math><mi>n</mi><mo>⩾</mo><mn>0</mn></math>.</p>
+  <p class="miudo">Duas exigências em (4.1): o lado direito não depende do passado (<strong>Markov</strong>) nem de <math><mi>n</mi></math> (<strong>homogênea no tempo</strong> — hipótese assumida no capítulo inteiro).</p>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">Matriz de transição</span><span class="pg">livro 201–202</span></h4>
+  <p><math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> é a probabilidade de transição em um passo de <math><mi>i</mi></math> para <math><mi>j</mi></math>. Necessariamente</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>⩾</mo><mn>0</mn><mo>,</mo><mspace width="0.8em"/><mi>i</mi><mo>,</mo><mi>j</mi><mo>⩾</mo><mn>0</mn><mo>;</mo><mspace width="1.6em"/><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="0.8em"/><mi>i</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mo>…</mo></mrow></math></div>
+  <p><math><mi mathvariant="bold">P</mi><mo>=</mo><mo>[</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>]</mo></math> é a matriz de transição em um passo: <strong>linha = estado de origem, coluna = estado de destino</strong>.</p>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">Transição em <math><mi>n</mi></math> passos</span><span class="pg">livro 205</span></h4>
+  <div class="eq"><math display="block"><mrow><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mi>k</mi></mrow></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><mi>i</mi><mo>}</mo><mo>,</mo><mspace width="1em"/><mi>n</mi><mo>⩾</mo><mn>0</mn><mo>,</mo><mspace width="0.5em"/><mi>i</mi><mo>,</mo><mi>j</mi><mo>⩾</mo><mn>0</mn></mrow></math></div>
+  <p>Com <math><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mn>1</mn></msubsup><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> e <math><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mn>0</mn></msubsup><mo>=</mo><mn>1</mn></math>. <math><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup></math> denota a matriz <math><mo>[</mo><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><mo>]</mo></math>.</p>
+</div>
+
+<h2>4.2 · Chapman–Kolmogorov</h2>
+
+<div class="bloco res">
+  <h4><span class="tit">Equações de Chapman–Kolmogorov</span><span class="pg">livro 205–206</span></h4>
+  <p>Para <strong>todos</strong> <math><mi>n</mi><mo>,</mo><mi>m</mi><mo>⩾</mo><mn>0</mn></math> e todos <math><mi>i</mi><mo>,</mo><mi>j</mi></math>:</p>
+  <div class="eq"><math display="block"><mrow><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi>n</mi><mo>+</mo><mi>m</mi></mrow></msubsup><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><msubsup><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow><mi>n</mi></msubsup><msubsup><mi>P</mi><mrow><mi>k</mi><mi>j</mi></mrow><mi>m</mi></msubsup></mrow></math><span class="num">(4.2)</span></div>
+  <p>Em forma matricial <math><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mi>m</mi><mo>)</mo></mrow></msup><mo>=</mo><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>·</mo><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>m</mi><mo>)</mo></mrow></msup></math> e, por indução,</p>
+  <div class="eq"><math display="block"><mrow><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>=</mo><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Distribuição incondicional</span><span class="pg">livro 212</span></h4>
+  <p>Dada a distribuição inicial <math><msub><mi>α</mi><mi>i</mi></msub><mo>≡</mo><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo></math>, <math><mo>∑</mo><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></math>:</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><msub><mi>α</mi><mi>i</mi></msub></mrow></math></div>
+  <p class="miudo">Todas as demais probabilidades do capítulo são <em>condicionais</em> ao estado inicial; sem <math><mi mathvariant="bold">α</mi></math> não há probabilidade incondicional.</p>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">A cadeia <math><msub><mi>W</mi><mi>n</mi></msub></math> — absorver um conjunto <math><mi mathvariant="script">A</mi></math></span><span class="pg">livro 208–209</span></h4>
+  <p>Dado <math><mi mathvariant="script">A</mi></math> e <math><mi>N</mi><mo>=</mo><mo movablelimits="false">min</mo><mo>{</mo><mi>n</mi><mo>:</mo><msub><mi>X</mi><mi>n</mi></msub><mo>∈</mo><mi mathvariant="script">A</mi><mo>}</mo></math> (<math><mo>=</mo><mi>∞</mi></math> se nunca entra), defina <math><msub><mi>W</mi><mi>n</mi></msub><mo>=</mo><msub><mi>X</mi><mi>n</mi></msub></math> se <math><mi>n</mi><mo>&lt;</mo><mi>N</mi></math> e <math><msub><mi>W</mi><mi>n</mi></msub><mo>=</mo><mi>A</mi></math> se <math><mi>n</mi><mo>⩾</mo><mi>N</mi></math>. Então <math><mo>{</mo><msub><mi>W</mi><mi>n</mi></msub><mo>}</mo></math> é cadeia de Markov com estados <math><mo>{</mo><mi>i</mi><mo>∉</mo><mi mathvariant="script">A</mi><mo>}</mo><mo>∪</mo><mo>{</mo><mi>A</mi><mo>}</mo></math> e</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mspace width="0.4em"/><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∉</mo><mi mathvariant="script">A</mi><mo>)</mo><mo>,</mo><mspace width="1em"/><msub><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>A</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><mi mathvariant="script">A</mi></mrow></munder><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mspace width="0.4em"/><mo>(</mo><mi>i</mi><mo>∉</mo><mi mathvariant="script">A</mi><mo>)</mo><mo>,</mo><mspace width="1em"/><msub><mi>Q</mi><mrow><mi>A</mi><mo>,</mo><mi>A</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">As quatro leituras de <math><mi mathvariant="bold">Q</mi></math></span><span class="pg">livro 209–212</span></h4>
+  <p>Com <math><mi mathvariant="bold">Q</mi></math> como acima e <math><mi>i</mi><mo>,</mo><mi>j</mi><mo>∉</mo><mi mathvariant="script">A</mi></math>:</p>
+  <ul class="compacta">
+    <li><math><mi>P</mi><mo>(</mo><msub><mi>X</mi><mi>k</mi></msub><mo>∈</mo><mi mathvariant="script">A</mi></math> para algum <math><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>m</mi><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>)</mo><mo>=</mo><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>A</mi></mrow><mi>m</mi></msubsup></math></li>
+    <li><math><mi>P</mi><mo>(</mo><msub><mi>X</mi><mi>m</mi></msub><mo>=</mo><mi>j</mi><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo>∉</mo><mi mathvariant="script">A</mi><mo>,</mo><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>)</mo><mo>=</mo><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>m</mi></msubsup></math></li>
+    <li>se <math><mi>j</mi><mo>∈</mo><mi mathvariant="script">A</mi></math>: a mesma probabilidade vale <math><msub><mo>∑</mo><mrow><mi>r</mi><mo>∉</mo><mi mathvariant="script">A</mi></mrow></msub><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>r</mi></mrow><mrow><mi>m</mi><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>P</mi><mrow><mi>r</mi><mo>,</mo><mi>j</mi></mrow></msub></math>; se <math><mi>i</mi><mo>∈</mo><mi mathvariant="script">A</mi></math> e <math><mi>j</mi><mo>∉</mo><mi mathvariant="script">A</mi></math>: <math><msub><mo>∑</mo><mrow><mi>r</mi><mo>∉</mo><mi mathvariant="script">A</mi></mrow></msub><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>r</mi></mrow></msub><msubsup><mi>Q</mi><mrow><mi>r</mi><mo>,</mo><mi>j</mi></mrow><mrow><mi>m</mi><mo>−</mo><mn>1</mn></mrow></msubsup></math></li>
+    <li><math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo>∉</mo><mi mathvariant="script">A</mi><mo>,</mo><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>n</mi><mo>}</mo><mo>=</mo><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>n</mi></msubsup><mo>/</mo><msub><mo>∑</mo><mrow><mi>r</mi><mo>∉</mo><mi mathvariant="script">A</mi></mrow></msub><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>r</mi></mrow><mi>n</mi></msubsup></math></li>
+  </ul>
+</div>
+
+<h2>4.3 · Classificação de estados</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Acessível, comunicação, classe, irredutível</span><span class="pg">livro 213–214</span></h4>
+  <ul class="compacta">
+    <li><math><mi>j</mi></math> é <strong>acessível</strong> a partir de <math><mi>i</mi></math> se <math><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><mo>&gt;</mo><mn>0</mn></math> para algum <math><mi>n</mi><mo>⩾</mo><mn>0</mn></math>.</li>
+    <li><math><mi>i</mi></math> e <math><mi>j</mi></math> <strong>comunicam</strong> (<math><mi>i</mi><mo>↔</mo><mi>j</mi></math>) se cada um é acessível a partir do outro.</li>
+    <li>Comunicação satisfaz: (i) <math><mi>i</mi><mo>↔</mo><mi>i</mi></math>; (ii) <math><mi>i</mi><mo>↔</mo><mi>j</mi></math> ⟹ <math><mi>j</mi><mo>↔</mo><mi>i</mi></math>; (iii) <math><mi>i</mi><mo>↔</mo><mi>j</mi></math> e <math><mi>j</mi><mo>↔</mo><mi>k</mi></math> ⟹ <math><mi>i</mi><mo>↔</mo><mi>k</mi></math>. Logo parte o espaço em <strong>classes</strong>, duas a duas idênticas ou disjuntas.</li>
+    <li>A cadeia é <strong>irredutível</strong> se há uma única classe.</li>
+    <li><math><mi>i</mi></math> é <strong>absorvente</strong> se <math><msub><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn></math>.</li>
+  </ul>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">Recorrente e transiente</span><span class="pg">livro 214</span></h4>
+  <p><math><msub><mi>f</mi><mi>i</mi></msub></math> = probabilidade de que, partindo de <math><mi>i</mi></math>, o processo <em>algum dia</em> reentre em <math><mi>i</mi></math>. O estado é <strong>recorrente</strong> se <math><msub><mi>f</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></math> e <strong>transiente</strong> se <math><msub><mi>f</mi><mi>i</mi></msub><mo>&lt;</mo><mn>1</mn></math>.</p>
+  <p>Consequências imediatas: recorrente ⟹ é visitado <strong>infinitas vezes</strong>; transiente ⟹ o número de períodos em <math><mi>i</mi></math> é <strong>geométrico</strong>, <math><mi>P</mi><mo>{</mo><mi>n</mi><mspace width="0.3em"/><mtext>visitas</mtext><mo>}</mo><mo>=</mo><msubsup><mi>f</mi><mi>i</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msubsup><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>f</mi><mi>i</mi></msub><mo>)</mo></math>, de média finita <math><mn>1</mn><mo>/</mo><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>f</mi><mi>i</mi></msub><mo>)</mo></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.1</span><span class="pg">livro 215</span></h4>
+  <p>O estado <math><mi>i</mi></math> é</p>
+  <div class="eq"><math display="block"><mrow><mtext>recorrente se</mtext><mspace width="0.5em"/><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>∞</mi></munderover><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>∞</mi><mo>,</mo><mspace width="1.6em"/><mtext>transiente se</mtext><mspace width="0.5em"/><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>∞</mi></munderover><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>&lt;</mo><mi>∞</mi></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Corolário 4.2</span><span class="pg">livro 215</span></h4>
+  <p>Se o estado <math><mi>i</mi></math> é recorrente e <math><mi>i</mi><mo>↔</mo><mi>j</mi></math>, então <math><mi>j</mi></math> é recorrente.</p>
+</div>
+
+<div class="bloco obs">
+  <h4><span class="tit">Observações que decorrem</span><span class="pg">livro 215–216</span></h4>
+  <ul class="compacta">
+    <li><strong>Transiência também é propriedade de classe.</strong></li>
+    <li>Um estado transiente é visitado só um número <strong>finito</strong> de vezes. Logo, numa cadeia com <strong>número finito de estados, nem todos podem ser transientes</strong>.</li>
+    <li>Toda cadeia <strong>finita e irredutível</strong> tem todos os estados recorrentes.</li>
+    <li>(Exerc. 16) Se <math><mi>i</mi></math> é recorrente e não comunica com <math><mi>j</mi></math>, então <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>0</mn></math>: uma classe recorrente é <strong>fechada</strong>.</li>
+  </ul>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Passeio aleatório — classificação</span><span class="pg">livro 217–219</span></h4>
+  <p><strong>Uma dimensão.</strong> Estados <math><mn>0</mn><mo>,</mo><mo>±</mo><mn>1</mn><mo>,</mo><mo>±</mo><mn>2</mn><mo>,</mo><mo>…</mo></math> com <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>p</mi><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></math>, <math><mn>0</mn><mo>&lt;</mo><mi>p</mi><mo>&lt;</mo><mn>1</mn></math>. Todos os estados comunicam, e</p>
+  <div class="eq"><math display="block"><mrow><msubsup><mi>P</mi><mn>00</mn><mrow><mn>2</mn><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msubsup><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><msubsup><mi>P</mi><mn>00</mn><mrow><mn>2</mn><mi>n</mi></mrow></msubsup><mo>=</mo><mrow><mo>(</mo><mfrac linethickness="0"><mrow><mn>2</mn><mi>n</mi></mrow><mi>n</mi></mfrac><mo>)</mo></mrow><msup><mrow><mo>(</mo><mi>p</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>)</mo></mrow><mi>n</mi></msup><mo>∼</mo><mfrac><msup><mrow><mo>(</mo><mn>4</mn><mi>p</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>)</mo></mrow><mi>n</mi></msup><msqrt><mi>π</mi><mi>n</mi></msqrt></mfrac></mrow></math></div>
+  <p>logo a cadeia é <strong>recorrente se e somente se <math><mi>p</mi><mo>=</mo><mn>1</mn><mo>/</mo><mn>2</mn></math></strong> (<em>passeio simétrico</em>).</p>
+  <p><strong>Duas dimensões</strong> (simétrico, <math><mn>1</mn><mo>/</mo><mn>4</mn></math> em cada direção): <math><msubsup><mi>P</mi><mn>00</mn><mrow><mn>2</mn><mi>n</mi></mrow></msubsup><mo>∼</mo><mn>1</mn><mo>/</mo><mo>(</mo><mi>π</mi><mi>n</mi><mo>)</mo></math>, também <strong>recorrente</strong>. <strong>Três dimensões ou mais:</strong> <strong>transiente</strong>.</p>
+  <p class="miudo">Ferramenta usada: <math><mi>n</mi><mo>!</mo><mo>∼</mo><msup><mi>n</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn><mo>/</mo><mn>2</mn></mrow></msup><msup><mi>e</mi><mrow><mo>−</mo><mi>n</mi></mrow></msup><msqrt><mn>2</mn><mi>π</mi></msqrt></math> (4.3), e: se <math><msub><mi>a</mi><mi>n</mi></msub><mo>∼</mo><msub><mi>b</mi><mi>n</mi></msub></math> com ambos positivos, <math><mo>∑</mo><msub><mi>a</mi><mi>n</mi></msub><mo>&lt;</mo><mi>∞</mi></math> ⟺ <math><mo>∑</mo><msub><mi>b</mi><mi>n</mi></msub><mo>&lt;</mo><mi>∞</mi></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Retorno ao 0 no passeio não simétrico</span><span class="pg">livro 219–220</span></h4>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><mtext>algum dia retornar a 0</mtext><mo>}</mo><mo>=</mo><mn>2</mn><mo movablelimits="false">min</mo><mo>(</mo><mi>p</mi><mo>,</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow></math></div>
+  <p class="miudo">Sai de <math><mi>α</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>+</mo><mi>p</mi><msup><mi>α</mi><mn>2</mn></msup></math>, onde <math><mi>α</mi></math> = probabilidade de ir de <math><mi>i</mi></math> a <math><mi>i</mi><mo>−</mo><mn>1</mn></math>; raízes 1 e <math><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>/</mo><mi>p</mi></math>.</p>
+</div>
+<h2>4.4 · Proporções de longo prazo e probabilidades limite</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Probabilidade de alcançar</span><span class="pg">livro 223</span></h4>
+  <p>Para <math><mi>i</mi><mo>≠</mo><mi>j</mi></math>, <math><msub><mi>f</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mi>P</mi><mo>(</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi></math> para algum <math><mi>n</mi><mo>&gt;</mo><mn>0</mn><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>)</mo></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.3</span><span class="pg">livro 223</span></h4>
+  <p>Se <math><mi>i</mi></math> é <strong>recorrente</strong> e <math><mi>i</mi><mo>↔</mo><mi>j</mi></math>, então <math><msub><mi>f</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mn>1</mn></math>.</p>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">Tempo médio de retorno; recorrência positiva e nula</span><span class="pg">livro 223–224</span></h4>
+  <p>Para <math><mi>j</mi></math> recorrente, <math><msub><mi>N</mi><mi>j</mi></msub><mo>=</mo><mo movablelimits="false">min</mo><mo>{</mo><mi>n</mi><mo>&gt;</mo><mn>0</mn><mo>:</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo></math> e</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>m</mi><mi>j</mi></msub><mo>=</mo><mi>E</mi><mo>[</mo><msub><mi>N</mi><mi>j</mi></msub><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>j</mi><mo>]</mo></mrow></math></div>
+  <p>O estado recorrente <math><mi>j</mi></math> é <strong>recorrente positivo</strong> se <math><msub><mi>m</mi><mi>j</mi></msub><mo>&lt;</mo><mi>∞</mi></math> e <strong>recorrente nulo</strong> se <math><msub><mi>m</mi><mi>j</mi></msub><mo>=</mo><mi>∞</mi></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.4</span><span class="pg">livro 224</span></h4>
+  <p><strong>Hipótese:</strong> cadeia <strong>irredutível e recorrente</strong>. Então, <strong>para qualquer estado inicial</strong>, a proporção de tempo de longo prazo em <math><mi>j</mi></math> é</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><msub><mi>m</mi><mi>j</mi></msub></mrow></math></div>
+  <p class="miudo">Daí: <math><mi>j</mi></math> é recorrente positivo <strong>⟺</strong> <math><msub><mi>π</mi><mi>j</mi></msub><mo>&gt;</mo><mn>0</mn></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.5</span><span class="pg">livro 224–225</span></h4>
+  <p>Se <math><mi>i</mi></math> é <strong>recorrente positivo</strong> e <math><mi>i</mi><mo>↔</mo><mi>j</mi></math>, então <math><mi>j</mi></math> é recorrente positivo.</p>
+</div>
+
+<div class="bloco obs">
+  <h4><span class="tit">Observações (i)–(iii)</span><span class="pg">livro 225</span></h4>
+  <ul class="compacta">
+    <li>(i) <strong>Recorrência nula também é propriedade de classe.</strong></li>
+    <li>(ii) Uma cadeia <strong>irredutível de estado finito é recorrente positiva</strong>.</li>
+    <li>(iii) O <strong>passeio aleatório simétrico unidimensional é recorrente nulo</strong>: <math><mi>E</mi><mo>[</mo><msub><mi>T</mi><mrow><mn>0</mn><mo>,</mo><mn>0</mn></mrow></msub><mo>]</mo><mo>=</mo><mi>∞</mi></math>.</li>
+  </ul>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Teorema 4.1 — o resultado central do capítulo</span><span class="pg">livro 226</span></h4>
+  <p><strong>Hipótese:</strong> cadeia <strong>irredutível</strong>. Se ela é <strong>recorrente positiva</strong>, as proporções de longo prazo são a <strong>única</strong> solução de</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>,</mo><mspace width="0.8em"/><mi>j</mi><mo>⩾</mo><mn>1</mn><mo>;</mo><mspace width="1.6em"/><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></mrow></math><span class="num">(4.7)</span></div>
+  <p>Além disso, <strong>se não existe solução</strong> do sistema linear acima, a cadeia é <strong>transiente ou recorrente nula</strong> e todos os <math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>0</mn></math>.</p>
+  <p class="miudo">As <math><mi>N</mi></math> equações de (4.7) são linearmente dependentes: descarte uma e use a normalização no lugar.</p>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">Probabilidades estacionárias</span><span class="pg">livro 232</span></h4>
+  <p>As <math><msub><mi>π</mi><mi>j</mi></msub></math> também se chamam <strong>estacionárias</strong> porque, se <math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub></math> para todo <math><mi>j</mi></math>, então</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub><mspace width="1em"/><mtext>para todos</mtext><mspace width="0.4em"/><mi>n</mi><mo>,</mo><mi>j</mi><mo>⩾</mo><mn>0</mn></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Cadeia dos <math><mi>k</mi></math> últimos estados e tempo até um padrão</span><span class="pg">livro 235–237</span></h4>
+  <p>Para a cadeia cujo estado é a sequência dos <math><mi>k</mi></math> estados mais recentes (<em>k-chain</em>), as estacionárias são</p>
+  <div class="eq"><math display="block"><mrow><mi>π</mi><mo>(</mo><msub><mi>j</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>j</mi><mi>k</mi></msub><mo>)</mo><mo>=</mo><msub><mi>π</mi><msub><mi>j</mi><mn>1</mn></msub></msub><msub><mi>P</mi><mrow><msub><mi>j</mi><mn>1</mn></msub><mo>,</mo><msub><mi>j</mi><mn>2</mn></msub></mrow></msub><mo>⋯</mo><msub><mi>P</mi><mrow><msub><mi>j</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>j</mi><mi>k</mi></msub></mrow></msub></mrow></math></div>
+  <p>e o número médio de transições entre visitas sucessivas ao padrão <math><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub></math> é <math><mn>1</mn><mo>/</mo><mi>π</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub><mo>)</mo></math> <span class="num">(4.13)</span>. Com <math><mi>μ</mi><mo>(</mo><mi>i</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo></math> = tempo médio de <math><mi>i</mi></math> até <math><msub><mi>i</mi><mn>1</mn></msub></math>, solução de <math><mi>μ</mi><mo>(</mo><mi>i</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo><mo>=</mo><mn>1</mn><mo>+</mo><msub><mo>∑</mo><mrow><mi>j</mi><mo>≠</mo><msub><mi>i</mi><mn>1</mn></msub></mrow></msub><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mi>μ</mi><mo>(</mo><mi>j</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo></math>:</p>
+  <p><strong>Caso 1 — padrão sem sobreposição</strong> (nenhum sufixo próprio é prefixo):</p>
+  <div class="eq"><math display="block"><mrow><mi>E</mi><mo>[</mo><mi>N</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub><mo>)</mo><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>r</mi><mo>]</mo><mo>=</mo><mi>μ</mi><mo>(</mo><mi>r</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo><mo>+</mo><mfrac><mn>1</mn><mrow><mi>π</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub><mo>)</mo></mrow></mfrac><mo>−</mo><mi>μ</mi><mo>(</mo><msub><mi>i</mi><mi>k</mi></msub><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo></mrow></math></div>
+  <p><strong>Caso 2 — maior sobreposição de tamanho <math><mi>s</mi></math>:</strong></p>
+  <div class="eq"><math display="block"><mrow><mi>E</mi><mo>[</mo><mi>N</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub><mo>)</mo><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>r</mi><mo>]</mo><mo>=</mo><mi>E</mi><mo>[</mo><mi>N</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>s</mi></msub><mo>)</mo><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>r</mi><mo>]</mo><mo>+</mo><mfrac><mn>1</mn><mrow><mi>π</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub><mo>)</mo></mrow></mfrac></mrow></math></div>
+  <p>repetindo até cair no Caso 1.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.6 — média temporal</span><span class="pg">livro 238</span></h4>
+  <p><strong>Hipóteses:</strong> <math><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>,</mo><mi>n</mi><mo>⩾</mo><mn>1</mn><mo>}</mo></math> <strong>irredutível</strong> com estacionárias <math><msub><mi>π</mi><mi>j</mi></msub></math>, e <math><mi>r</mi></math> uma função <strong>limitada</strong> no espaço de estados. Então, com probabilidade 1,</p>
+  <div class="eq"><math display="block"><mrow><munder><mo movablelimits="false">lim</mo><mrow><mi>N</mi><mo>→</mo><mi>∞</mi></mrow></munder><mfrac><mrow><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><mi>r</mi><mo>(</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo></mrow><mi>N</mi></mfrac><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><mi>r</mi><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>π</mi><mi>j</mi></msub></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Taxas de transição e o par <math><mover><mi>U</mi><mo>¯</mo></mover></math>, <math><mover><mi>D</mi><mo>¯</mo></mover></math></span><span class="pg">livro 230–231</span></h4>
+  <p>Numa cadeia irredutível recorrente positiva, a taxa de transições de <math><mi>i</mi></math> para <math><mi>j</mi></math> é <math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>. Com <math><mi>A</mi></math> = estados aceitáveis e <math><msup><mi>A</mi><mi>c</mi></msup></math> os demais, e <math><mover><mi>U</mi><mo>¯</mo></mover></math>, <math><mover><mi>D</mi><mo>¯</mo></mover></math> os tempos médios de permanência em cada regime:</p>
+  <div class="eq"><math display="block"><mrow><mfrac><mn>1</mn><mrow><mover><mi>U</mi><mo>¯</mo></mover><mo>+</mo><mover><mi>D</mi><mo>¯</mo></mover></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msup><mi>A</mi><mi>c</mi></msup></mrow></munder><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>A</mi></mrow></munder><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><mspace width="1.2em"/><mfrac><mover><mi>U</mi><mo>¯</mo></mover><mrow><mover><mi>U</mi><mo>¯</mo></mover><mo>+</mo><mover><mi>D</mi><mo>¯</mo></mover></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>A</mi></mrow></munder><msub><mi>π</mi><mi>i</mi></msub></mrow></math><span class="num">(4.11–4.12)</span></div>
+</div>
+
+<h3>4.4.1 Probabilidades limite</h3>
+
+<div class="bloco def">
+  <h4><span class="tit">Período, aperiodicidade, ergodicidade</span><span class="pg">livro 240–241</span></h4>
+  <ul class="compacta">
+    <li>Uma cadeia que só consegue retornar a um estado em múltiplos de <math><mi>d</mi><mo>&gt;</mo><mn>1</mn></math> passos é <strong>periódica</strong> de período <math><mi>d</mi></math>, e <strong>não tem probabilidades limite</strong>.</li>
+    <li>Cadeia irredutível <strong>não</strong> periódica chama-se <strong>aperiódica</strong>.</li>
+    <li>Cadeia irredutível, recorrente positiva e aperiódica chama-se <strong>ergódica</strong>.</li>
+  </ul>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Existência do limite</span><span class="pg">livro 240–241</span></h4>
+  <p>Para uma cadeia <strong>irredutível e aperiódica</strong>, as probabilidades limite existem, <strong>não dependem do estado inicial</strong>, e valem</p>
+  <div class="eq"><math display="block"><mrow><munder><mo movablelimits="false">lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub></mrow></math></div>
+  <p class="miudo">Contraexemplo do livro: <math><msub><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mn>1</mn><mo>,</mo><mn>0</mn></mrow></msub><mo>=</mo><mn>1</mn></math> tem <math><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><msub><mi>π</mi><mn>1</mn></msub><mo>=</mo><mn>1</mn><mo>/</mo><mn>2</mn></math>, mas <math><msubsup><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>0</mn></mrow><mi>n</mi></msubsup></math> alterna 1 e 0 e não tem limite.</p>
+</div>
+
+<h2>4.5 · Aplicações</h2>
+
+<div class="bloco res">
+  <h4><span class="tit">Ruína do jogador</span><span class="pg">livro 241–243</span></h4>
+  <p><strong>Modelo:</strong> ganha 1 com probabilidade <math><mi>p</mi></math>, perde 1 com <math><mi>q</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi></math>, jogadas independentes; <math><msub><mi>P</mi><mn>00</mn></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>N</mi><mi>N</mi></mrow></msub><mo>=</mo><mn>1</mn></math>. Classes: <math><mo>{</mo><mn>0</mn><mo>}</mo></math> e <math><mo>{</mo><mi>N</mi><mo>}</mo></math> recorrentes, <math><mo>{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo>}</mo></math> transiente — <strong>o jogo termina com probabilidade 1</strong>.</p>
+  <p><math><msub><mi>P</mi><mi>i</mi></msub></math> = probabilidade de a fortuna atingir <math><mi>N</mi></math> partindo de <math><mi>i</mi></math>:</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>=</mo><mrow><mo>{</mo><mtable columnalign="left left"><mtr><mtd><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>i</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>N</mi></msup></mrow></mfrac><mo>,</mo></mtd><mtd><mtext>se</mtext><mspace width="0.4em"/><mi>p</mi><mo>≠</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr><mtr><mtd><mfrac><mi>i</mi><mi>N</mi></mfrac><mo>,</mo></mtd><mtd><mtext>se</mtext><mspace width="0.4em"/><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr></mtable></mrow></mrow></math><span class="num">(4.14)</span></div>
+  <p>Quando <math><mi>N</mi><mo>→</mo><mi>∞</mi></math>: <math><msub><mi>P</mi><mi>i</mi></msub><mo>→</mo><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>i</mi></msup></math> se <math><mi>p</mi><mo>&gt;</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>, e <math><msub><mi>P</mi><mi>i</mi></msub><mo>→</mo><mn>0</mn></math> se <math><mi>p</mi><mo>⩽</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.7</span><span class="pg">livro 246</span></h4>
+  <p><strong>Modelo (eficiência do simplex):</strong> <math><msub><mi>P</mi><mn>11</mn></msub><mo>=</mo><mn>1</mn></math> e <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>1</mn><mo>/</mo><mo>(</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo>)</mo></math> para <math><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>i</mi><mo>−</mo><mn>1</mn></math>, <math><mi>i</mi><mo>&gt;</mo><mn>1</mn></math>. Com <math><msub><mi>I</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></math> se o processo entra em <math><mi>j</mi></math>:</p>
+  <p><math><msub><mi>I</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>I</mi><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></msub></math> são <strong>independentes</strong> e <math><mi>P</mi><mo>{</mo><msub><mi>I</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>}</mo><mo>=</mo><mn>1</mn><mo>/</mo><mi>j</mi></math>, <math><mn>1</mn><mo>⩽</mo><mi>j</mi><mo>⩽</mo><mi>N</mi><mo>−</mo><mn>1</mn></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Corolário 4.8</span><span class="pg">livro 246</span></h4>
+  <p>Com <math><msub><mi>T</mi><mi>N</mi></msub></math> = nº de transições de <math><mi>N</mi></math> até 1:</p>
+  <ul class="compacta">
+    <li>(i) <math><mi>E</mi><mo>[</mo><msub><mi>T</mi><mi>N</mi></msub><mo>]</mo><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></msubsup><mn>1</mn><mo>/</mo><mi>j</mi></math></li>
+    <li>(ii) <math><mtext>Var</mtext><mo>(</mo><msub><mi>T</mi><mi>N</mi></msub><mo>)</mo><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></msubsup><mo>(</mo><mn>1</mn><mo>/</mo><mi>j</mi><mo>)</mo><mo>(</mo><mn>1</mn><mo>−</mo><mn>1</mn><mo>/</mo><mi>j</mi><mo>)</mo></math></li>
+    <li>(iii) para <math><mi>N</mi></math> grande, <math><msub><mi>T</mi><mi>N</mi></msub></math> é <strong>aproximadamente normal</strong> com média e variância <math><mo movablelimits="false">log</mo><mi>N</mi></math>.</li>
+  </ul>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Tempo de subida numa cadeia com <math><msub><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>1</mn></math></span><span class="pg">livro 247–251</span></h4>
+  <p><strong>Modelo:</strong> estados <math><mn>0</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>n</mi></math>, <math><msub><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>1</mn></math>, <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>p</mi></math>, <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>q</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi></math> (<math><mn>1</mn><mo>⩽</mo><mi>i</mi><mo>&lt;</mo><mi>n</mi></math>). Com <math><msub><mi>N</mi><mi>i</mi></msub></math> = transições de <math><mi>i</mi></math> até <math><mi>i</mi><mo>+</mo><mn>1</mn></math>, os <math><msub><mi>N</mi><mi>i</mi></msub></math> são <strong>independentes</strong> e</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>n</mi></mrow></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></munderover><msub><mi>N</mi><mi>i</mi></msub><mo>,</mo><mspace width="1.2em"/><msub><mi>μ</mi><mi>i</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>p</mi></mfrac><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></munderover><msup><mi>α</mi><mi>j</mi></msup><mo>+</mo><msup><mi>α</mi><mi>i</mi></msup><mo>,</mo><mspace width="0.8em"/><mi>α</mi><mo>=</mo><mi>q</mi><mo>/</mo><mi>p</mi></mrow></math><span class="num">(4.15–4.16)</span></div>
+  <div class="eq"><math display="block"><mrow><msub><mi>v</mi><mi>i</mi></msub><mo>=</mo><mi>q</mi><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>i</mi></munderover><msup><mi>α</mi><mrow><mi>i</mi><mo>−</mo><mi>j</mi></mrow></msup><msup><mrow><mo>(</mo><msub><mi>μ</mi><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>μ</mi><mi>j</mi></msub><mo>)</mo></mrow><mn>2</mn></msup></mrow></math><span class="num">(4.17)</span></div>
+  <p>Em particular, com <math><mi>p</mi><mo>=</mo><mn>1</mn><mo>/</mo><mn>2</mn></math>: <math><msub><mi>μ</mi><mi>i</mi></msub><mo>=</mo><mn>2</mn><mi>i</mi><mo>+</mo><mn>1</mn></math>, <math><mi>E</mi><mo>[</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>n</mi></mrow></msub><mo>]</mo><mo>=</mo><msup><mi>n</mi><mn>2</mn></msup></math> e <math><mtext>Var</mtext><mo>(</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>n</mi></mrow></msub><mo>)</mo><mo>≈</mo><mfrac><mn>2</mn><mn>3</mn></mfrac><msup><mi>n</mi><mn>4</mn></msup></math>, com <math><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>n</mi></mrow></msub></math> <strong>aproximadamente normal</strong> para <math><mi>n</mi></math> grande. Se <math><mi>p</mi><mo>&lt;</mo><mn>1</mn><mo>/</mo><mn>2</mn></math>, <math><mi>E</mi><mo>[</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>n</mi></mrow></msub><mo>]</mo></math> cresce <strong>exponencialmente</strong> em <math><mi>n</mi></math>; se <math><mi>p</mi><mo>&gt;</mo><mn>1</mn><mo>/</mo><mn>2</mn></math>, essencialmente <strong>linearmente</strong>.</p>
+</div>
+
+<h2>4.6 · Tempo médio em estados transientes</h2>
+
+<div class="bloco res">
+  <h4><span class="tit">Matriz fundamental</span><span class="pg">livro 253–254</span></h4>
+  <p><strong>Hipótese:</strong> cadeia de <strong>estado finito</strong>, com os transientes numerados <math><mi>T</mi><mo>=</mo><mo>{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>t</mi><mo>}</mo></math> e <math><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>=</mo><mo>[</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>]</mo></math>, <math><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>T</mi></math>. Para <math><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>T</mi></math>, <math><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> = nº esperado de períodos em <math><mi>j</mi></math> partindo de <math><mi>i</mi></math>, e <math><mi mathvariant="bold">S</mi><mo>=</mo><mo>[</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>]</mo></math>. Então</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>δ</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>t</mi></munderover><msub><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><msub><mi>s</mi><mrow><mi>k</mi><mi>j</mi></mrow></msub><mspace width="1em"/><mo>⟺</mo><mspace width="1em"/><mi mathvariant="bold">S</mi><mo>=</mo><msup><mrow><mo>(</mo><mi mathvariant="bold">I</mi><mo>−</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow></math><span class="num">(4.18)</span></div>
+  <p>E, com <math><msub><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> = probabilidade de algum dia entrar em <math><mi>j</mi></math> partindo de <math><mi>i</mi></math> (<math><mi>i</mi><mo>,</mo><mi>j</mi><mo>∈</mo><mi>T</mi></math>):</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>δ</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow><msub><mi>s</mi><mrow><mi>j</mi><mi>j</mi></mrow></msub></mfrac></mrow></math></div>
+  <p class="miudo">Para o tempo até um conjunto <math><mi>A</mi></math> qualquer (não só o dos recorrentes): redefina <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn></math> para <math><mi>i</mi><mo>∈</mo><mi>A</mi></math> e aplique o mesmo. O tempo médio até a absorção partindo de <math><mi>i</mi></math> é a soma da linha <math><mi>i</mi></math> de <math><mi mathvariant="bold">S</mi></math>.</p>
+</div>
+
+<h2>4.7 · Processos de ramificação</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Processo de ramificação</span><span class="pg">livro 255</span></h4>
+  <p>Cada indivíduo produz <math><mi>j</mi></math> descendentes com probabilidade <math><msub><mi>P</mi><mi>j</mi></msub></math>, <math><mi>j</mi><mo>⩾</mo><mn>0</mn></math>, <strong>independentemente</strong> dos demais; supõe-se <math><msub><mi>P</mi><mi>j</mi></msub><mo>&lt;</mo><mn>1</mn></math> para todo <math><mi>j</mi></math>. <math><msub><mi>X</mi><mi>n</mi></msub></math> = tamanho da <math><mi>n</mi></math>-ésima geração. Então <math><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>}</mo></math> é cadeia de Markov nos inteiros não negativos, com</p>
+  <div class="eq"><math display="block"><mrow><mi>μ</mi><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><mi>j</mi><msub><mi>P</mi><mi>j</mi></msub><mo>,</mo><mspace width="1.4em"/><msup><mi>σ</mi><mn>2</mn></msup><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><msup><mrow><mo>(</mo><mi>j</mi><mo>−</mo><mi>μ</mi><mo>)</mo></mrow><mn>2</mn></msup><msub><mi>P</mi><mi>j</mi></msub></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Classificação, média e variância</span><span class="pg">livro 255–257</span></h4>
+  <ul class="compacta">
+    <li>O estado 0 é <strong>recorrente</strong> (absorvente). Se <math><msub><mi>P</mi><mn>0</mn></msub><mo>&gt;</mo><mn>0</mn></math>, <strong>todos os demais são transientes</strong> — a população <strong>ou morre ou tende a infinito</strong>.</li>
+    <li>Com <math><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></math>: <math><mi>E</mi><mo>[</mo><msub><mi>X</mi><mi>n</mi></msub><mo>]</mo><mo>=</mo><msup><mi>μ</mi><mi>n</mi></msup></math>.</li>
+  </ul>
+  <div class="eq"><math display="block"><mrow><mtext>Var</mtext><mo>(</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo><mo>=</mo><mrow><mo>{</mo><mtable columnalign="left left"><mtr><mtd><msup><mi>σ</mi><mn>2</mn></msup><msup><mi>μ</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo>(</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>μ</mi><mi>n</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><mi>μ</mi></mrow></mfrac><mo>)</mo></mrow><mo>,</mo></mtd><mtd><mtext>se</mtext><mspace width="0.4em"/><mi>μ</mi><mo>≠</mo><mn>1</mn></mtd></mtr><mtr><mtd><mi>n</mi><msup><mi>σ</mi><mn>2</mn></msup><mo>,</mo></mtd><mtd><mtext>se</mtext><mspace width="0.4em"/><mi>μ</mi><mo>=</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow></math><span class="num">(4.19)</span></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Probabilidade de extinção</span><span class="pg">livro 257–258</span></h4>
+  <p><math><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><msub><mo movablelimits="false">lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></msub><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mn>0</mn><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn><mo>}</mo></math>.</p>
+  <ul class="compacta">
+    <li><math><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></math> se <math><mi>μ</mi><mo>&lt;</mo><mn>1</mn></math>; e <strong>também se <math><mi>μ</mi><mo>=</mo><mn>1</mn></math></strong>.</li>
+    <li>Se <math><mi>μ</mi><mo>&gt;</mo><mn>1</mn></math>, <math><msub><mi>π</mi><mn>0</mn></msub><mo>&lt;</mo><mn>1</mn></math> e é a <strong>menor raiz positiva</strong> de</li>
+  </ul>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><msubsup><mi>π</mi><mn>0</mn><mi>j</mi></msubsup><msub><mi>P</mi><mi>j</mi></msub></mrow></math><span class="num">(4.20)</span></div>
+  <p>Com <math><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>n</mi></math> indivíduos iniciais, a probabilidade de extinção é <math><msubsup><mi>π</mi><mn>0</mn><mi>n</mi></msubsup></math>.</p>
+</div>
+<h2>4.8 · Cadeias reversíveis no tempo</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Cadeia reversa</span><span class="pg">livro 258–259</span></h4>
+  <p><strong>Hipótese:</strong> cadeia <strong>ergódica estacionária</strong> com transições <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> e estacionárias <math><msub><mi>π</mi><mi>i</mi></msub></math>. A sequência <math><msub><mi>X</mi><mi>n</mi></msub><mo>,</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>2</mn></mrow></msub><mo>,</mo><mo>…</mo></math> é <strong>também uma cadeia de Markov</strong>, com</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>m</mi></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>i</mi><mo>}</mo><mo>=</mo><mfrac><mrow><msub><mi>π</mi><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></mrow><msub><mi>π</mi><mi>i</mi></msub></mfrac></mrow></math></div>
+</div>
+
+<div class="bloco def">
+  <h4><span class="tit">Reversível no tempo</span><span class="pg">livro 259</span></h4>
+  <p>A cadeia é <strong>reversível no tempo</strong> se <math><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> para todos <math><mi>i</mi><mo>,</mo><mi>j</mi></math>, o que equivale às <strong>equações de balanço detalhado</strong></p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mspace width="1.4em"/><mtext>para todos</mtext><mspace width="0.4em"/><mi>i</mi><mo>,</mo><mi>j</mi></mrow></math><span class="num">(4.21)</span></div>
+  <p>Interpretação: <strong>a taxa de transições de <math><mi>i</mi></math> para <math><mi>j</mi></math> iguala a taxa de <math><mi>j</mi></math> para <math><mi>i</mi></math></strong>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Condição suficiente — e o atalho para <math><mi>π</mi></math></span><span class="pg">livro 259–260</span></h4>
+  <p>Se existem números <math><msub><mi>x</mi><mi>i</mi></msub><mo>⩾</mo><mn>0</mn></math> tais que</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>x</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>x</mi><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mspace width="0.8em"/><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><mspace width="1.4em"/><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow></math><span class="num">(4.22)</span></div>
+  <p>então a cadeia <strong>é reversível</strong> e <math><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><msub><mi>π</mi><mi>i</mi></msub></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Cadeia de nascimento e morte em <math><mo>{</mo><mn>0</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>M</mi><mo>}</mo></math></span><span class="pg">livro 260–261</span></h4>
+  <p><strong>Modelo:</strong> <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></math> para <math><mn>0</mn><mo>&lt;</mo><mi>i</mi><mo>&lt;</mo><mi>M</mi></math>, <math><msub><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>α</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>0</mn></mrow></msub></math>, <math><msub><mi>P</mi><mrow><mi>M</mi><mo>,</mo><mi>M</mi></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>M</mi></msub><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mi>M</mi><mo>,</mo><mi>M</mi><mo>−</mo><mn>1</mn></mrow></msub></math>.</p>
+  <p><strong>Toda cadeia desse tipo é reversível</strong> (entre duas transições <math><mi>i</mi><mo>→</mo><mi>i</mi><mo>+</mo><mn>1</mn></math> há necessariamente uma <math><mi>i</mi><mo>+</mo><mn>1</mn><mo>→</mo><mi>i</mi></math>), e o balanço detalhado <math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><msub><mi>π</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>)</mo></math> dá</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>α</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>⋯</mo><msub><mi>α</mi><mn>0</mn></msub></mrow><mrow><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mi>i</mi></msub><mo>)</mo><mo>⋯</mo><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mn>1</mn></msub><mo>)</mo></mrow></mfrac><msub><mi>π</mi><mn>0</mn></msub><mo>,</mo><mspace width="1em"/><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><msup><mrow><mo>[</mo><mn>1</mn><mo>+</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><mfrac><mrow><msub><mi>α</mi><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>⋯</mo><msub><mi>α</mi><mn>0</mn></msub></mrow><mrow><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mi>j</mi></msub><mo>)</mo><mo>⋯</mo><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mn>1</mn></msub><mo>)</mo></mrow></mfrac><mo>]</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow></math><span class="num">(4.23–4.24)</span></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Caminhada aleatória num grafo com pesos</span><span class="pg">livro 262–263</span></h4>
+  <p><strong>Modelo:</strong> grafo <strong>conexo</strong>, peso <math><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>w</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mo>⩾</mo><mn>0</mn></math> em cada aresta (0 se não há aresta), e <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>/</mo><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>. A cadeia é <strong>reversível</strong>, com</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></mfrac></mrow></math></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Condição necessária, e o Teorema 4.2 (Kolmogorov)</span><span class="pg">livro 264</span></h4>
+  <p><strong>Necessária:</strong> para reversibilidade é preciso que</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><msub><mi>P</mi><mrow><mi>k</mi><mi>j</mi></mrow></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>k</mi></mrow></msub><msub><mi>P</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mspace width="1.2em"/><mtext>para todos</mtext><mspace width="0.4em"/><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>k</mi></mrow></math><span class="num">(4.25)</span></div>
+  <p><strong>Teorema 4.2.</strong> Uma cadeia estacionária para a qual <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>0</mn></math> sempre que <math><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>0</mn></math> é <strong>reversível se e somente se</strong>, partindo de <math><mi>i</mi></math>, todo caminho de volta a <math><mi>i</mi></math> tem a mesma probabilidade que o caminho invertido, isto é</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub></mrow></msub><msub><mi>P</mi><mrow><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><msub><mi>i</mi><mn>2</mn></msub></mrow></msub><mo>⋯</mo><msub><mi>P</mi><mrow><msub><mi>i</mi><mi>k</mi></msub><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub></mrow></msub><msub><mi>P</mi><mrow><msub><mi>i</mi><mi>k</mi></msub><mo>,</mo><msub><mi>i</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></msub><mo>⋯</mo><msub><mi>P</mi><mrow><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mi>i</mi></mrow></msub></mrow></math><span class="num">(4.26)</span></div>
+  <p>para todos os estados <math><mi>i</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub></math>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Proposição 4.9 — adivinhar a cadeia reversa</span><span class="pg">livro 267</span></h4>
+  <p><strong>Hipótese:</strong> cadeia <strong>irredutível</strong> com transições <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>. Se for possível achar números <strong>positivos</strong> <math><msub><mi>π</mi><mi>i</mi></msub></math> somando 1 e uma <strong>matriz estocástica</strong> <math><mi mathvariant="bold">Q</mi><mo>=</mo><mo>[</mo><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>]</mo></math> tais que</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub><msub><mi>Q</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></mrow></math><span class="num">(4.29)</span></div>
+  <p>então os <math><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> são as transições da <strong>cadeia reversa</strong> e os <math><msub><mi>π</mi><mi>i</mi></msub></math> são as estacionárias <strong>das duas</strong>.</p>
+</div>
+
+<h2>4.9 · Monte Carlo via cadeias de Markov</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">O problema</span><span class="pg">livro 269</span></h4>
+  <p>Quer-se <math><mi>θ</mi><mo>=</mo><mi>E</mi><mo>[</mo><mi>h</mi><mo>(</mo><mi mathvariant="bold">X</mi><mo>)</mo><mo>]</mo><mo>=</mo><msub><mo>∑</mo><mi>j</mi></msub><mi>h</mi><mo>(</mo><msub><mi mathvariant="bold">x</mi><mi>j</mi></msub><mo>)</mo><mi>P</mi><mo>{</mo><mi mathvariant="bold">X</mi><mo>=</mo><msub><mi mathvariant="bold">x</mi><mi>j</mi></msub><mo>}</mo></math> quando <math><mi>P</mi><mo>{</mo><mi mathvariant="bold">X</mi><mo>=</mo><msub><mi mathvariant="bold">x</mi><mi>j</mi></msub><mo>}</mo><mo>=</mo><mi>C</mi><msub><mi>b</mi><mi>j</mi></msub></math> com <math><mi>C</mi></math> <strong>não computável</strong>. Gerando os estados sucessivos de uma cadeia cujas <strong>estacionárias são</strong> <math><mi>P</mi><mo>{</mo><mi mathvariant="bold">X</mi><mo>=</mo><msub><mi mathvariant="bold">x</mi><mi>j</mi></msub><mo>}</mo></math>, a Proposição 4.6 garante</p>
+  <div class="eq"><math display="block"><mrow><munder><mo movablelimits="false">lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mfrac><mrow><mi>h</mi><mo>(</mo><msub><mi mathvariant="bold">X</mi><mi>i</mi></msub><mo>)</mo></mrow><mi>n</mi></mfrac><mo>=</mo><mi>θ</mi></mrow></math><span class="num">(4.30)</span></div>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Algoritmo de Hastings–Metropolis</span><span class="pg">livro 269–270</span></h4>
+  <p><strong>Dados:</strong> <math><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>&gt;</mo><mn>0</mn></math> com <math><mi>B</mi><mo>=</mo><mo>∑</mo><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>&lt;</mo><mi>∞</mi></math>, meta <math><mi>π</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>/</mo><mi>B</mi></math>; e uma matriz de transição <strong>irredutível</strong> qualquer <math><mi mathvariant="bold">Q</mi><mo>=</mo><mo>[</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>]</mo></math> (a <em>proposta</em>).</p>
+  <p><strong>Passo:</strong> em <math><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>i</mi></math>, gere <math><mi>Y</mi></math> com <math><mi>P</mi><mo>{</mo><mi>Y</mi><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math>; se <math><mi>Y</mi><mo>=</mo><mi>j</mi></math>, faça <math><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>j</mi></math> com probabilidade <math><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math> e <math><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>i</mi></math> com <math><mn>1</mn><mo>−</mo><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math>, onde</p>
+  <div class="eq"><math display="block"><mrow><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>=</mo><mo movablelimits="false">min</mo><mrow><mo>(</mo><mfrac><mrow><mi>π</mi><mo>(</mo><mi>j</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>j</mi><mo>,</mo><mi>i</mi><mo>)</mo></mrow><mrow><mi>π</mi><mo>(</mo><mi>i</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></mrow></mfrac><mo>,</mo><mn>1</mn><mo>)</mo></mrow><mo>=</mo><mo movablelimits="false">min</mo><mrow><mo>(</mo><mfrac><mrow><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>j</mi><mo>,</mo><mi>i</mi><mo>)</mo></mrow><mrow><mi>b</mi><mo>(</mo><mi>i</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></mrow></mfrac><mo>,</mo><mn>1</mn><mo>)</mo></mrow></mrow></math><span class="num">(4.32)</span></div>
+  <p><strong>Resultado:</strong> a cadeia assim construída é <strong>reversível no tempo</strong> e tem <math><mi>π</mi><mo>(</mo><mi>j</mi><mo>)</mo></math> como estacionárias. O valor de <math><mi>B</mi></math> <strong>não é necessário</strong>.</p>
+  <p class="miudo">As transições resultantes são <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math> para <math><mi>j</mi><mo>≠</mo><mi>i</mi></math>, e <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>i</mi><mo>)</mo><mo>+</mo><msub><mo>∑</mo><mrow><mi>k</mi><mo>≠</mo><mi>i</mi></mrow></msub><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>k</mi><mo>)</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>k</mi><mo>)</mo><mo>)</mo></math>. Basta um <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math> para que as estacionárias sejam também limites.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Amostrador de Gibbs</span><span class="pg">livro 271–272</span></h4>
+  <p><strong>Hipótese:</strong> <math><mi mathvariant="bold">X</mi><mo>=</mo><mo>(</mo><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo></math> com massa <math><mi>p</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mo>=</mo><mi>C</mi><mi>g</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo></math>, e sabe-se gerar de cada <strong>condicional completa</strong> <math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mi>x</mi><mo>|</mo><msub><mi>X</mi><mi>j</mi></msub><mo>=</mo><msub><mi>x</mi><mi>j</mi></msub><mo>,</mo><mi>j</mi><mo>≠</mo><mi>i</mi><mo>}</mo></math>.</p>
+  <p><strong>Passo:</strong> sorteie a coordenada <math><mi>i</mi></math> uniformemente em <math><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>n</mi></math>, gere <math><mi>X</mi></math> da condicional completa e proponha <math><mi mathvariant="bold">y</mi><mo>=</mo><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>x</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><mi>X</mi><mo>,</mo><msub><mi>x</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo>)</mo></math>. É Hastings–Metropolis com essa proposta, e</p>
+  <div class="eq"><math display="block"><mrow><mi>α</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>,</mo><mi mathvariant="bold">y</mi><mo>)</mo><mo>=</mo><mo movablelimits="false">min</mo><mrow><mo>(</mo><mfrac><mrow><mi>p</mi><mo>(</mo><mi mathvariant="bold">y</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi mathvariant="bold">y</mi><mo>,</mo><mi mathvariant="bold">x</mi><mo>)</mo></mrow><mrow><mi>p</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>,</mo><mi mathvariant="bold">y</mi><mo>)</mo></mrow></mfrac><mo>,</mo><mn>1</mn><mo>)</mo></mrow><mo>=</mo><mn>1</mn></mrow></math></div>
+  <p>— <strong>o candidato é sempre aceito</strong>. Vale também no caso contínuo.</p>
+</div>
+
+<h2>4.10 · Processos de decisão de Markov</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Modelo e política</span><span class="pg">livro 273–274</span></h4>
+  <p><math><mi>M</mi></math> estados; após observar o estado escolhe-se uma <strong>ação</strong> num conjunto finito <math><mi>A</mi></math>, e</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>,</mo><msub><mi>a</mi><mn>0</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>i</mi><mo>,</mo><msub><mi>a</mi><mi>n</mi></msub><mo>=</mo><mi>a</mi><mo>}</mo><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>(</mo><mi>a</mi><mo>)</mo></mrow></math></div>
+  <p>Uma <strong>política</strong> <math><mi>β</mi><mo>=</mo><mo>{</mo><msub><mi>β</mi><mi>i</mi></msub><mo>(</mo><mi>a</mi><mo>)</mo><mo>}</mo></math> escolhe a ação <math><mi>a</mi></math> no estado <math><mi>i</mi></math> com probabilidade <math><msub><mi>β</mi><mi>i</mi></msub><mo>(</mo><mi>a</mi><mo>)</mo></math> — depende só do estado atual, mas pode ser aleatorizada. <strong>Hipótese do capítulo:</strong> sob qualquer <math><mi>β</mi></math> a cadeia resultante é <strong>ergódica</strong>.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Equivalência política ⟺ vetor <math><mo>(</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>)</mo></math></span><span class="pg">livro 274–276</span></h4>
+  <p>Com <math><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>=</mo><msub><mo movablelimits="false">lim</mo><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></msub><msub><mi>P</mi><mi>β</mi></msub><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>i</mi><mo>,</mo><msub><mi>a</mi><mi>n</mi></msub><mo>=</mo><mi>a</mi><mo>}</mo></math>, o vetor <math><mi>π</mi><mo>=</mo><mo>(</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>)</mo></math> satisfaz</p>
+  <div class="eq"><math display="block"><mrow><mtext>(i)</mtext><mspace width="0.4em"/><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>⩾</mo><mn>0</mn><mo>;</mo><mspace width="1em"/><mtext>(ii)</mtext><mspace width="0.4em"/><munder><mo>∑</mo><mi>i</mi></munder><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>=</mo><mn>1</mn><mo>;</mo><mspace width="1em"/><mtext>(iii)</mtext><mspace width="0.4em"/><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>j</mi><mi>a</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>(</mo><mi>a</mi><mo>)</mo></mrow></math><span class="num">(4.33)</span></div>
+  <p><strong>Recíproca:</strong> todo vetor que satisfaz (i)–(iii) é o vetor de probabilidades limite da política <math><msub><mi>β</mi><mi>i</mi></msub><mo>(</mo><mi>a</mi><mo>)</mo><mo>=</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>/</mo><msub><mo>∑</mo><mi>a</mi></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub></math>.</p>
+  <p>Se a ação <math><mi>a</mi></math> no estado <math><mi>i</mi></math> rende <math><mi>R</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>a</mi><mo>)</mo></math>, a recompensa média por unidade de tempo sob <math><mi>β</mi></math> é <math><msub><mo>∑</mo><mi>i</mi></msub><msub><mo>∑</mo><mi>a</mi></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mi>R</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>a</mi><mo>)</mo></math>, e a política ótima resolve o <strong>programa linear</strong></p>
+  <div class="eq"><math display="block"><mrow><munder><mo movablelimits="false">max</mo><mi>π</mi></munder><munder><mo>∑</mo><mi>i</mi></munder><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mi>R</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>a</mi><mo>)</mo><mspace width="1em"/><mtext>sujeito a (i), (ii), (iii)</mtext></mrow></math><span class="num">(4.34)</span></div>
+  <p>com <math><msubsup><mi>β</mi><mi>i</mi><mo>*</mo></msubsup><mo>(</mo><mi>a</mi><mo>)</mo><mo>=</mo><msubsup><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow><mo>*</mo></msubsup><mo>/</mo><msub><mo>∑</mo><mi>a</mi></msub><msubsup><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow><mo>*</mo></msubsup></math>.</p>
+</div>
+
+<div class="bloco obs">
+  <h4><span class="tit">Observações (i)–(ii)</span><span class="pg">livro 276–277</span></h4>
+  <ul class="compacta">
+    <li>(i) Existe <math><msup><mi>π</mi><mo>*</mo></msup></math> ótimo em que, para cada <math><mi>i</mi></math>, <math><msubsup><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow><mo>*</mo></msubsup></math> é zero para todas as ações menos uma: <strong>a política ótima é determinística</strong>.</li>
+    <li>(ii) Restrições sobre a classe de políticas entram como linhas do programa linear — p. ex. "estar no estado 1 menos de <math><mn>100</mn><mi>α</mi><mo>%</mo></math> do tempo" é <math><msub><mo>∑</mo><mi>a</mi></msub><msub><mi>π</mi><mrow><mn>1</mn><mi>a</mi></mrow></msub><mo>⩽</mo><mi>α</mi></math>.</li>
+  </ul>
+</div>
+
+<h2>4.11 · Cadeias de Markov ocultas</h2>
+
+<div class="bloco def">
+  <h4><span class="tit">Modelo</span><span class="pg">livro 277</span></h4>
+  <p>Cadeia <math><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>,</mo><mi>n</mi><mo>⩾</mo><mn>1</mn><mo>}</mo></math> com transições <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub></math> e distribuição inicial <math><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo></math>. A cada entrada num estado é emitido um <strong>sinal</strong> de um conjunto finito <math><mi mathvariant="script">S</mi></math>: se a cadeia entra em <math><mi>j</mi></math>, o sinal é <math><mi>s</mi></math> com probabilidade <math><mi>p</mi><mo>(</mo><mi>s</mi><mo>|</mo><mi>j</mi><mo>)</mo></math>, <strong>independentemente</strong> de estados e sinais anteriores:</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>S</mi><mi>n</mi></msub><mo>=</mo><mi>s</mi><mo>|</mo><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>S</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>S</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><mi>p</mi><mo>(</mo><mi>s</mi><mo>|</mo><mi>j</mi><mo>)</mo></mrow></math></div>
+  <p>Observa-se <math><msub><mi>S</mi><mn>1</mn></msub><mo>,</mo><msub><mi>S</mi><mn>2</mn></msub><mo>,</mo><mo>…</mo></math>; os estados ficam <strong>ocultos</strong>. <math><mo>{</mo><msub><mi>S</mi><mi>n</mi></msub><mo>}</mo></math> <em>não</em> é cadeia de Markov, mas, <strong>dado <math><msub><mi>X</mi><mi>n</mi></msub></math></strong>, o futuro <math><msub><mi>S</mi><mi>n</mi></msub><mo>,</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mo>…</mo></math> é independente do passado.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Recursão <em>forward</em></span><span class="pg">livro 278–279</span></h4>
+  <p>Com <math><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>=</mo><mo>(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>s</mi><mi>n</mi></msub><mo>)</mo></math> e <math><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo></math>:</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>p</mi><mo>(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>|</mo><mi>j</mi><mo>)</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>F</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>i</mi><mo>)</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>,</mo><mspace width="1.2em"/><msub><mi>F</mi><mn>1</mn></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><msub><mi>p</mi><mi>i</mi></msub><mi>p</mi><mo>(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>|</mo><mi>i</mi><mo>)</mo></mrow></math><span class="num">(4.35)</span></div>
+  <p>e daí <math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo><mo>=</mo><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>/</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>i</mi><mo>)</mo></math> e <math><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo><mo>=</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>i</mi><mo>)</mo></math>.</p>
+  <p class="miudo">Custo: <math><mi>n</mi><mi>N</mi></math> quantidades, cada uma somando <math><mi>N</mi></math> termos — contra <math><msup><mi>N</mi><mi>n</mi></msup></math> termos se condicionasse em toda a trajetória.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Recursão <em>backward</em> e a combinação das duas</span><span class="pg">livro 280–281</span></h4>
+  <p>Com <math><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi>S</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>s</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>S</mi><mi>n</mi></msub><mo>=</mo><msub><mi>s</mi><mi>n</mi></msub><mo>|</mo><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><mi>i</mi><mo>}</mo></math>:</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><mi>p</mi><mo>(</mo><msub><mi>s</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>|</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>,</mo><mspace width="1em"/><msub><mi>B</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mi>p</mi><mo>(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>|</mo><mi>j</mi><mo>)</mo></mrow></math><span class="num">(4.36)</span></div>
+  <p>Como <math><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><msub><mi>F</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></math>, vale para <strong>qualquer</strong> <math><mi>k</mi><mo>⩽</mo><mi>n</mi></math>:</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>F</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></mrow></math></div>
+</div>
+
+<h3>4.11.1 Predizer os estados</h3>
+
+<div class="bloco res">
+  <h4><span class="tit">Estado a estado</span><span class="pg">livro 281</span></h4>
+  <p>Para maximizar o <strong>número esperado de estados corretamente preditos</strong>, prediga <math><msub><mi>X</mi><mi>k</mi></msub></math> pelo <math><mi>j</mi></math> que maximiza</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo><mo>=</mo><mfrac><mrow><msub><mi>F</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></mrow><mrow><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>F</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></mrow></mfrac></mrow></math></div>
+  <p>isto é, a <strong>moda</strong> da distribuição condicional de <math><msub><mi>X</mi><mi>k</mi></msub></math> dados os sinais.</p>
+</div>
+
+<div class="bloco res">
+  <h4><span class="tit">Algoritmo de Viterbi — a trajetória inteira</span><span class="pg">livro 282–283</span></h4>
+  <p>Para achar a sequência <math><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>n</mi></msub></math> que maximiza <math><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">X</mi><mi>n</mi></msub><mo>=</mo><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>n</mi></msub><mo>)</mo><mo>|</mo><msub><mi mathvariant="bold">S</mi><mi>n</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo></math>, defina</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>V</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><munder><mo movablelimits="false">max</mo><mrow><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></munder><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">X</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>,</mo><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><mi>j</mi><mo>,</mo><msub><mi mathvariant="bold">S</mi><mi>k</mi></msub><mo>=</mo><msub><mi mathvariant="bold">s</mi><mi>k</mi></msub><mo>}</mo></mrow></math></div>
+  <p>que satisfaz a recursão</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>V</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>p</mi><mo>(</mo><msub><mi>s</mi><mi>k</mi></msub><mo>|</mo><mi>j</mi><mo>)</mo><munder><mo movablelimits="false">max</mo><mi>i</mi></munder><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><msub><mi>V</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>,</mo><mspace width="1.2em"/><msub><mi>V</mi><mn>1</mn></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><msub><mi>p</mi><mi>j</mi></msub><mi>p</mi><mo>(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>|</mo><mi>j</mi><mo>)</mo></mrow></math><span class="num">(4.37)</span></div>
+  <p>Guardando, para cada <math><mi>k</mi></math> e <math><mi>j</mi></math>, o <math><mi>i</mi></math> que atinge o máximo, a sequência ótima se reconstrói de trás para a frente a partir do <math><mi>j</mi></math> que maximiza <math><msub><mi>V</mi><mi>n</mi></msub></math>.</p>
+</div>
+
+<h2>Apêndice · resultados dos exercícios que vale ter à mão</h2>
+
+<div class="bloco obs">
+  <h4><span class="tit">Fora do texto principal — vêm da lista de exercícios</span></h4>
+  <ul class="compacta">
+    <li><strong>Matriz duplamente estocástica</strong> (Exerc. 20, livro 286): se <math><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>1</mn></math> para todo <math><mi>j</mi></math> e a cadeia é irredutível com <math><mi>M</mi><mo>+</mo><mn>1</mn></math> estados, então <math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><mo>(</mo><mi>M</mi><mo>+</mo><mn>1</mn><mo>)</mo></math>.</li>
+    <li><strong>Duração da ruína</strong> (Exerc. 59): <math><msub><mi>M</mi><mi>i</mi></msub><mo>=</mo><mi>i</mi><mo>(</mo><mi>N</mi><mo>−</mo><mi>i</mi><mo>)</mo></math> se <math><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>; caso contrário <math><msub><mi>M</mi><mi>i</mi></msub><mo>=</mo><mfrac><mi>i</mi><mrow><mi>q</mi><mo>−</mo><mi>p</mi></mrow></mfrac><mo>−</mo><mfrac><mi>N</mi><mrow><mi>q</mi><mo>−</mo><mi>p</mi></mrow></mfrac><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>i</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>N</mi></msup></mrow></mfrac></math>.</li>
+    <li><strong>Cadeia de dois estados</strong> (Exerc. 6): para <math><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn><mo>−</mo><mi>a</mi></mtd><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd><mtd><mn>1</mn><mo>−</mo><mi>b</mi></mtd></mtr></mtable><mo>]</mo></mrow></math>, <math><mi>π</mi><mo>=</mo><mo>(</mo><mi>b</mi><mo>,</mo><mi>a</mi><mo>)</mo><mo>/</mo><mo>(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>)</mo></math> e o segundo autovalor é <math><mn>1</mn><mo>−</mo><mi>a</mi><mo>−</mo><mi>b</mi></math>, que rege a velocidade de convergência.</li>
+    <li><strong>Critério de Kolmogorov reduzido</strong> (Exerc. 72): se o espaço é finito e <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math> para <em>todos</em> os pares, basta verificar (4.25) — os ciclos de comprimento 3.</li>
+    <li><strong>Cadeia dos dois últimos estados</strong> (Exerc. 47): <math><msub><mi>Y</mi><mi>n</mi></msub><mo>=</mo><mo>(</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo></math> é Markov, e <math><msub><mo movablelimits="false">lim</mo><mi>n</mi></msub><mi>P</mi><mo>{</mo><msub><mi>Y</mi><mi>n</mi></msub><mo>=</mo><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>}</mo><mo>=</mo><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>.</li>
+  </ul>
+</div>
+
+<div class="nota">
+  <p>Enunciados condensados de Ross, S. M., <em>Introduction to Probability Models</em>, 13ª ed., Academic Press / Elsevier, 2024 — capítulo 4, págs. 201–299, para estudo pessoal. A numeração de equações, proposições, teoremas e corolários é a do livro; as páginas indicadas em cada caixa também. Demonstrações, exemplos e exercícios resolvidos: <a href="04-00-cadeias-de-markov.html">aula do capítulo 4</a>.</p>
+</div>
+
+<nav class="fim">
+  <span><a href="04-00-cadeias-de-markov.html">← Aula completa</a></span>
+  <span><a href="04-99-guia-de-prova.html">Guia de prova (com exemplos) →</a></span>
+</nav>
+
+</div>
+</body>
+</html>

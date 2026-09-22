@@ -18,12 +18,16 @@ de renderização.
 |---|---|---|
 | 4 | [Cadeias de Markov](estudo/cap04/04-00-cadeias-de-markov.html) | A propriedade de Markov e a matriz `P`; Chapman–Kolmogorov com demonstração e `P⁽ⁿ⁾ = Pⁿ`; a cadeia `Wₙ` para "entrar num conjunto até o tempo m"; classes, recorrência e transiência (Prop. 4.1, Cor. 4.2, com as demonstrações) e o **passeio aleatório via Stirling**; proporções de longo prazo, `πⱼ = 1/mⱼ` pela lei forte, Teorema 4.1 e as três leituras de `π` (proporção, estacionária, limite); ruína do jogador, estados transientes `S = (I − P_T)⁻¹`, ramificação, reversibilidade e o critério de Kolmogorov, Hastings–Metropolis e Gibbs, processos de decisão e cadeias ocultas (forward, backward, Viterbi). 37 exemplos, 24 demonstrações, 15 cartões de recall e 18 blocos de exercícios resolvidos. |
 
-Além da aula, o capítulo 4 tem uma
-[**folha de consulta para a prova**](estudo/cap04/04-99-guia-de-prova.html):
-a matéria inteira condensada — mapa de decisão "o que a questão pede × que
-ferramenta usar", enunciados, as demonstrações curtas, um exemplo numérico por
-ideia, "fato ou fake" e as fórmulas de bolso. Abre em uma coluna na tela e sai
-em **duas colunas A4** (6 páginas) ao imprimir com Ctrl+P.
+Além da aula, o capítulo 4 tem **duas folhas de consulta**, ambas em duas
+colunas A4 ao imprimir com Ctrl+P:
+
+- [**Definições e resultados**](estudo/cap04/04-98-definicoes-e-resultados.html)
+  (5 páginas) — só os enunciados, do 4.1 ao 4.11, na ordem do livro e com as
+  hipóteses explícitas; cada caixa traz a página do Ross. Sem exemplo e sem
+  exercício: é a cola para consultar no meio de uma questão.
+- [**Guia de prova**](estudo/cap04/04-99-guia-de-prova.html) (6 páginas) —
+  mapa de decisão "o que a questão pede × que ferramenta usar", receitas, um
+  exemplo numérico por ideia, "fato ou fake" e as fórmulas de bolso.
 
 Cada aula traz o objetivo, o conceito com as derivações, os **enunciados,
 demonstrações e exemplos em caixas de cores distintas** (azul, verde e âmbar),
@@ -43,7 +47,8 @@ gabarito comentado. **Todo resultado numérico foi recalculado**, não copiado.
 │   │   └── guia.css        layout da folha de consulta (A4, duas colunas)
 │   └── capNN/
 │       ├── NN-00-titulo.html      a aula
-│       ├── NN-99-guia-de-prova.html   a folha de consulta
+│       ├── NN-98-definicoes-e-resultados.html   folha só de enunciados
+│       ├── NN-99-guia-de-prova.html             guia de prova
 │       └── img/            figuras recortadas do PDF
 └── ferramentas/
     ├── extrair.py          texto, páginas e recortes do PDF
