@@ -27,7 +27,7 @@ Não há páginas faltando.
 | 1 | Introduction to Probability Theory | 3 | 19 | — (pré-requisito) |
 | 2 | Random Variables | 24 | 40 | — (pré-requisito) |
 | 3 | Conditional Probability and Conditional Expectation | 103 | 119 | — (pré-requisito) |
-| 4 | Markov Chains | 201 | 217 | ✅ `estudo/cap04/04-00-cadeias-de-markov.html` |
+| 4 | Markov Chains | 201 | 217 | ✅ aula `estudo/cap04/04-00-cadeias-de-markov.html` + folha `04-99-guia-de-prova.html` |
 | 5 | The Exponential Distribution and the Poisson Process | 300 | 316 | — |
 | 6 | Continuous-Time Markov Chains | 381 | 397 | — |
 | 7 | Renewal Theory and Its Applications | 436 | 452 | — |
@@ -116,6 +116,58 @@ Dependências: `pymupdf` (instalado). Python 3.13.
 O cap. 4 tem uma única figura (Fig. 4.1, PDF p. 278, recorte
 `115 478 305 590`). Os demais diagramas de estados são SVG desenhados na aula.
 
+## Folha de consulta (guia de prova)
+
+Cada capítulo pode ter, além da aula, uma **folha de consulta** para levar
+impressa na prova: `capNN/NN-99-guia-de-prova.html`. O modelo foi um guia de
+MS512 que o usuário trouxe — A4, duas colunas, densa, caixas coloridas com
+barra de título.
+
+**Ela não usa `estilo.css`.** Carrega `tema.css` + **`assets/guia.css`**, que é
+o layout próprio da folha: uma coluna na tela, `columns: 2` A4 na impressão,
+corpo 8,2 pt. Cinco caixas, cada uma com `--cor`/`--cor-fundo` próprias:
+
+| Classe | Cor | Uso |
+|---|---|---|
+| `.bloco.teo` | azul-índigo | definição, teorema, proposição, corolário |
+| `.bloco.dem` | verde-musgo | por que é verdade (demonstração curta) |
+| `.bloco.ex` | âmbar | exemplo numérico de fixação |
+| `.bloco.rec` | carmim | receita: passo a passo para a prova |
+| `.bloco.arm` | roxo-uva | armadilha, "fato ou fake", erro clássico |
+
+O título da caixa é um `<h4>` (barra sólida, texto em `--menu-texto`). Outras
+peças: `.chave` (destaque carmim inline), `.miudo` (corpo menor para o detalhe),
+`.rot-e`/`.rot-s` (Enunciado./Solução.), `.qed`, `.so-tela` (aviso que some no
+papel), `.legenda` (a tira de cores do cabeçalho).
+
+**Conteúdo do cap. 4** (o molde para os próximos): mapa de decisão "o que a
+questão pede × que ferramenta usar" → montar a cadeia → *n* passos → classificação
+→ longo prazo → absorção → ramificação → reversibilidade → MCMC → MDP/HMM →
+"fato ou fake" + checklist → fórmulas de bolso. Poucos exercícios, muitos
+exemplos curtos: foi o pedido explícito do usuário ("não precisa ter tantos
+exercícios, nem uma prova toda corrigida").
+
+### Gerar o PDF
+
+O Chrome está instalado e faz a impressão sem abrir janela:
+
+```bash
+python -m http.server 8765            # servir a pasta (ou use .claude/launch.json)
+"/c/Program Files/Google/Chrome/Application/chrome.exe" --headless=new --disable-gpu   --no-pdf-header-footer --print-to-pdf="estudo/cap04/04-99-guia-de-prova.pdf"   "http://localhost:8765/estudo/cap04/04-99-guia-de-prova.html"
+```
+
+Precisa ser por **http://**, não `file://` (o CSS relativo não carrega no
+headless a partir de file). O PDF fica **fora do git** (`*.pdf` no
+`.gitignore`) — é artefato derivado, regenerável no comando acima. O do cap. 4
+tem 6 páginas A4.
+
+**Armadilha da impressão:** no papel nada rola. `overflow-x: auto` (código,
+`.rolagem`, `math[display="block"]`) vira *conteúdo cortado* no PDF. O
+`@media print` do `guia.css` já neutraliza os três, mas **equação larga demais
+continua vazando para fora da coluna** — a correção é quebrar a equação em duas
+linhas ou encurtar os rótulos, não mexer no CSS. Confira sempre o PDF página a
+página (renderize com pymupdf e leia as imagens).
+
 ## Convenção de nomes
 
 Igual ao MULTI. **Números sempre com dois dígitos**, minúsculas, sem acento,
@@ -125,13 +177,16 @@ hífen entre palavras.
 |---|---|---|
 | Pasta do capítulo | `capNN/` | `cap04/` |
 | Página do capítulo inteiro | `NN-00-titulo.html` | `cap04/04-00-cadeias-de-markov.html` |
+| Folha de consulta do capítulo | `NN-99-guia-de-prova.html` (`99` = apêndice, ordena por último) | `cap04/04-99-guia-de-prova.html` |
 | Figura | `img/fig-NN-MM.png` | `cap04/img/fig-04-01.png` |
 
 Ao criar uma aula nova, acrescentar o link em **três** lugares de
 `estudo/index.html`: a lista da barra lateral (trocar o `<li class="adiante">`
-por um `<li>` com link), o cartão em "Aulas disponíveis" (trocar o
+por um `<li>` com link — com folha de consulta, vira `<details class="sub">`
+com os dois links, como no cap. 4), o cartão em "Aulas disponíveis" (trocar o
 `<span class="cartao pendente">` por `<a class="cartao">`) e a linha da tabela
-da seção **"Menu"**. E acertar o `.nav-rodape` (anterior/próxima) da aula
+da seção **"Menu"**. A folha de consulta ganha ainda um cartão na seção
+**"Folhas de consulta"**, e um link no `.extras` e no `.nav-rodape` da aula. E acertar o `.nav-rodape` (anterior/próxima) da aula
 vizinha — o do cap. 4 hoje diz "Cap. 5 … (em breve)" sem link.
 
 ## Layout das páginas
@@ -205,9 +260,12 @@ ESTOCASTICOS/
     ├── index.html          painel com o percurso
     ├── assets/
     │   ├── tema.css        cores, fontes, medidas (vermelho-carmim)
-    │   └── estilo.css      estrutura e layout
+    │   ├── estilo.css      estrutura e layout das aulas
+    │   └── guia.css        layout da folha de consulta (A4, 2 colunas)
     └── cap04/
         ├── 04-00-cadeias-de-markov.html
+        ├── 04-99-guia-de-prova.html
+        ├── 04-99-guia-de-prova.pdf   (fora do git: gerado pelo Chrome headless)
         └── img/fig-04-01.png
 ```
 
@@ -218,7 +276,10 @@ Pages servir o site, ativar em Settings → Pages → branch `main`, pasta `/`
 
 ## Progresso
 
-**Capítulo 4 pronto** (2026-09-11). Próximo: capítulo 5 (The Exponential
-Distribution and the Poisson Process, livro 300–380, PDF 316–396). Ao gerar,
-retomar os ganchos: falta de memória (usada no Ex. 4.43), e a distribuição de
-equilíbrio do Ex. 4.40 como aperitivo da renovação.
+**Capítulo 4 pronto** (2026-09-11): aula completa. **Folha de consulta do
+cap. 4 pronta** (2026-09-22): `04-99-guia-de-prova.html`, 6 páginas A4.
+
+Próximo: capítulo 5 (The Exponential Distribution and the Poisson Process,
+livro 300–380, PDF 316–396). Ao gerar, retomar os ganchos: falta de memória
+(usada no Ex. 4.43), e a distribuição de equilíbrio do Ex. 4.40 como aperitivo
+da renovação. Gerar **aula + folha** para cada capítulo daqui em diante.

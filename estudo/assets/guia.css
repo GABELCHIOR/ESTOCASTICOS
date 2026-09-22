@@ -1,0 +1,367 @@
+/* ==========================================================================
+   ESTOCASTICOS — folha de consulta (guia de prova)
+   --------------------------------------------------------------------------
+   Layout da folha densa: uma coluna na tela, DUAS COLUNAS A4 na impressão
+   (Ctrl+P → salvar em PDF). É autossuficiente de propósito: NÃO carrega
+   `estilo.css`, que é o layout das aulas (barra lateral fixa + coluna de
+   leitura de 46rem) e atrapalharia aqui.
+
+   Cores, fontes e medidas continuam vindo só de `tema.css` — nenhuma cor
+   literal neste arquivo. Única exceção tolerada: o bloco @media print, que
+   força fundo branco porque papel é branco.
+
+   As cinco caixas da folha e o que cada cor significa:
+     .teo  azul-índigo   definição, teorema, proposição, corolário
+     .dem  verde-musgo   demonstração / por que é verdade (curta)
+     .ex   âmbar         exemplo numérico de fixação
+     .rec  carmim        receita: o passo a passo para usar na prova
+     .arm  roxo-uva      armadilha, "fato ou fake", erro clássico
+   Cada uma define as próprias `--cor` / `--cor-fundo` e o resto do CSS lê
+   essas duas variáveis: para criar uma caixa nova, basta uma regra de duas
+   linhas.
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+
+.folha {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* ------------------------------------------------------------ cabeçalho -- */
+
+.topo-folha {
+  border-bottom: 2px solid var(--realce);
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+
+.migalha {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-fraco);
+  margin: 0 0 0.35rem;
+}
+
+.migalha a { color: inherit; }
+
+h1 {
+  font-size: 1.6rem;
+  line-height: 1.15;
+  margin: 0 0 0.25rem;
+  color: var(--realce);
+  font-weight: 700;
+}
+
+.sub {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--texto-fraco);
+  margin: 0;
+}
+
+/* legenda das cores, igual à do guia que serviu de modelo */
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.7rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  color: var(--texto-fraco);
+}
+
+.legenda span { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+.legenda i {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.legenda .l-teo { background: var(--teorema); }
+.legenda .l-dem { background: var(--demo); }
+.legenda .l-ex  { background: var(--exemplo); }
+.legenda .l-rec { background: var(--realce); }
+.legenda .l-arm { background: var(--ambar); }
+
+/* aviso que só faz sentido na tela (some no papel) */
+.so-tela {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--texto-fraco);
+  background: var(--fundo-suave);
+  border: 1px dashed var(--linha);
+  border-radius: 4px;
+  padding: 0.5rem 0.7rem;
+  margin: 1rem 0 0;
+}
+
+/* -------------------------------------------------------------- títulos -- */
+
+h2 {
+  font-size: 1.02rem;
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 1.5rem 0 0.6rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--linha);
+  color: var(--realce);
+}
+
+h3 {
+  font-size: 0.86rem;
+  font-family: var(--sans);
+  font-weight: 700;
+  margin: 1rem 0 0.4rem;
+  color: var(--realce-2);
+}
+
+p { margin: 0 0 0.55rem; }
+
+a { color: var(--realce); text-underline-offset: 2px; }
+
+ul, ol { margin: 0 0 0.6rem; padding-left: 1.1rem; }
+li { margin-bottom: 0.18rem; }
+
+ul.compacta { list-style: none; padding-left: 0; }
+ul.compacta > li { padding-left: 0.9rem; text-indent: -0.9rem; }
+
+em.en { font-style: italic; color: var(--texto-fraco); }
+
+.chave { color: var(--realce); font-weight: 700; }
+
+/* nota de rodapé de caixa: corpo menor, para o detalhe que não cabe */
+.miudo { font-size: 0.82em; color: var(--texto-fraco); }
+
+/* --------------------------------------------------------------- caixas -- */
+
+.bloco {
+  --cor: var(--linha);
+  --cor-fundo: var(--fundo-suave);
+  background: var(--cor-fundo);
+  border: 1px solid color-mix(in srgb, var(--cor) 32%, var(--linha));
+  border-radius: 4px;
+  margin: 0 0 0.75rem;
+  overflow: hidden;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.bloco > h4 {
+  margin: 0 0 0.55rem;
+  padding: 0.24rem 0.6rem;
+  background: var(--cor);
+  color: var(--menu-texto);
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.bloco > *:not(h4) { margin-left: 0.6rem; margin-right: 0.6rem; }
+.bloco > *:last-child { margin-bottom: 0.55rem; }
+
+.bloco.teo { --cor: var(--teorema); --cor-fundo: var(--teorema-fundo); }
+.bloco.dem { --cor: var(--demo);    --cor-fundo: var(--demo-fundo); }
+.bloco.ex  { --cor: var(--exemplo); --cor-fundo: var(--exemplo-fundo); }
+.bloco.rec { --cor: var(--realce);  --cor-fundo: color-mix(in srgb, var(--realce) 7%, var(--fundo-caixa)); }
+.bloco.arm { --cor: var(--ambar);   --cor-fundo: color-mix(in srgb, var(--ambar) 8%, var(--fundo-caixa)); }
+
+/* rótulos internos dos exemplos: "Enunciado." / "Solução." */
+.rot-e { color: var(--exemplo); font-weight: 700; }
+.rot-s { color: var(--demo);    font-weight: 700; }
+
+/* fim de demonstração */
+.qed { float: right; margin-left: 0.8rem; color: var(--demo); }
+
+/* ----------------------------------------------------------- matemática -- */
+
+math { font-size: 1em; }
+
+math[display="block"] {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 0.5rem auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.eq {
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+/* dentro de .eq a equação vira inline-block: assim o número da equação
+   fica ao lado dela, e não numa linha solta embaixo. */
+.eq math[display="block"] {
+  display: inline-block;
+  margin: 0.15rem 0;
+  vertical-align: middle;
+}
+
+.eq .num {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  color: var(--texto-fraco);
+  margin-left: 0.4rem;
+}
+
+/* --------------------------------------------------------------- tabelas -- */
+
+.rolagem { overflow-x: auto; margin: 0.5rem 0 0.7rem; break-inside: avoid; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 0.76rem;
+  background: var(--fundo-caixa);
+}
+
+caption {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  color: var(--texto-fraco);
+  text-align: left;
+  padding-bottom: 0.3rem;
+}
+
+th, td {
+  border: 1px solid var(--linha);
+  padding: 0.22rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--fundo-suave);
+  color: var(--realce);
+  font-weight: 700;
+}
+
+td.c, th.c { text-align: center; }
+
+tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--linha) 20%, transparent); }
+
+/* uma tabela dentro de caixa não leva fundo próprio */
+.bloco table { background: transparent; }
+.bloco tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--cor) 7%, transparent); }
+
+/* ---------------------------------------------------------------- código -- */
+
+code {
+  font-family: var(--mono);
+  font-size: 0.84em;
+  background: color-mix(in srgb, var(--linha) 40%, transparent);
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--fundo-caixa);
+  border: 1px solid var(--linha);
+  border-left: 3px solid var(--verde);
+  border-radius: 3px;
+  padding: 0.5rem 0.6rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  line-height: 1.45;
+  margin: 0.5rem 0;
+  break-inside: avoid;
+}
+
+pre code { background: none; padding: 0; font-size: inherit; }
+pre .cmt { color: var(--texto-fraco); font-style: italic; }
+pre .out { color: var(--azul); }
+
+/* ------------------------------------------------------------- navegação -- */
+
+.fim {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 0.8rem;
+  border-top: 2px solid var(--realce);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+}
+
+.nota {
+  font-size: 0.78rem;
+  color: var(--texto-fraco);
+  border-top: 1px solid var(--linha);
+  padding-top: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+/* ------------------------------------------------------------- impressão --
+   É aqui que a folha vira o que ela é: A4, duas colunas, corpo pequeno.
+   Único lugar do projeto onde cor literal é tolerada (papel é branco).      */
+
+@page { size: A4; margin: 9mm 8mm 8mm; }
+
+@media print {
+  body { background: #fff; font-size: 8.2pt; line-height: 1.34; }
+
+  .folha {
+    max-width: none;
+    padding: 0;
+    columns: 2;
+    column-gap: 5.5mm;
+  }
+
+  .topo-folha { column-span: all; padding-bottom: 0.4rem; margin-bottom: 0.6rem; }
+  h1 { font-size: 15pt; }
+  .sub { font-size: 7.6pt; }
+  .legenda { font-size: 6.8pt; margin-top: 0.35rem; }
+
+  h2 { font-size: 9pt; margin: 0.55rem 0 0.3rem; break-after: avoid; }
+  h3 { font-size: 8pt; margin: 0.5rem 0 0.25rem; break-after: avoid; }
+  p { margin-bottom: 0.32rem; }
+
+  .bloco { margin-bottom: 1.3mm; }
+  .bloco > h4 { font-size: 6.6pt; padding: 0.1rem 0.4rem; margin-bottom: 0.3rem; }
+  .bloco > *:not(h4) { margin-left: 0.4rem; margin-right: 0.4rem; }
+
+  table { font-size: 6.8pt; }
+  th, td { padding: 0.1rem 0.25rem; }
+  pre { font-size: 6.6pt; padding: 0.3rem 0.4rem; }
+
+  /* papel não rola: o que passava a largura virava barra de rolagem
+     recortada no PDF. Aqui o código quebra linha e o resto transborda
+     visível em vez de ser cortado. */
+  pre { white-space: pre-wrap; overflow-wrap: break-word; overflow: visible; }
+  .rolagem { overflow: visible; }
+  math[display="block"] { overflow: visible; }
+
+  a { color: inherit; text-decoration: none; }
+  .so-tela, .fim { display: none; }
+}
+
+@media (max-width: 34rem) {
+  body { font-size: 14px; }
+  .folha { padding: 1.25rem 0.9rem 3rem; }
+}

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Folha de consulta pessoal: condensa resultados de obra protegida
+     (Ross, Academic Press / Elsevier) para uso próprio. Fora dos buscadores. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Cadeias de Markov — guia de prova</title>
+<link rel="stylesheet" href="../assets/tema.css?v=1">
+<link rel="stylesheet" href="../assets/guia.css?v=1">
+</head>
+<body>
+
+<div class="folha">
+
+<header class="topo-folha">
+  <p class="migalha"><a href="../index.html">Menu</a> · <a href="04-00-cadeias-de-markov.html">Aula completa</a> · Ross, 13ª ed., cap. 4 (págs. 201–299)</p>
+  <h1>Cadeias de Markov — guia de prova</h1>
+  <p class="sub">Toda a matéria do capítulo condensada para consulta: enunciados, as demonstrações curtas que caem, e um exemplo numérico por ideia.</p>
+  <p class="legenda">
+    <span><i class="l-teo"></i> definição / teorema</span>
+    <span><i class="l-dem"></i> por que é verdade</span>
+    <span><i class="l-ex"></i> exemplo</span>
+    <span><i class="l-rec"></i> receita de prova</span>
+    <span><i class="l-arm"></i> armadilha</span>
+  </p>
+  <p class="so-tela"><strong>Para levar impresso:</strong> Ctrl+P → “Salvar como PDF” → margens padrão. Sai em <strong>duas colunas A4</strong>; esta caixa e os links de rodapé não são impressos. A aula longa, com as demonstrações completas, está em <a href="04-00-cadeias-de-markov.html">04-00-cadeias-de-markov.html</a>.</p>
+</header>
+
+<h2>0 · Mapa de decisão — o que a questão pede × o que usar</h2>
+
+<div class="rolagem">
+<table>
+  <thead><tr><th>A questão pede…</th><th>Ferramenta</th><th class="c">§</th></tr></thead>
+  <tbody>
+    <tr><td>“mostre que é cadeia de Markov / dê <math><mi mathvariant="bold">P</mi></math>”</td><td>escolher o estado que <em>fecha</em> a informação; ampliar se depende de 2 passos</td><td class="c">1</td></tr>
+    <tr><td><math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo></math></td><td><math><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup></math>: entrada <math><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math> de <math><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math></td><td class="c">2</td></tr>
+    <tr><td><math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo></math> sem condicionar</td><td><math><mi mathvariant="bold">α</mi><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math>, com <math><mi mathvariant="bold">α</mi></math> a distribuição inicial</td><td class="c">2</td></tr>
+    <tr><td>“até o tempo <math><mi>m</mi></math> entrou em <math><mi mathvariant="script">A</mi></math>?”, padrões, corridas</td><td>tornar <math><mi mathvariant="script">A</mi></math> absorvente e ler <math><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>A</mi></mrow><mi>m</mi></msubsup></math></td><td class="c">2</td></tr>
+    <tr><td>classes, transiente × recorrente</td><td>desenhar o grafo; classe fechada = recorrente</td><td class="c">3</td></tr>
+    <tr><td>espaço de estados <strong>infinito</strong>: recorrente?</td><td><math><mo>∑</mo><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>∞</mi></math>? (Stirling) ou 1º passo</td><td class="c">3</td></tr>
+    <tr><td>“proporção de tempo”, “a longo prazo”, “em equilíbrio”</td><td><math><mi>π</mi><mo>=</mo><mi>π</mi><mi mathvariant="bold">P</mi></math>, <math><mo>∑</mo><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></math></td><td class="c">4</td></tr>
+    <tr><td>tempo médio <em>de retorno</em> a <math><mi>j</mi></math></td><td><math><msub><mi>m</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><msub><mi>π</mi><mi>j</mi></msub></math></td><td class="c">4</td></tr>
+    <tr><td>ganho/custo médio por unidade de tempo</td><td><math><mo>∑</mo><mi>r</mi><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>π</mi><mi>j</mi></msub></math> (Prop. 4.6)</td><td class="c">4</td></tr>
+    <tr><td>taxa de transições <math><mi>i</mi><mo>→</mo><mi>j</mi></math>, taxa de falhas</td><td><math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>, somada sobre o corte</td><td class="c">4</td></tr>
+    <tr><td>tempo médio <em>até</em> <math><mi>j</mi></math> (ou até um conjunto)</td><td>absorver o alvo; <math><mi mathvariant="bold">S</mi><mo>=</mo><msup><mrow><mo>(</mo><mi mathvariant="bold">I</mi><mo>−</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></math>, somar a linha</td><td class="c">5</td></tr>
+    <tr><td>“atinge <math><mi>a</mi></math> antes de <math><mi>b</mi></math>?”</td><td>ruína do jogador (4.14) ou 1º passo</td><td class="c">5</td></tr>
+    <tr><td>população que cresce/morre por gerações</td><td>ramificação: <math><msup><mi>μ</mi><mi>n</mi></msup></math>, e <math><msub><mi>π</mi><mn>0</mn></msub></math> = menor raiz</td><td class="c">6</td></tr>
+    <tr><td>achar <math><mi>π</mi></math> <em>sem</em> resolver sistema</td><td>balanço detalhado (se resolver, é reversível)</td><td class="c">7</td></tr>
+    <tr><td>simular de uma densidade só conhecida a menos de constante</td><td>Hastings–Metropolis / Gibbs</td><td class="c">8</td></tr>
+    <tr><td>estados não observados, só sinais</td><td>recursões <em>forward</em> / <em>backward</em> / Viterbi</td><td class="c">9</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>1 · Montar a cadeia</h2>
+
+<div class="bloco teo">
+  <h4>Definição — cadeia de Markov (4.1)</h4>
+  <p><math><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>}</mo></math> em espaço finito ou enumerável é cadeia de Markov se</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>i</mi><mo>,</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>X</mi><mn>0</mn></msub><mo>}</mo><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></math></div>
+  <p>Dado o <em>presente</em>, o futuro é condicionalmente independente do passado. Duas hipóteses num só lugar: <span class="chave">Markov</span> (não depende do passado) e <span class="chave">homogeneidade</span> (não depende de <math><mi>n</mi></math>).</p>
+  <p>Matriz <math><mi mathvariant="bold">P</mi><mo>=</mo><mo>[</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>]</mo></math>: <span class="chave">linha = de onde, coluna = para onde</span>; <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>⩾</mo><mn>0</mn></math> e cada <strong>linha soma 1</strong> (estocástica).</p>
+</div>
+
+<div class="bloco rec">
+  <h4>Receita — escolher o estado</h4>
+  <ul class="compacta">
+    <li><strong>1.</strong> Pergunte: “que informação eu preciso <em>hoje</em> para a distribuição de amanhã ficar determinada?” Isso é o estado.</li>
+    <li><strong>2. Ampliar</strong> — se amanhã depende dos últimos <math><mi>k</mi></math> dias, o estado é a <em>k</em>-upla dos últimos <math><mi>k</mi></math> valores (Ex. 4.4). Metade das transições vira 0.</li>
+    <li><strong>3. Colapsar</strong> — estados que não afetam a pergunta viram um só, absorvente (Ex. 4.11: “4 ou mais urnas ocupadas”).</li>
+    <li><strong>4. Contar progresso</strong> — para padrões/corridas, o estado é “quantos passos do padrão já cumpri” (Ex. 4.12).</li>
+    <li><strong>5.</strong> Confira: cada linha soma 1.</li>
+  </ul>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — os três moldes que caem</h4>
+  <p><span class="rot-e">Clima (Ex. 4.1).</span> Chove hoje ⇒ chove amanhã com <math><mi>α</mi></math>; seco hoje ⇒ chove com <math><mi>β</mi></math>. Estados 0 = chove, 1 = seco:</p>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mi>α</mi></mtd><mtd><mn>1</mn><mo>−</mo><mi>α</mi></mtd></mtr><mtr><mtd><mi>β</mi></mtd><mtd><mn>1</mn><mo>−</mo><mi>β</mi></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math></div>
+  <p><span class="rot-e">Ampliação (Ex. 4.4).</span> Chuva depende dos <em>dois</em> últimos dias ⇒ estado = (hoje, ontem): 0 = choveu nos dois, 1 = só hoje, 2 = só ontem, 3 = nenhum.</p>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable>
+    <mtr><mtd><mn>0,7</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0,3</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mn>0,5</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0,5</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mn>0</mn></mtd><mtd><mn>0,4</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0,6</mn></mtd></mtr>
+    <mtr><mtd><mn>0</mn></mtd><mtd><mn>0,2</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0,8</mn></mtd></mtr>
+  </mtable><mo>]</mo></mrow></mrow></math></div>
+  <p class="miudo">Zeros: o “hoje” de agora vira o “ontem” de amanhã, então de 0 ou 1 só se vai para 0 ou 2.</p>
+  <p><span class="rot-e">Absorvente.</span> Ruína do jogador: <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>p</mi><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></math> para <math><mn>0</mn><mo>&lt;</mo><mi>i</mi><mo>&lt;</mo><mi>N</mi></math>, e <math><msub><mi>P</mi><mn>00</mn></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>N</mi><mi>N</mi></mrow></msub><mo>=</mo><mn>1</mn></math>.</p>
+</div>
+
+<h2>2 · Probabilidades em <math><mi>n</mi></math> passos</h2>
+
+<div class="bloco teo">
+  <h4>Chapman–Kolmogorov (4.2)</h4>
+  <div class="eq"><math display="block"><mrow><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi>n</mi><mo>+</mo><mi>m</mi></mrow></msubsup><mo>=</mo><munder><mo>∑</mo><mi>k</mi></munder><msubsup><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow><mi>n</mi></msubsup><msubsup><mi>P</mi><mrow><mi>k</mi><mi>j</mi></mrow><mi>m</mi></msubsup><mo>,</mo><mspace width="1.2em"/><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>=</mo><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></mrow></math></div>
+  <p><strong>Distribuição incondicional:</strong> com <math><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo></math> (vetor-<em>linha</em>),</p>
+  <div class="eq"><math display="block"><mrow><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>α</mi><mi>i</mi></msub><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><mo>,</mo><mspace width="1.2em"/><msup><mi mathvariant="bold">α</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>=</mo><mi mathvariant="bold">α</mi><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></mrow></math></div>
+</div>
+
+<div class="bloco dem">
+  <h4>Demonstração — condicionar no estado intermediário</h4>
+  <p>Some sobre onde a cadeia estava no passo <math><mi>n</mi></math>:</p>
+  <div class="eq"><math display="block"><mtable columnalign="right left" rowspacing="0.15em">
+    <mtr><mtd><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi>n</mi><mo>+</mo><mi>m</mi></mrow></msubsup></mtd><mtd><mo>=</mo><munder><mo>∑</mo><mi>k</mi></munder><mi>P</mi><mo>{</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mi>m</mi></mrow></msub><mo>=</mo><mi>j</mi><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>k</mi><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo></mtd></mtr>
+    <mtr><mtd></mtd><mtd><mo>=</mo><munder><mo>∑</mo><mi>k</mi></munder><mi>P</mi><mo>{</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>+</mo><mi>m</mi></mrow></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>k</mi><mo>,</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>k</mi><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>}</mo></mtd></mtr>
+    <mtr><mtd></mtd><mtd><mo>=</mo><munder><mo>∑</mo><mi>k</mi></munder><msubsup><mi>P</mi><mrow><mi>k</mi><mi>j</mi></mrow><mi>m</mi></msubsup><msubsup><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow><mi>n</mi></msubsup></mtd></mtr>
+  </mtable></math></div>
+  <p>Probabilidade total; multiplicação; e <span class="chave">Markov</span> — dado <math><msub><mi>X</mi><mi>n</mi></msub></math>, o <math><msub><mi>X</mi><mn>0</mn></msub></math> some. <span class="miudo">Este é <em>o</em> gesto do capítulo: condicionar num passo e recomeçar a cadeia. Reaparece em toda prova daqui para a frente.</span><span class="qed">∎</span></p>
+</div>
+
+<div class="bloco rec">
+  <h4>Receita — “entrou em <math><mi mathvariant="script">A</mi></math> até o tempo <math><mi>m</mi></math>?”</h4>
+  <p>Construa <math><msub><mi>W</mi><mi>n</mi></msub></math>: igual a <math><msub><mi>X</mi><mi>n</mi></msub></math> até tocar <math><mi mathvariant="script">A</mi></math>, e daí grudada num estado novo <math><mi>A</mi></math>. Transições</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mspace width="0.4em"/><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>∉</mo><mi mathvariant="script">A</mi><mo>)</mo><mo>,</mo><mspace width="0.8em"/><msub><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>A</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><mi mathvariant="script">A</mi></mrow></munder><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>,</mo><mspace width="0.8em"/><msub><mi>Q</mi><mrow><mi>A</mi><mo>,</mo><mi>A</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow></math></div>
+  <ul class="compacta">
+    <li>entrou até <math><mi>m</mi></math>: <math><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>A</mi></mrow><mi>m</mi></msubsup></math>;</li>
+    <li>chegou a <math><mi>j</mi></math> <em>sem</em> tocar <math><mi mathvariant="script">A</mi></math>: <math><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>m</mi></msubsup></math>;</li>
+    <li>condicional a não ter tocado: <math><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mi>n</mi></msubsup><mo>/</mo><msub><mo>∑</mo><mrow><mi>r</mi><mo>∉</mo><mi mathvariant="script">A</mi></mrow></msub><msubsup><mi>Q</mi><mrow><mi>i</mi><mo>,</mo><mi>r</mi></mrow><mi>n</mi></msubsup></math>.</li>
+  </ul>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — três caras seguidas em 8 lançamentos (Ex. 4.12)</h4>
+  <p><span class="rot-e">Enunciado.</span> Moeda honesta; <math><mi>N</mi></math> = lançamentos até sair CCC. Achar <math><mi>P</mi><mo>(</mo><mi>N</mi><mo>⩽</mo><mn>8</mn><mo>)</mo></math> e <math><mi>P</mi><mo>(</mo><mi>N</mi><mo>=</mo><mn>8</mn><mo>)</mo></math>.</p>
+  <p><span class="rot-s">Solução.</span> Estado <math><mi>i</mi><mo>&lt;</mo><mn>3</mn></math> = corrida atual de <math><mi>i</mi></math> caras; 3 = absorvente.</p>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">P</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo>[</mo><mtable>
+    <mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr>
+    <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>2</mn></mtd></mtr>
+  </mtable><mo>]</mo></mrow><mo>,</mo><mspace width="0.8em"/><msup><mi mathvariant="bold">P</mi><mn>8</mn></msup><mo>=</mo><mfrac><mn>1</mn><mn>256</mn></mfrac><mrow><mo>[</mo><mtable>
+    <mtr><mtd><mn>81</mn></mtd><mtd><mn>44</mn></mtd><mtd><mn>24</mn></mtd><mtd><mn>107</mn></mtd></mtr>
+    <mtr><mtd><mn>68</mn></mtd><mtd><mn>37</mn></mtd><mtd><mn>20</mn></mtd><mtd><mn>131</mn></mtd></mtr>
+    <mtr><mtd><mn>44</mn></mtd><mtd><mn>24</mn></mtd><mtd><mn>13</mn></mtd><mtd><mn>175</mn></mtd></mtr>
+    <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>256</mn></mtd></mtr>
+  </mtable><mo>]</mo></mrow></mrow></math></div>
+  <p><math><mi>P</mi><mo>(</mo><mi>N</mi><mo>⩽</mo><mn>8</mn><mo>)</mo><mo>=</mo><msubsup><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>3</mn></mrow><mn>8</mn></msubsup><mo>=</mo><mn>107</mn><mo>/</mo><mn>256</mn><mo>≈</mo><mn>0,418</mn></math>. E <math><mi>N</mi><mo>=</mo><mn>8</mn></math> exige estar em 2 após 7 passos e tirar cara: <math><mfrac><mn>1</mn><mn>2</mn></mfrac><msubsup><mi>P</mi><mrow><mn>0</mn><mo>,</mo><mn>2</mn></mrow><mn>7</mn></msubsup><mo>=</mo><mn>13</mn><mo>/</mo><mn>256</mn></math>.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Atalho — a cadeia de dois estados, fechada</h4>
+  <p>Para <math><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn><mo>−</mo><mi>a</mi></mtd><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd><mtd><mn>1</mn><mo>−</mo><mi>b</mi></mtd></mtr></mtable><mo>]</mo></mrow></math> com <math><mi>a</mi><mo>+</mo><mi>b</mi><mo>&gt;</mo><mn>0</mn></math>:</p>
+  <div class="eq"><math display="block"><mrow><mi>π</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></mfrac><mo>(</mo><mi>b</mi><mo>,</mo><mi>a</mi><mo>)</mo><mo>,</mo><mspace width="1em"/><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup><mo>=</mo><mfrac><mn>1</mn><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></mfrac><mrow><mo>[</mo><mtable><mtr><mtd><mi>b</mi></mtd><mtd><mi>a</mi></mtd></mtr><mtr><mtd><mi>b</mi></mtd><mtd><mi>a</mi></mtd></mtr></mtable><mo>]</mo></mrow><mo>+</mo><mfrac><msup><mrow><mo>(</mo><mn>1</mn><mo>−</mo><mi>a</mi><mo>−</mo><mi>b</mi><mo>)</mo></mrow><mi>n</mi></msup><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow></mfrac><mrow><mo>[</mo><mtable><mtr><mtd><mi>a</mi></mtd><mtd><mo>−</mo><mi>a</mi></mtd></mtr><mtr><mtd><mo>−</mo><mi>b</mi></mtd><mtd><mi>b</mi></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math></div>
+  <p>O segundo autovalor é <math><msub><mi>λ</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn><mo>−</mo><mi>a</mi><mo>−</mo><mi>b</mi></math>: ele governa a <span class="chave">velocidade de esquecimento</span> do estado inicial. Clima com <math><mi>α</mi><mo>=</mo><mn>0,7</mn></math>, <math><mi>β</mi><mo>=</mo><mn>0,4</mn></math> ⇒ <math><mi>a</mi><mo>=</mo><mn>0,3</mn></math>, <math><mi>b</mi><mo>=</mo><mn>0,4</mn></math>, <math><mi>π</mi><mo>=</mo><mo>(</mo><mn>4</mn><mo>/</mo><mn>7</mn><mo>,</mo><mn>3</mn><mo>/</mo><mn>7</mn><mo>)</mo></math>, <math><msub><mi>λ</mi><mn>2</mn></msub><mo>=</mo><mn>0,3</mn></math>; já em <math><mi>n</mi><mo>=</mo><mn>4</mn></math> as linhas são 0,5749 e 0,5668.</p>
+  <p class="miudo">Caso simétrico <math><mi>a</mi><mo>=</mo><mi>b</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi></math> (Exerc. 6): <math><msubsup><mi>P</mi><mn>00</mn><mi>n</mi></msubsup><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo>(</mo><mn>2</mn><mi>p</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mi>n</mi></msup></math>.</p>
+</div>
+<h2>3 · Classificação de estados</h2>
+
+<div class="bloco teo">
+  <h4>Definições — acessível, classe, irredutível</h4>
+  <ul class="compacta">
+    <li><math><mi>j</mi></math> <strong>acessível</strong> de <math><mi>i</mi></math>: <math><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup><mo>&gt;</mo><mn>0</mn></math> para algum <math><mi>n</mi><mo>⩾</mo><mn>0</mn></math> (há caminho no grafo).</li>
+    <li><math><mi>i</mi><mo>↔</mo><mi>j</mi></math> (<strong>comunicam</strong>): acessíveis nos dois sentidos. É relação de equivalência ⇒ parte o espaço em <strong>classes</strong>.</li>
+    <li><strong>Irredutível</strong>: uma classe só.</li>
+    <li><strong>Fechada</strong>: classe da qual não sai nenhuma seta. <strong>Absorvente</strong>: <math><msub><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn></math>.</li>
+    <li><strong>Período</strong> <math><mi>d</mi><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><mo movablelimits="false">mdc</mo><mo>{</mo><mi>n</mi><mo>&gt;</mo><mn>0</mn><mo>:</mo><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>&gt;</mo><mn>0</mn><mo>}</mo></math>; <math><mi>d</mi><mo>=</mo><mn>1</mn></math> ⇒ <strong>aperiódica</strong>. Também é propriedade de classe. <span class="miudo">Algum <math><msub><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math> já garante <math><mi>d</mi><mo>=</mo><mn>1</mn></math>.</span></li>
+  </ul>
+</div>
+
+<div class="bloco teo">
+  <h4>Recorrente × transiente — Prop. 4.1 e Cor. 4.2</h4>
+  <p><math><msub><mi>f</mi><mi>i</mi></msub></math> = probabilidade de, partindo de <math><mi>i</mi></math>, voltar a <math><mi>i</mi></math>. <strong>Recorrente</strong> se <math><msub><mi>f</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></math>, <strong>transiente</strong> se <math><msub><mi>f</mi><mi>i</mi></msub><mo>&lt;</mo><mn>1</mn></math>.</p>
+  <div class="eq"><math display="block"><mrow><mi>i</mi><mspace width="0.3em"/><mtext>recorrente</mtext><mspace width="0.4em"/><mo>⟺</mo><mspace width="0.4em"/><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>∞</mi></munderover><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>∞</mi></mrow></math></div>
+  <ul class="compacta">
+    <li>recorrente ⇒ visitado <strong>infinitas</strong> vezes; transiente ⇒ nº de visitas é <strong>geométrico</strong>, média <math><mn>1</mn><mo>/</mo><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>f</mi><mi>i</mi></msub><mo>)</mo></math>;</li>
+    <li><strong>Cor. 4.2:</strong> recorrência (e transiência, e período) é <strong>propriedade de classe</strong>;</li>
+    <li>cadeia <strong>finita</strong>: nem todos os estados podem ser transientes; <strong>finita + irredutível ⇒ recorrente positiva</strong>.</li>
+  </ul>
+</div>
+
+<div class="bloco dem">
+  <h4>Por que — duas linhas que valem a questão inteira</h4>
+  <p><strong>Prop. 4.1.</strong> Com <math><msub><mi>I</mi><mi>n</mi></msub><mo>=</mo><mn>1</mn></math> se <math><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>i</mi></math>, o nº de visitas é <math><mo>∑</mo><msub><mi>I</mi><mi>n</mi></msub></math> e</p>
+  <div class="eq"><math display="block"><mrow><mi>E</mi><mrow><mo>[</mo><munder><mo>∑</mo><mi>n</mi></munder><msub><mi>I</mi><mi>n</mi></msub><mo>|</mo><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>i</mi><mo>]</mo></mrow><mo>=</mo><munder><mo>∑</mo><mi>n</mi></munder><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup></mrow></math></div>
+  <p>e visitas infinitas ⟺ média infinita ⟺ <math><msub><mi>f</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></math>.</p>
+  <p><strong>Cor. 4.2.</strong> Com <math><msubsup><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow><mi>m</mi></msubsup><mo>,</mo><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>k</mi></msubsup><mo>&gt;</mo><mn>0</mn></math>, ir de <math><mi>j</mi></math> a <math><mi>j</mi></math> passando por <math><mi>i</mi></math> duas vezes é <em>uma</em> das maneiras:</p>
+  <div class="eq"><math display="block"><mrow><msubsup><mi>P</mi><mrow><mi>j</mi><mi>j</mi></mrow><mrow><mi>m</mi><mo>+</mo><mi>n</mi><mo>+</mo><mi>k</mi></mrow></msubsup><mo>⩾</mo><msubsup><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow><mi>m</mi></msubsup><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>k</mi></msubsup></mrow></math></div>
+  <p>Somando em <math><mi>n</mi></math>, a série de <math><mi>j</mi></math> herda a divergência da de <math><mi>i</mi></math>.<span class="qed">∎</span></p>
+</div>
+
+<div class="bloco rec">
+  <h4>Receita — classificar uma cadeia finita em 1 minuto</h4>
+  <ol>
+    <li>Desenhe o grafo (uma seta por entrada positiva).</li>
+    <li>Ache as classes (componentes fortemente conexas).</li>
+    <li><span class="chave">Sai seta da classe? transiente. Não sai? recorrente (positiva).</span></li>
+    <li>Período: olhe os comprimentos de ciclo de um estado da classe e tire o mdc.</li>
+  </ol>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — classificar (Exerc. 14)</h4>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable>
+    <mtr><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mn>0</mn></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mfrac><mn>1</mn><mn>4</mn></mfrac></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mfrac><mn>1</mn><mn>4</mn></mfrac></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mn>0</mn></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr>
+    <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr>
+    <mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd><mtd><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr>
+  </mtable><mo>]</mo></mrow></mrow></math></div>
+  <p>Classes <math><mo>{</mo><mn>0</mn><mo>,</mo><mn>2</mn><mo>}</mo></math> e <math><mo>{</mo><mn>3</mn><mo>,</mo><mn>4</mn><mo>}</mo></math> (fechadas ⇒ <strong>recorrentes</strong>) e <math><mo>{</mo><mn>1</mn><mo>}</mo></math>: de 1 escapa-se para 0 ou 2 e não se volta ⇒ <strong>transiente</strong>. Confere: em <math><msup><mi mathvariant="bold">P</mi><mn>20</mn></msup></math> a coluna do estado 1 já é toda nula.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Passeio aleatório — o exemplo de espaço infinito</h4>
+  <p><math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>p</mi><mo>=</mo><mn>1</mn><mo>−</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></math> em <math><mi>ℤ</mi></math>. Só os passos pares voltam:</p>
+  <div class="eq"><math display="block"><mrow><msubsup><mi>P</mi><mn>00</mn><mrow><mn>2</mn><mi>n</mi></mrow></msubsup><mo>=</mo><mrow><mo>(</mo><mfrac linethickness="0"><mrow><mn>2</mn><mi>n</mi></mrow><mi>n</mi></mfrac><mo>)</mo></mrow><msup><mrow><mo>(</mo><mi>p</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>)</mo></mrow><mi>n</mi></msup><mspace width="0.4em"/><munder><mo>∼</mo><mrow><mtext>Stirling</mtext></mrow></munder><mspace width="0.4em"/><mfrac><msup><mrow><mo>(</mo><mn>4</mn><mi>p</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>)</mo></mrow><mi>n</mi></msup><msqrt><mi>π</mi><mi>n</mi></msqrt></mfrac></mrow></math></div>
+  <p>Como <math><mn>4</mn><mi>p</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo><mo>⩽</mo><mn>1</mn></math> com igualdade só em <math><mi>p</mi><mo>=</mo><mn>1</mn><mo>/</mo><mn>2</mn></math>:</p>
+  <div class="rolagem">
+  <table>
+    <thead><tr><th>Passeio simétrico</th><th class="c"><math><msubsup><mi>P</mi><mn>00</mn><mrow><mn>2</mn><mi>n</mi></mrow></msubsup></math></th><th class="c">Situação</th></tr></thead>
+    <tbody>
+      <tr><td>1 dimensão, <math><mi>p</mi><mo>≠</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math></td><td class="c">geométrico</td><td class="c">transiente</td></tr>
+      <tr><td>1 dimensão, <math><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math></td><td class="c"><math><mo>∼</mo><mn>1</mn><mo>/</mo><msqrt><mi>π</mi><mi>n</mi></msqrt></math></td><td class="c">recorrente <strong>nulo</strong></td></tr>
+      <tr><td>2 dimensões</td><td class="c"><math><mo>∼</mo><mn>1</mn><mo>/</mo><mo>(</mo><mi>π</mi><mi>n</mi><mo>)</mo></math></td><td class="c">recorrente nulo</td></tr>
+      <tr><td>3 dimensões ou mais</td><td class="c"><math><mo>∼</mo><msup><mi>n</mi><mrow><mo>−</mo><mn>3</mn><mo>/</mo><mn>2</mn></mrow></msup></math></td><td class="c">transiente</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="miudo">Frase de prova: <em>“o bêbado sempre volta para casa; o pássaro bêbado pode se perder para sempre.”</em> Em 1-D não simétrico, <math><mi>P</mi><mo>{</mo><mtext>voltar a 0</mtext><mo>}</mo><mo>=</mo><mn>2</mn><mo movablelimits="false">min</mo><mo>(</mo><mi>p</mi><mo>,</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></math>.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Recorrência positiva × nula</h4>
+  <p><math><msub><mi>m</mi><mi>j</mi></msub><mo>=</mo><mi>E</mi><mo>[</mo><mtext>tempo de retorno a</mtext><mspace width="0.35em"/><mi>j</mi><mo>]</mo></math>. <strong>Positiva</strong> se <math><msub><mi>m</mi><mi>j</mi></msub><mo>&lt;</mo><mi>∞</mi></math>, <strong>nula</strong> se <math><msub><mi>m</mi><mi>j</mi></msub><mo>=</mo><mi>∞</mi></math>. Ambas são propriedade de classe (Prop. 4.5).</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mfrac><mn>1</mn><msub><mi>m</mi><mi>j</mi></msub></mfrac><mspace width="1em"/><mo>(</mo><mtext>Prop. 4.4</mtext><mo>)</mo><mo>;</mo><mspace width="1em"/><mi>j</mi><mspace width="0.3em"/><mtext>pos. rec.</mtext><mo>⟺</mo><msub><mi>π</mi><mi>j</mi></msub><mo>&gt;</mo><mn>0</mn></mrow></math></div>
+  <p class="miudo"><strong>Por quê:</strong> pela propriedade de Markov os tempos entre visitas sucessivas a <math><mi>j</mi></math> são i.i.d. de média <math><msub><mi>m</mi><mi>j</mi></msub></math>; após <math><mi>n</mi></math> visitas passaram <math><mo>≈</mo><mi>n</mi><msub><mi>m</mi><mi>j</mi></msub></math> períodos (<strong>lei forte</strong>), logo a fração de tempo em <math><mi>j</mi></math> é <math><mi>n</mi><mo>/</mo><mo>(</mo><mi>n</mi><msub><mi>m</mi><mi>j</mi></msub><mo>)</mo></math>.</p>
+</div>
+
+<div class="bloco arm">
+  <h4>Armadilha — os três “recorrentes” não são a mesma coisa</h4>
+  <ul class="compacta">
+    <li><strong>Recorrente</strong> = volta com probabilidade 1. <strong>Positivo</strong> = volta <em>e</em> o tempo médio é finito. O passeio simétrico em <math><mi>ℤ</mi></math> é recorrente <strong>nulo</strong>: volta sempre, em tempo médio infinito.</li>
+    <li>Recorrência nula só existe em espaço <strong>infinito</strong>. Em cadeia finita, recorrente ⇒ positiva.</li>
+    <li>Período não afeta <math><msub><mi>π</mi><mi>j</mi></msub></math> como <em>proporção</em>; afeta só o <em>limite</em> de <math><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup></math>.</li>
+  </ul>
+</div>
+
+<h2>4 · Longo prazo — o coração da prova</h2>
+
+<div class="bloco teo">
+  <h4>Teorema 4.1 — equações de balanço</h4>
+  <p>Cadeia <strong>irredutível</strong> e <strong>recorrente positiva</strong>: as proporções de longo prazo são a <strong>única</strong> solução de</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><mspace width="1.2em"/><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></mrow><mspace width="0.6em"/></math><span class="num">(4.7)</span></div>
+  <p>Em matriz: <math><mi>π</mi><mo>=</mo><mi>π</mi><mi mathvariant="bold">P</mi></math> — autovetor <em>à esquerda</em> do autovalor 1. Se (4.7) <strong>não tem solução</strong>, a cadeia é transiente ou recorrente nula e todos os <math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>0</mn></math>.</p>
+  <p><strong>Leitura:</strong> <math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> = fração das transições que vão de <math><mi>i</mi></math> a <math><mi>j</mi></math>; somando em <math><mi>i</mi></math>, <span class="chave">o que entra em <math><mi>j</mi></math> = o tempo passado em <math><mi>j</mi></math></span>.</p>
+</div>
+
+<div class="bloco rec">
+  <h4>Receita — resolver <math><mi>π</mi><mo>=</mo><mi>π</mi><mi mathvariant="bold">P</mi></math> sem se perder</h4>
+  <ol>
+    <li>Escreva uma equação <strong>por coluna</strong> de <math><mi mathvariant="bold">P</mi></math> (quem entra em <math><mi>j</mi></math>).</li>
+    <li>As <math><mi>N</mi></math> equações são <strong>dependentes</strong> (somam <math><mn>1</mn><mo>=</mo><mn>1</mn></math>): <span class="chave">jogue uma fora</span> e use <math><mo>∑</mo><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></math> no lugar.</li>
+    <li>Escreva tudo em função de um <math><msub><mi>π</mi><mi>k</mi></msub></math> e normalize no fim.</li>
+    <li><strong>Atalhos:</strong> nascimento e morte ou grafo ⇒ use balanço detalhado (§7); <math><mi mathvariant="bold">P</mi></math> duplamente estocástica ⇒ <math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><mi>N</mi></math>.</li>
+    <li>Confira: <math><msub><mi>π</mi><mi>j</mi></msub><mo>⩾</mo><mn>0</mn></math>, soma 1, e o estado mais “visitado” tem o maior <math><mi>π</mi></math>.</li>
+  </ol>
+</div>
+
+<div class="bloco teo">
+  <h4>As três leituras de <math><msub><mi>π</mi><mi>j</mi></msub></math> — e o que cada uma exige</h4>
+  <div class="rolagem">
+  <table>
+    <thead><tr><th>Leitura</th><th>Significado</th><th>Exige</th></tr></thead>
+    <tbody>
+      <tr><td><strong>proporção</strong></td><td>fração do tempo em <math><mi>j</mi></math>; <math><mo>=</mo><mn>1</mn><mo>/</mo><msub><mi>m</mi><mi>j</mi></msub></math></td><td>irred. + rec. positiva</td></tr>
+      <tr><td><strong>estacionária</strong></td><td><math><msub><mi>X</mi><mn>0</mn></msub><mo>∼</mo><mi>π</mi></math> ⇒ <math><msub><mi>X</mi><mi>n</mi></msub><mo>∼</mo><mi>π</mi></math> <math><mo>∀</mo><mi>n</mi></math></td><td>idem</td></tr>
+      <tr><td><strong>limite</strong></td><td><math><msub><mo movablelimits="false">lim</mo><mi>n</mi></msub><msubsup><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow><mi>n</mi></msubsup></math>, qualquer <math><mi>i</mi></math></td><td>idem <strong>+ aperiódica</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Irredutível + recorrente positiva + aperiódica = <strong>ergódica</strong>: aí as três coincidem e as linhas de <math><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math> ficam todas iguais a <math><mi>π</mi></math>.</p>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — o cálculo padrão (Ex. 4.23, humor do Gary)</h4>
+  <p><span class="rot-e">Enunciado.</span> Estados 0 = alegre, 1 = mais ou menos, 2 = tristonho,</p>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable>
+    <mtr><mtd><mn>0,5</mn></mtd><mtd><mn>0,4</mn></mtd><mtd><mn>0,1</mn></mtd></mtr>
+    <mtr><mtd><mn>0,3</mn></mtd><mtd><mn>0,4</mn></mtd><mtd><mn>0,3</mn></mtd></mtr>
+    <mtr><mtd><mn>0,2</mn></mtd><mtd><mn>0,3</mn></mtd><mtd><mn>0,5</mn></mtd></mtr>
+  </mtable><mo>]</mo></mrow></mrow></math></div>
+  <p><span class="rot-s">Solução.</span> Colunas 0 e 1, mais a normalização (a coluna 2 é descartada):</p>
+  <div class="eq"><math display="block"><mtable columnalign="left" rowspacing="0.1em">
+    <mtr><mtd><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><mn>0,5</mn><msub><mi>π</mi><mn>0</mn></msub><mo>+</mo><mn>0,3</mn><msub><mi>π</mi><mn>1</mn></msub><mo>+</mo><mn>0,2</mn><msub><mi>π</mi><mn>2</mn></msub></mtd></mtr>
+    <mtr><mtd><msub><mi>π</mi><mn>1</mn></msub><mo>=</mo><mn>0,4</mn><msub><mi>π</mi><mn>0</mn></msub><mo>+</mo><mn>0,4</mn><msub><mi>π</mi><mn>1</mn></msub><mo>+</mo><mn>0,3</mn><msub><mi>π</mi><mn>2</mn></msub></mtd></mtr>
+    <mtr><mtd><msub><mi>π</mi><mn>0</mn></msub><mo>+</mo><msub><mi>π</mi><mn>1</mn></msub><mo>+</mo><msub><mi>π</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></mtd></mtr>
+  </mtable></math></div>
+  <p>⇒ <math><mi>π</mi><mo>=</mo><mo>(</mo><mn>21</mn><mo>,</mo><mn>23</mn><mo>,</mo><mn>18</mn><mo>)</mo><mo>/</mo><mn>62</mn></math>. Tristonho 29% dos dias; volta a ficar tristonho a cada <math><msub><mi>m</mi><mn>2</mn></msub><mo>=</mo><mn>62</mn><mo>/</mo><mn>18</mn><mo>≈</mo><mn>3,4</mn></math> dias.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Prop. 4.6 — recompensa média, e taxas</h4>
+  <p><math><mi>r</mi></math> limitada no espaço de estados: com probabilidade 1,</p>
+  <div class="eq"><math display="block"><mrow><munder><mo movablelimits="false">lim</mo><mrow><mi>N</mi><mo>→</mo><mi>∞</mi></mrow></munder><mfrac><mrow><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup><mi>r</mi><mo>(</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo></mrow><mi>N</mi></mfrac><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><mi>r</mi><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>π</mi><mi>j</mi></msub></mrow></math></div>
+  <p><strong>Taxa de transições <math><mi>i</mi><mo>→</mo><mi>j</mi></math></strong> <math><mo>=</mo><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>. Com <math><mi>A</mi></math> = “no ar” e <math><msup><mi>A</mi><mi>c</mi></msup></math> = “parado”, a taxa de quebras é o fluxo pelo corte, e</p>
+  <div class="eq"><math display="block"><mrow><mfrac><mn>1</mn><mrow><mover><mi>U</mi><mo>¯</mo></mover><mo>+</mo><mover><mi>D</mi><mo>¯</mo></mover></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msup><mi>A</mi><mi>c</mi></msup></mrow></munder><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>A</mi></mrow></munder><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><mspace width="1em"/><mfrac><mover><mi>U</mi><mo>¯</mo></mover><mrow><mover><mi>U</mi><mo>¯</mo></mover><mo>+</mo><mover><mi>D</mi><mo>¯</mo></mover></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>A</mi></mrow></munder><msub><mi>π</mi><mi>i</mi></msub></mrow></math></div>
+  <p class="miudo">Duas equações, duas incógnitas: saem <math><mover><mi>U</mi><mo>¯</mo></mover></math> (tempo médio no ar) e <math><mover><mi>D</mi><mo>¯</mo></mover></math> (tempo médio parado). Ex. 4.26: taxa <math><mn>9</mn><mo>/</mo><mn>32</mn></math>, <math><mover><mi>U</mi><mo>¯</mo></mover><mo>=</mo><mn>14</mn><mo>/</mo><mn>9</mn></math>, <math><mover><mi>D</mi><mo>¯</mo></mover><mo>=</mo><mn>2</mn></math>.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Duplamente estocástica</h4>
+  <p>Se <em>as colunas também somam 1</em> e a cadeia é irredutível com <math><mi>N</mi></math> estados, então <math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><mi>N</mi></math> — basta ver que a uniforme satisfaz (4.7). Cobre: passeios em círculo, permutações, mutação simétrica, soma módulo <math><mi>k</mi></math>.</p>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — tempo médio até um padrão (Ex. 4.28 / Exerc. 51)</h4>
+  <p><span class="rot-e">Enunciado.</span> Gary alegre hoje: quantos dias até <strong>três dias tristonhos seguidos</strong>?</p>
+  <p><span class="rot-s">Solução.</span> Na cadeia dos últimos <math><mi>k</mi></math> estados, <math><mi>π</mi><mo>(</mo><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub><mo>)</mo><mo>=</mo><msub><mi>π</mi><msub><mi>i</mi><mn>1</mn></msub></msub><msub><mi>P</mi><mrow><msub><mi>i</mi><mn>1</mn></msub><msub><mi>i</mi><mn>2</mn></msub></mrow></msub><mo>⋯</mo></math> e o tempo entre ocorrências é o inverso. Descendo pelas sobreposições (222 → 22 → 2):</p>
+  <div class="eq"><math display="block"><mrow><mi>E</mi><mo>[</mo><mi>N</mi><mo>]</mo><mo>=</mo><mi>μ</mi><mo>(</mo><mn>0</mn><mo>,</mo><mn>2</mn><mo>)</mo><mo>+</mo><mfrac><mn>1</mn><mrow><mi>π</mi><mo>(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo>)</mo></mrow></mfrac><mo>+</mo><mfrac><mn>1</mn><mrow><mi>π</mi><mo>(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo>)</mo></mrow></mfrac><mo>=</mo><mfrac><mn>50</mn><mn>9</mn></mfrac><mo>+</mo><mfrac><mn>62</mn><mn>9</mn></mfrac><mo>+</mo><mfrac><mn>124</mn><mn>9</mn></mfrac><mo>=</mo><mn>26,2</mn></mrow></math></div>
+  <p class="miudo">Regra: <strong>sem sobreposição</strong>, <math><mi>E</mi><mo>[</mo><mi>N</mi><mo>]</mo><mo>=</mo><mi>μ</mi><mo>(</mo><mi>r</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo><mo>+</mo><mn>1</mn><mo>/</mo><mi>π</mi><mo>(</mo><mtext>padrão</mtext><mo>)</mo><mo>−</mo><mi>μ</mi><mo>(</mo><msub><mi>i</mi><mi>k</mi></msub><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub><mo>)</mo></math>; <strong>com</strong> sobreposição de tamanho <math><mi>s</mi></math>, some <math><mn>1</mn><mo>/</mo><mi>π</mi><mo>(</mo><mtext>padrão</mtext><mo>)</mo></math> ao tempo do padrão encurtado até <math><mi>s</mi></math>. Os <math><mi>μ</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math> saem condicionando no 1º passo. <em>Alternativa sempre válida:</em> ampliar o estado com o progresso e usar §5.</p>
+</div>
+<h2>5 · Absorção: quanto tempo, e onde termina</h2>
+
+<div class="bloco teo">
+  <h4>Ruína do jogador (4.14)</h4>
+  <p>Ganha 1 com <math><mi>p</mi></math>, perde 1 com <math><mi>q</mi><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi></math>; para em 0 ou em <math><mi>N</mi></math>. <math><msub><mi>P</mi><mi>i</mi></msub></math> = probabilidade de atingir <math><mi>N</mi></math> partindo de <math><mi>i</mi></math>:</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mi>i</mi></msub><mo>=</mo><mrow><mo>{</mo><mtable columnalign="left left"><mtr><mtd><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>i</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>N</mi></msup></mrow></mfrac><mo>,</mo></mtd><mtd><mi>p</mi><mo>≠</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr><mtr><mtd><mfrac><mi>i</mi><mi>N</mi></mfrac><mo>,</mo></mtd><mtd><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></mtd></mtr></mtable></mrow></mrow></math></div>
+  <p><strong>Duração</strong> <math><msub><mi>M</mi><mi>i</mi></msub></math> (nº médio de jogadas até parar, Exerc. 59):</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>M</mi><mi>i</mi></msub><mo>=</mo><mi>i</mi><mo>(</mo><mi>N</mi><mo>−</mo><mi>i</mi><mo>)</mo><mspace width="0.6em"/><mo>(</mo><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>)</mo><mo>,</mo><mspace width="1.2em"/><msub><mi>M</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><mi>i</mi><mo>−</mo><mi>N</mi><msub><mi>P</mi><mi>i</mi></msub></mrow><mrow><mi>q</mi><mo>−</mo><mi>p</mi></mrow></mfrac><mspace width="0.6em"/><mo>(</mo><mi>p</mi><mo>≠</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>)</mo></mrow></math></div>
+  <p><strong>Adversário infinito</strong> (<math><mi>N</mi><mo>→</mo><mi>∞</mi></math>): <math><msub><mi>P</mi><mi>i</mi></msub><mo>→</mo><mn>1</mn><mo>−</mo><msup><mrow><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo></mrow><mi>i</mi></msup></math> se <math><mi>p</mi><mo>&gt;</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>, e <math><mo>→</mo><mn>0</mn></math> se <math><mi>p</mi><mo>⩽</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>: <span class="chave">jogo justo contra banca infinita = ruína certa</span>.</p>
+  <p class="miudo"><strong>Como sai:</strong> condicione na 1ª jogada, <math><msub><mi>P</mi><mi>i</mi></msub><mo>=</mo><mi>p</mi><msub><mi>P</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>q</mi><msub><mi>P</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></math>; com <math><mi>p</mi><mo>+</mo><mi>q</mi><mo>=</mo><mn>1</mn></math> vira <math><msub><mi>P</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>−</mo><msub><mi>P</mi><mi>i</mi></msub><mo>=</mo><mo>(</mo><mi>q</mi><mo>/</mo><mi>p</mi><mo>)</mo><mo>(</mo><msub><mi>P</mi><mi>i</mi></msub><mo>−</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo></math>: as diferenças formam uma <strong>geométrica</strong>; some (telescópio) e imponha <math><msub><mi>P</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn></math>, <math><msub><mi>P</mi><mi>N</mi></msub><mo>=</mo><mn>1</mn></math>.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Tempo em estados transientes — a matriz fundamental</h4>
+  <p><math><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub></math> = bloco das transições <em>entre transientes</em>; <math><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> = nº esperado de períodos em <math><mi>j</mi></math> partindo de <math><mi>i</mi></math>:</p>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">S</mi><mo>=</mo><msup><mrow><mo>(</mo><mi mathvariant="bold">I</mi><mo>−</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>,</mo><mspace width="1.2em"/><msub><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>δ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><msub><mi>s</mi><mrow><mi>j</mi><mi>j</mi></mrow></msub></mfrac></mrow></math></div>
+  <ul class="compacta">
+    <li><strong>Tempo médio até a absorção</strong> partindo de <math><mi>i</mi></math> = <strong>soma da linha <math><mi>i</mi></math></strong> de <math><mi mathvariant="bold">S</mi></math>.</li>
+    <li><math><msub><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math> = probabilidade de algum dia visitar <math><mi>j</mi></math>.</li>
+    <li>Para o tempo até um conjunto <math><mi>A</mi></math> qualquer: <span class="chave">torne <math><mi>A</mi></math> absorvente</span> e aplique o mesmo.</li>
+    <li>Absorve em <math><mi>a</mi></math> ou em <math><mi>b</mi></math>? <math><mi>P</mi><mo>{</mo><mi>a</mi><mspace width="0.3em"/><mtext>antes</mtext><mo>}</mo><mo>=</mo><msub><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><mi>T</mi></mrow></msub><msub><mi>s</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><msub><mi>P</mi><mrow><mi>k</mi><mi>a</mi></mrow></msub></math>.</li>
+  </ul>
+  <p class="miudo"><strong>Por quê:</strong> condicionando no 1º passo, <math><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>δ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>+</mo><msub><mo>∑</mo><mi>k</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><msub><mi>s</mi><mrow><mi>k</mi><mi>j</mi></mrow></msub></math>, isto é <math><mi mathvariant="bold">S</mi><mo>=</mo><mi mathvariant="bold">I</mi><mo>+</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mi mathvariant="bold">S</mi></math>. De recorrente não se volta a transiente, por isso a soma só corre em <math><mi>T</mi></math>.</p>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — jogador com <math><mi>p</mi><mo>=</mo><mn>0,4</mn></math>, <math><mi>N</mi><mo>=</mo><mn>7</mn></math>, começa com 3</h4>
+  <p><math><mi>q</mi><mo>/</mo><mi>p</mi><mo>=</mo><mn>1,5</mn></math>. Chegar a 7 antes de quebrar:</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mn>3</mn></msub><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mn>1,5</mn><mn>3</mn></msup></mrow><mrow><mn>1</mn><mo>−</mo><msup><mn>1,5</mn><mn>7</mn></msup></mrow></mfrac><mo>=</mo><mn>0,1476</mn><mo>,</mo><mspace width="1em"/><msub><mi>M</mi><mn>3</mn></msub><mo>=</mo><mfrac><mrow><mn>3</mn><mo>−</mo><mn>7</mn><mo>(</mo><mn>0,1476</mn><mo>)</mo></mrow><mn>0,2</mn></mfrac><mo>=</mo><mn>9,83</mn><mspace width="0.3em"/><mtext>jogadas</mtext></mrow></math></div>
+  <p>Confere com <math><mi mathvariant="bold">S</mi><mo>=</mo><msup><mrow><mo>(</mo><mi mathvariant="bold">I</mi><mo>−</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></math> (<math><mi>T</mi><mo>=</mo><mo>{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mn>6</mn><mo>}</mo></math>): a linha 3 soma 9,83, e <math><msub><mi>s</mi><mrow><mn>3</mn><mo>,</mo><mn>5</mn></mrow></msub><mo>=</mo><mn>0,92</mn></math>, <math><msub><mi>s</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>=</mo><mn>2,37</mn></math>, <math><msub><mi>f</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>s</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>/</mo><msub><mi>s</mi><mrow><mn>1</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>=</mo><mn>0,88</mn></math>.</p>
+  <p class="miudo">Jogo justo (<math><mi>p</mi><mo>=</mo><mn>0,5</mn></math>) com 5 contra 5: ganha com 1/2 e o jogo dura <math><mn>5</mn><mo>×</mo><mn>5</mn><mo>=</mo><mn>25</mn></math> jogadas em média.</p>
+</div>
+
+<div class="bloco rec">
+  <h4>Receita — “primeiro passo” resolve quase tudo</h4>
+  <p>Defina a incógnita <math><mi>h</mi><mo>(</mo><mi>i</mi><mo>)</mo></math> (probabilidade ou tempo, partindo de <math><mi>i</mi></math>), condicione no primeiro passo e escreva um sistema:</p>
+  <div class="eq"><math display="block"><mrow><mtext>probabilidade</mtext><mo>:</mo><mspace width="0.5em"/><mi>h</mi><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>h</mi><mo>(</mo><mi>j</mi><mo>)</mo></mrow></math></div>
+  <div class="eq"><math display="block"><mrow><mtext>tempo</mtext><mo>:</mo><mspace width="0.5em"/><mi>h</mi><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><mn>1</mn><mo>+</mo><munder><mo>∑</mo><mrow><mi>j</mi><mo>∉</mo><mi>A</mi></mrow></munder><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>h</mi><mo>(</mo><mi>j</mi><mo>)</mo></mrow></math></div>
+  <p><strong>Fronteiras:</strong> na probabilidade, <math><mi>h</mi><mo>=</mo><mn>1</mn></math> no alvo e <math><mn>0</mn></math> no outro absorvente; no tempo, <math><mi>h</mi><mo>=</mo><mn>0</mn></math> em <math><mi>A</mi></math>. O “<math><mo>+</mo><mn>1</mn></math>” é o passo que você acabou de gastar — em cadeia pequena isso é mais rápido que inverter matriz.</p>
+</div>
+
+<h2>6 · Processos de ramificação</h2>
+
+<div class="bloco teo">
+  <h4>Galton–Watson</h4>
+  <p>Cada indivíduo tem <math><mi>j</mi></math> filhos com probabilidade <math><msub><mi>P</mi><mi>j</mi></msub></math>, independentemente; <math><msub><mi>X</mi><mi>n</mi></msub></math> = tamanho da geração <math><mi>n</mi></math>, <math><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></math>. Com <math><mi>μ</mi><mo>=</mo><mo>∑</mo><mi>j</mi><msub><mi>P</mi><mi>j</mi></msub></math> e <math><msup><mi>σ</mi><mn>2</mn></msup></math> a variância do nº de filhos:</p>
+  <div class="eq"><math display="block"><mrow><mi>E</mi><mo>[</mo><msub><mi>X</mi><mi>n</mi></msub><mo>]</mo><mo>=</mo><msup><mi>μ</mi><mi>n</mi></msup><mo>,</mo><mspace width="1em"/><mtext>Var</mtext><mo>(</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo><mo>=</mo><mrow><mo>{</mo><mtable columnalign="left left"><mtr><mtd><msup><mi>σ</mi><mn>2</mn></msup><msup><mi>μ</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>μ</mi><mi>n</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><mi>μ</mi></mrow></mfrac><mo>,</mo></mtd><mtd><mi>μ</mi><mo>≠</mo><mn>1</mn></mtd></mtr><mtr><mtd><mi>n</mi><msup><mi>σ</mi><mn>2</mn></msup><mo>,</mo></mtd><mtd><mi>μ</mi><mo>=</mo><mn>1</mn></mtd></mtr></mtable></mrow></mrow></math></div>
+  <p>Estado 0 é absorvente; se <math><msub><mi>P</mi><mn>0</mn></msub><mo>&gt;</mo><mn>0</mn></math>, <strong>todos os outros são transientes</strong> ⇒ a população <span class="chave">morre ou explode</span>, nunca oscila para sempre.</p>
+  <p><strong>Extinção</strong> <math><msub><mi>π</mi><mn>0</mn></msub></math>: condicionando no nº de filhos do primeiro indivíduo (as <math><mi>j</mi></math> linhagens morrem independentemente),</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mi>∞</mi></munderover><msubsup><mi>π</mi><mn>0</mn><mi>j</mi></msubsup><msub><mi>P</mi><mi>j</mi></msub></mrow><mspace width="0.6em"/></math><span class="num">(4.20)</span></div>
+  <ul class="compacta">
+    <li><math><mi>μ</mi><mo>⩽</mo><mn>1</mn></math> ⇒ <math><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></math> (extinção certa, inclusive no caso crítico <math><mi>μ</mi><mo>=</mo><mn>1</mn></math>);</li>
+    <li><math><mi>μ</mi><mo>&gt;</mo><mn>1</mn></math> ⇒ <math><msub><mi>π</mi><mn>0</mn></msub></math> é a <strong>menor raiz positiva</strong> de (4.20);</li>
+    <li>com <math><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mi>n</mi></math>: <math><msubsup><mi>π</mi><mn>0</mn><mi>n</mi></msubsup></math>; e o total de indivíduos que já existiram tem média <math><mi>n</mi><mo>/</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>μ</mi><mo>)</mo></math> quando <math><mi>μ</mi><mo>&lt;</mo><mn>1</mn></math>.</li>
+  </ul>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — extinção em 30 segundos</h4>
+  <p><math><msub><mi>P</mi><mn>0</mn></msub><mo>=</mo><msub><mi>P</mi><mn>1</mn></msub><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac></math>, <math><msub><mi>P</mi><mn>2</mn></msub><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math> ⇒ <math><mi>μ</mi><mo>=</mo><mfrac><mn>5</mn><mn>4</mn></mfrac><mo>&gt;</mo><mn>1</mn></math>. Equação (4.20):</p>
+  <div class="eq"><math display="block"><mrow><mi>π</mi><mo>=</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>4</mn></mfrac><mi>π</mi><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mi>π</mi><mn>2</mn></msup><mspace width="0.6em"/><mo>⟺</mo><mspace width="0.6em"/><mn>2</mn><msup><mi>π</mi><mn>2</mn></msup><mo>−</mo><mn>3</mn><mi>π</mi><mo>+</mo><mn>1</mn><mo>=</mo><mo>(</mo><mn>2</mn><mi>π</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>π</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>0</mn></mrow></math></div>
+  <p>Raízes <math><mfrac><mn>1</mn><mn>2</mn></mfrac></math> e 1 ⇒ <math><msub><mi>π</mi><mn>0</mn></msub><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>.</p>
+  <p class="miudo"><span class="chave">Truque:</span> <math><mi>π</mi><mo>=</mo><mn>1</mn></math> é <em>sempre</em> raiz (porque <math><mo>∑</mo><msub><mi>P</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></math>). Divida o polinômio por <math><mo>(</mo><mi>π</mi><mo>−</mo><mn>1</mn><mo>)</mo></math> e fique com o resto — é lá que mora a resposta.</p>
+</div>
+
+<h2>7 · Reversibilidade — o atalho para <math><mi>π</mi></math></h2>
+
+<div class="bloco teo">
+  <h4>Cadeia reversa e balanço detalhado</h4>
+  <p>Cadeia ergódica estacionária vista de trás para a frente é Markov, com</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>π</mi><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></mrow><msub><mi>π</mi><mi>i</mi></msub></mfrac></mrow></math></div>
+  <p><strong>Reversível</strong> se <math><msub><mi>Q</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>, ou seja</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mspace width="1.2em"/><mo>∀</mo><mi>i</mi><mo>,</mo><mi>j</mi></mrow><mspace width="0.6em"/></math><span class="num">(4.21)</span></div>
+  <p><span class="chave">Taxa <math><mi>i</mi><mo>→</mo><mi>j</mi></math> = taxa <math><mi>j</mi><mo>→</mo><mi>i</mi></math></span>, par a par (contra o balanço <em>global</em> de (4.7), que só fecha o total por estado).</p>
+  <p><strong>O que faz dele um atalho:</strong> se <math><msub><mi>x</mi><mi>i</mi></msub><mo>⩾</mo><mn>0</mn></math> com <math><mo>∑</mo><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></math> resolvem (4.21), então <strong><math><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><msub><mi>π</mi><mi>i</mi></msub></math></strong> e a cadeia é reversível. <span class="miudo">Prova de uma linha: some (4.21) em <math><mi>i</mi></math> ⇒ <math><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>x</mi><mi>j</mi></msub><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>x</mi><mi>j</mi></msub></math>, que é (4.7); a solução é única.</span></p>
+</div>
+
+<div class="bloco rec">
+  <h4>Receita — tente o balanço detalhado primeiro</h4>
+  <ol>
+    <li>A cadeia só anda para vizinhos (nascimento e morte) ou é caminhada num <strong>grafo</strong>? Então <em>é</em> reversível — resolva (4.21) e pule o sistema.</li>
+    <li>Nascimento e morte em <math><mo>{</mo><mn>0</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>M</mi><mo>}</mo></math> com <math><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub></math>: <math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><msub><mi>π</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>)</mo></math> ⇒ produto telescópico.</li>
+    <li>Grafo com pesos <math><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>w</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></math> e <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>/</mo><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math>:
+      <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></mfrac></mrow></math></div>
+      isto é, <span class="chave">peso do nó ÷ dobro do peso do grafo</span> (com pesos 1: <em>grau ÷ 2 × nº de arestas</em>).</li>
+    <li>Não resolveu? A cadeia provavelmente não é reversível — volte para (4.7).</li>
+  </ol>
+</div>
+
+<div class="bloco teo">
+  <h4>Teorema 4.2 — critério de Kolmogorov</h4>
+  <p>Com <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mn>0</mn></math> sempre que <math><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>0</mn></math>: a cadeia é reversível <strong>⟺ todo ciclo tem a mesma probabilidade que o ciclo invertido</strong>,</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><msub><mi>i</mi><mn>1</mn></msub></mrow></msub><msub><mi>P</mi><mrow><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><msub><mi>i</mi><mn>2</mn></msub></mrow></msub><mo>⋯</mo><msub><mi>P</mi><mrow><msub><mi>i</mi><mi>k</mi></msub><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mo>,</mo><msub><mi>i</mi><mi>k</mi></msub></mrow></msub><mo>⋯</mo><msub><mi>P</mi><mrow><msub><mi>i</mi><mn>1</mn></msub><mo>,</mo><mi>i</mi></mrow></msub></mrow><mspace width="0.6em"/></math><span class="num">(4.26)</span></div>
+  <p class="miudo">Se <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math> para <em>todos</em> os pares (e espaço finito), basta checar os ciclos de comprimento 3: <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>k</mi></mrow></msub><msub><mi>P</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><msub><mi>P</mi><mrow><mi>k</mi><mi>j</mi></mrow></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></math> (Exerc. 72). <strong>Prop. 4.9:</strong> se você <em>adivinhar</em> <math><mi mathvariant="bold">Q</mi></math> e achar <math><mi>π</mi><mo>&gt;</mo><mn>0</mn></math> com <math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub><msub><mi>Q</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></math>, então <math><mi mathvariant="bold">Q</mi></math> é mesmo a reversa e <math><mi>π</mi></math> a estacionária das duas.</p>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — três clássicos resolvidos pelo balanço detalhado</h4>
+  <p><span class="rot-e">Ehrenfest.</span> <math><mi>M</mi></math> moléculas, duas urnas; uma molécula ao acaso troca de lado. É nascimento e morte com <math><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><mo>(</mo><mi>M</mi><mo>−</mo><mi>i</mi><mo>)</mo><mo>/</mo><mi>M</mi></math>, e o produto telescópico dá</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mi>i</mi></msub><mo>=</mo><mrow><mo>(</mo><mfrac linethickness="0"><mi>M</mi><mi>i</mi></mfrac><mo>)</mo></mrow><msup><mrow><mo>(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>)</mo></mrow><mi>M</mi></msup></mrow></math></div>
+  <p>— binomial: no equilíbrio cada molécula está de cada lado com probabilidade 1/2, independentemente. <span class="miudo">(Cadeia periódica de período 2: <math><mi>π</mi></math> é proporção, não limite.)</span></p>
+  <p><span class="rot-e">Grafo (Fig. 4.1).</span> Pesos por nó 6, 3, 6, 5, 12 (total 32) ⇒ <math><mi>π</mi><mo>=</mo><mo>(</mo><mn>6</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>6</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>12</mn><mo>)</mo><mo>/</mo><mn>32</mn></math>.</p>
+  <p><span class="rot-e">Cavalo no xadrez (Exerc. 77).</span> Caminhada no grafo dos movimentos legais, pesos 1. Soma dos graus = 336; canto tem grau 2 ⇒ <math><msub><mi>π</mi><mtext>canto</mtext></msub><mo>=</mo><mn>2</mn><mo>/</mo><mn>336</mn></math> e o retorno médio é <math><mn>1</mn><mo>/</mo><msub><mi>π</mi><mtext>canto</mtext></msub><mo>=</mo><mn>168</mn></math> jogadas — sem tocar numa matriz 64 × 64.</p>
+</div>
+<h2>8 · MCMC — simular de <math><mi>π</mi></math> conhecendo só <math><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>∝</mo><mi>π</mi><mo>(</mo><mi>j</mi><mo>)</mo></math></h2>
+
+<div class="bloco teo">
+  <h4>Hastings–Metropolis</h4>
+  <p>Alvo <math><mi>π</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>/</mo><mi>B</mi></math> com <math><mi>B</mi><mo>=</mo><mo>∑</mo><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo></math> <em>impossível de somar</em>. Escolha qualquer matriz irredutível de <strong>proposta</strong> <math><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></math>. Estando em <math><mi>i</mi></math>: proponha <math><mi>j</mi><mo>∼</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mo>·</mo><mo>)</mo></math> e <strong>aceite</strong> com</p>
+  <div class="eq"><math display="block"><mrow><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>=</mo><mo movablelimits="false">min</mo><mrow><mo>(</mo><mfrac><mrow><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>j</mi><mo>,</mo><mi>i</mi><mo>)</mo></mrow><mrow><mi>b</mi><mo>(</mo><mi>i</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></mrow></mfrac><mo>,</mo><mn>1</mn><mo>)</mo></mrow></mrow><mspace width="0.6em"/></math><span class="num">(4.32)</span></div>
+  <p>senão fique em <math><mi>i</mi></math>. A cadeia resultante é <strong>reversível com estacionária <math><mi>π</mi></math></strong>, e <math><mi>B</mi></math> nunca aparece — só a <em>razão</em> <math><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>/</mo><mi>b</mi><mo>(</mo><mi>i</mi><mo>)</mo></math>.</p>
+  <p class="miudo"><strong>Por quê:</strong> um dos dois <math><mi>α</mi></math> vale 1; nos dois casos <math><mi>π</mi><mo>(</mo><mi>i</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>π</mi><mo>(</mo><mi>j</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>j</mi><mo>,</mo><mi>i</mi><mo>)</mo><mi>α</mi><mo>(</mo><mi>j</mi><mo>,</mo><mi>i</mi><mo>)</mo></math> — balanço detalhado por construção. Depois, <math><mo>∑</mo><mi>h</mi><mo>(</mo><msub><mi>X</mi><mi>i</mi></msub><mo>)</mo><mo>/</mo><mi>n</mi><mo>→</mo><mi>E</mi><mo>[</mo><mi>h</mi><mo>(</mo><mi>X</mi><mo>)</mo><mo>]</mo></math> pela Prop. 4.6, mesmo com os <math><msub><mi>X</mi><mi>i</mi></msub></math> <em>dependentes</em>.</p>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — Metropolis com proposta uniforme</h4>
+  <p>Três estados, alvo <math><mi>b</mi><mo>=</mo><mo>(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>)</mo></math>, proposta <math><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>=</mo><mn>1</mn><mo>/</mo><mn>3</mn></math>. Como <math><mi>q</mi></math> é simétrica, <math><mi>α</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo><mo>=</mo><mo movablelimits="false">min</mo><mo>(</mo><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mo>/</mo><mi>b</mi><mo>(</mo><mi>i</mi><mo>)</mo><mo>,</mo><mn>1</mn><mo>)</mo></math>: <em>sobe sempre, desce às vezes</em>.</p>
+  <div class="eq"><math display="block"><mrow><mi mathvariant="bold">P</mi><mo>=</mo><mrow><mo>[</mo><mtable>
+    <mtr><mtd><mn>1</mn><mo>/</mo><mn>3</mn></mtd><mtd><mn>1</mn><mo>/</mo><mn>3</mn></mtd><mtd><mn>1</mn><mo>/</mo><mn>3</mn></mtd></mtr>
+    <mtr><mtd><mn>1</mn><mo>/</mo><mn>6</mn></mtd><mtd><mn>1</mn><mo>/</mo><mn>2</mn></mtd><mtd><mn>1</mn><mo>/</mo><mn>3</mn></mtd></mtr>
+    <mtr><mtd><mn>1</mn><mo>/</mo><mn>9</mn></mtd><mtd><mn>2</mn><mo>/</mo><mn>9</mn></mtd><mtd><mn>2</mn><mo>/</mo><mn>3</mn></mtd></mtr>
+  </mtable><mo>]</mo></mrow><mspace width="0.8em"/><mo>⇒</mo><mspace width="0.8em"/><mi>π</mi><mo>=</mo><mrow><mo>(</mo><mfrac><mn>1</mn><mn>6</mn></mfrac><mo>,</mo><mfrac><mn>2</mn><mn>6</mn></mfrac><mo>,</mo><mfrac><mn>3</mn><mn>6</mn></mfrac><mo>)</mo></mrow></mrow></math></div>
+  <p class="miudo">A diagonal cresce com a rejeição — e é ela que garante aperiodicidade, logo <math><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math> converge mesmo.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Amostrador de Gibbs — aceitação 1</h4>
+  <p><math><mi mathvariant="bold">X</mi><mo>=</mo><mo>(</mo><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>)</mo></math> com <math><mi>p</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo><mo>=</mo><mi>C</mi><mi>g</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>)</mo></math>: sorteie uma coordenada <math><mi>i</mi></math> uniforme e gere <math><msub><mi>X</mi><mi>i</mi></msub></math> da <strong>condicional completa</strong> <math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mi>x</mi><mo>|</mo><msub><mi>X</mi><mi>j</mi></msub><mo>=</mo><msub><mi>x</mi><mi>j</mi></msub><mo>,</mo><mi>j</mi><mo>≠</mo><mi>i</mi><mo>}</mo></math>.</p>
+  <p>É Hastings–Metropolis com essa proposta: <math><mi>q</mi><mo>(</mo><mi mathvariant="bold">x</mi><mo>,</mo><mi mathvariant="bold">y</mi><mo>)</mo><mo>∝</mo><mi>p</mi><mo>(</mo><mi mathvariant="bold">y</mi><mo>)</mo></math> com a <em>mesma</em> constante nos dois sentidos, então <math><mi>α</mi><mo>≡</mo><mn>1</mn></math> — <span class="chave">o candidato é sempre aceito</span>.</p>
+</div>
+
+<h2>9 · Decisão de Markov e cadeias ocultas</h2>
+
+<div class="bloco teo">
+  <h4>Processos de decisão (MDP) — vira programa linear</h4>
+  <p>Ação <math><mi>a</mi></math> no estado <math><mi>i</mi></math> ⇒ transição <math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>(</mo><mi>a</mi><mo>)</mo></math> e ganho <math><mi>R</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>a</mi><mo>)</mo></math>. Com <math><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub></math> = fração do tempo “em <math><mi>i</mi></math> escolhendo <math><mi>a</mi></math>”, <strong>políticas ⟺ vetores</strong> que satisfazem</p>
+  <div class="eq"><math display="block"><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>⩾</mo><mn>0</mn><mo>,</mo><mspace width="0.8em"/><munder><mo>∑</mo><mi>i</mi></munder><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="0.8em"/><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>j</mi><mi>a</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><munder><mo>∑</mo><mi>a</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>(</mo><mi>a</mi><mo>)</mo></mrow></math></div>
+  <p>A terceira é o Teorema 4.1 para a cadeia <math><mo>(</mo><msub><mi>X</mi><mi>n</mi></msub><mo>,</mo><msub><mi>a</mi><mi>n</mi></msub><mo>)</mo></math>. Maximizar <math><mo>∑</mo><mo>∑</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow></msub><mi>R</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>a</mi><mo>)</mo></math> é um <strong>programa linear</strong>; a política ótima é <math><msub><mi>β</mi><mi>i</mi></msub><mo>(</mo><mi>a</mi><mo>)</mo><mo>=</mo><msubsup><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow><mo>*</mo></msubsup><mo>/</mo><msub><mo>∑</mo><mi>a</mi></msub><msubsup><mi>π</mi><mrow><mi>i</mi><mi>a</mi></mrow><mo>*</mo></msubsup></math> e sai <strong>determinística</strong>. Restrição do tipo “ficar em 1 no máximo <math><mi>α</mi></math> do tempo” = uma linha a mais: <math><msub><mo>∑</mo><mi>a</mi></msub><msub><mi>π</mi><mrow><mn>1</mn><mi>a</mi></mrow></msub><mo>⩽</mo><mi>α</mi></math>.</p>
+</div>
+
+<div class="bloco teo">
+  <h4>Cadeias ocultas (HMM) — três recursões</h4>
+  <p>Estado <math><msub><mi>X</mi><mi>n</mi></msub></math> não observado emite sinal <math><mi>s</mi></math> com <math><mi>p</mi><mo>(</mo><mi>s</mi><mo>|</mo><mi>j</mi><mo>)</mo></math>. Com <math><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>=</mo><mo>(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>s</mi><mi>n</mi></msub><mo>)</mo></math> e</p><p class="miudo"><math><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>}</mo></math> &nbsp;·&nbsp; <math><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><mi>P</mi><mo>{</mo><mtext>sinais futuros</mtext><mo>|</mo><msub><mi>X</mi><mi>k</mi></msub><mo>=</mo><mi>i</mi><mo>}</mo></math>:</p>
+  <div class="rolagem">
+  <table>
+    <thead><tr><th>Função</th><th>Recursão</th><th>Serve para</th></tr></thead>
+    <tbody>
+      <tr><td class="c"><math><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></math></td><td><math><mi>p</mi><mo>(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>|</mo><mi>j</mi><mo>)</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>F</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>i</mi><mo>)</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math></td><td><math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mi>n</mi></msub><mo>=</mo><mi>j</mi><mo>|</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo><mo>∝</mo><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></math></td></tr>
+      <tr><td class="c"><math><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>i</mi><mo>)</mo></math></td><td><math><msub><mo>∑</mo><mi>j</mi></msub><mi>p</mi><mo>(</mo><msub><mi>s</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>|</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math></td><td><math><mi>P</mi><mo>{</mo><msub><mi mathvariant="bold">s</mi><mi>n</mi></msub><mo>}</mo><mo>=</mo><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>F</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>B</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></math></td></tr>
+      <tr><td class="c"><math><msub><mi>V</mi><mi>k</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo></math></td><td><math><mi>p</mi><mo>(</mo><msub><mi>s</mi><mi>k</mi></msub><mo>|</mo><mi>j</mi><mo>)</mo><msub><mo movablelimits="false">max</mo><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>V</mi><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>i</mi><mo>)</mo></math></td><td>a <em>trajetória</em> inteira mais provável</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Início: <math><msub><mi>F</mi><mn>1</mn></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><msub><mi>V</mi><mn>1</mn></msub><mo>(</mo><mi>i</mi><mo>)</mo><mo>=</mo><msub><mi>p</mi><mi>i</mi></msub><mi>p</mi><mo>(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>|</mo><mi>i</mi><mo>)</mo></math>. <span class="chave">Viterbi = forward com <em>max</em> no lugar da soma</span>, guardando o argumento do máximo para voltar no fim. Custo <math><mi>n</mi><msup><mi>N</mi><mn>2</mn></msup></math> contra <math><msup><mi>N</mi><mi>n</mi></msup></math> da enumeração.</p>
+</div>
+
+<div class="bloco ex">
+  <h4>Exemplo — linha de produção (Ex. 4.45)</h4>
+  <p><span class="rot-e">Enunciado.</span> Estado 1 (boa) → 1 com 0,9, → 2 com 0,1; estado 2 absorvente. Item aceitável com 0,99 (estado 1) e 0,96 (estado 2). <math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><mn>1</mn><mo>}</mo><mo>=</mo><mn>0,8</mn></math>. Saíram <math><mi>a</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>a</mi></math>: a linha estava boa no 3º item?</p>
+  <p><span class="rot-s">Solução.</span> Recursão <em>forward</em>, três passos:</p>
+  <div class="rolagem">
+  <table>
+    <thead><tr><th class="c">n</th><th class="c">sinal</th><th class="c"><math><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mn>1</mn><mo>)</mo></math></th><th class="c"><math><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mn>2</mn><mo>)</mo></math></th></tr></thead>
+    <tbody>
+      <tr><td class="c">1</td><td class="c"><math><mi>a</mi></math></td><td class="c">0,792</td><td class="c">0,192</td></tr>
+      <tr><td class="c">2</td><td class="c"><math><mi>u</mi></math></td><td class="c">0,007128</td><td class="c">0,010848</td></tr>
+      <tr><td class="c">3</td><td class="c"><math><mi>a</mi></math></td><td class="c">0,006351</td><td class="c">0,011098</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>3</mn></msub><mo>=</mo><mn>1</mn><mo>|</mo><mi>a</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>a</mi><mo>}</mo><mo>=</mo><mfrac><mn>0,006351</mn><mn>0,017449</mn></mfrac><mo>≈</mo><mn>0,364</mn></math>: <strong>um único item ruim derrubou a confiança de 0,8 para 0,36</strong>. Depois, condicionando em <math><msub><mi>X</mi><mn>3</mn></msub></math>: <math><mi>P</mi><mo>{</mo><msub><mi>X</mi><mn>4</mn></msub><mo>=</mo><mn>1</mn><mo>}</mo><mo>=</mo><mn>0,364</mn><mo>×</mo><mn>0,9</mn><mo>=</mo><mn>0,328</mn></math> e <math><mi>P</mi><mo>{</mo><msub><mi>S</mi><mn>4</mn></msub><mo>=</mo><mi>a</mi><mo>}</mo><mo>=</mo><mn>0,99</mn><mo>(</mo><mn>0,328</mn><mo>)</mo><mo>+</mo><mn>0,96</mn><mo>(</mo><mn>0,672</mn><mo>)</mo><mo>=</mo><mn>0,970</mn></math>.</p>
+</div>
+
+<h2>10 · Fato ou fake — os erros que o corretor procura</h2>
+
+<div class="bloco arm">
+  <h4>Verdadeiro ✓ / falso ✗</h4>
+  <ul class="compacta">
+    <li>✓ <math><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math> tem linhas que somam 1 (é estocástica) — bom teste de aritmética.</li>
+    <li>✗ “<math><mi>π</mi></math> é autovetor à direita”: é à <strong>esquerda</strong>, <math><mi>π</mi><mo>=</mo><mi>π</mi><mi mathvariant="bold">P</mi></math>. <math><mi mathvariant="bold">P</mi><mi mathvariant="bold">1</mi><mo>=</mo><mi mathvariant="bold">1</mi></math> é o autovetor à direita, e não diz nada de útil.</li>
+    <li>✗ “toda cadeia tem probabilidades limite”: periódica não tem (0, 1, 0, 1, …); redutível tem, mas dependem do estado inicial.</li>
+    <li>✓ “proporção de tempo” e “estacionária” <em>não</em> precisam de aperiodicidade; só o <strong>limite</strong> precisa.</li>
+    <li>✗ “recorrente ⇒ tempo médio de retorno finito”: falso em espaço infinito (nulo recorrente).</li>
+    <li>✗ “se todos os estados comunicam, existe <math><mi>π</mi></math>”: em espaço infinito pode não existir (passeio simétrico: as equações só admitem <math><msub><mi>π</mi><mi>i</mi></msub></math> todos iguais, que não somam 1).</li>
+    <li>✓ cadeia <strong>finita</strong> irredutível: sempre recorrente positiva, <math><mi>π</mi></math> existe e é única.</li>
+    <li>✗ “<math><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math> e <math><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><mo>&gt;</mo><mn>0</mn></math> ⇒ reversível”: reversibilidade é sobre <em>ciclos</em> (Teo. 4.2), não sobre pares.</li>
+    <li>✗ trocar <math><mi>E</mi></math> com soma infinita de variáveis que mudam de sinal (Ex. 4.20 é o contraexemplo). Com <strong>não negativas</strong> pode.</li>
+    <li>✗ “o estado tem que ser o valor observado”: quase toda questão difícil se resolve <strong>ampliando</strong> o estado.</li>
+    <li>✓ absorção: a probabilidade de terminar em cada classe recorrente soma 1 — use isso para conferir.</li>
+    <li>✗ esquecer o “<math><mo>+</mo><mn>1</mn></math>” na equação de tempo médio, ou incluir o alvo na soma do primeiro passo.</li>
+  </ul>
+</div>
+
+<div class="bloco rec">
+  <h4>Checklist de 60 segundos antes de entregar</h4>
+  <ol>
+    <li>Linhas de <math><mi mathvariant="bold">P</mi></math> somam 1? <math><mo>∑</mo><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></math>? Probabilidades em <math><mo>[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>]</mo></math>?</li>
+    <li>Usei <strong>irredutível + recorrente positiva</strong> antes de invocar unicidade de <math><mi>π</mi></math>? Falei de <em>limite</em> sem checar aperiodicidade?</li>
+    <li>O enunciado pede <em>proporção de tempo</em> (§4) ou <em>tempo até</em> (§5)? São coisas diferentes.</li>
+    <li>Respondi na unidade certa: dias, jogadas, transições?</li>
+    <li>Dá para conferir por outro caminho (balanço detalhado × sistema; 1º passo × matriz fundamental)?</li>
+  </ol>
+</div>
+
+<h2>11 · Fórmulas de bolso</h2>
+
+<div class="rolagem">
+<table>
+  <thead><tr><th>Objeto</th><th>Fórmula</th><th>Condições</th></tr></thead>
+  <tbody>
+    <tr><td><math><mi>n</mi></math> passos</td><td><math><msup><mi mathvariant="bold">P</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>=</mo><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math>; <math><msup><mi mathvariant="bold">α</mi><mrow><mo>(</mo><mi>n</mi><mo>)</mo></mrow></msup><mo>=</mo><mi mathvariant="bold">α</mi><msup><mi mathvariant="bold">P</mi><mi>n</mi></msup></math></td><td>sempre</td></tr>
+    <tr><td>recorrência</td><td><math><mo>∑</mo><msubsup><mi>P</mi><mrow><mi>i</mi><mi>i</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>∞</mi></math></td><td>critério de Prop. 4.1</td></tr>
+    <tr><td>proporções</td><td><math><mi>π</mi><mo>=</mo><mi>π</mi><mi mathvariant="bold">P</mi></math>, <math><mo>∑</mo><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn></math></td><td>irred. + rec. pos.</td></tr>
+    <tr><td>retorno médio</td><td><math><msub><mi>m</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><msub><mi>π</mi><mi>j</mi></msub></math></td><td>idem</td></tr>
+    <tr><td>recompensa média</td><td><math><mo>∑</mo><mi>r</mi><mo>(</mo><mi>j</mi><mo>)</mo><msub><mi>π</mi><mi>j</mi></msub></math></td><td><math><mi>r</mi></math> limitada</td></tr>
+    <tr><td>2 estados</td><td><math><mi>π</mi><mo>=</mo><mo>(</mo><mi>b</mi><mo>,</mo><mi>a</mi><mo>)</mo><mo>/</mo><mo>(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>)</mo></math>, <math><msub><mi>λ</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn><mo>−</mo><mi>a</mi><mo>−</mo><mi>b</mi></math></td><td><math><mi>a</mi><mo>+</mo><mi>b</mi><mo>&gt;</mo><mn>0</mn></math></td></tr>
+    <tr><td>dupl. estocástica</td><td><math><msub><mi>π</mi><mi>j</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><mi>N</mi></math></td><td>colunas somam 1</td></tr>
+    <tr><td>nasc. e morte</td><td><math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>α</mi><mi>i</mi></msub><mo>=</mo><msub><mi>π</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>)</mo></math></td><td>só vizinhos</td></tr>
+    <tr><td>grafo com pesos</td><td><math><msub><mi>π</mi><mi>i</mi></msub><mo>∝</mo><msub><mo>∑</mo><mi>j</mi></msub><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math></td><td><math><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>w</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></math></td></tr>
+    <tr><td>transientes</td><td><math><mi mathvariant="bold">S</mi><mo>=</mo><msup><mrow><mo>(</mo><mi mathvariant="bold">I</mi><mo>−</mo><msub><mi mathvariant="bold">P</mi><mi>T</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></math>; <math><msub><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mo>(</mo><msub><mi>s</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>δ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>)</mo><mo>/</mo><msub><mi>s</mi><mrow><mi>j</mi><mi>j</mi></mrow></msub></math></td><td>finita</td></tr>
+    <tr><td>ruína</td><td><math><msub><mi>P</mi><mi>i</mi></msub><mo>=</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msup><mi>r</mi><mi>i</mi></msup></mrow><mrow><mn>1</mn><mo>−</mo><msup><mi>r</mi><mi>N</mi></msup></mrow></mfrac></math>, <math><mi>r</mi><mo>=</mo><mi>q</mi><mo>/</mo><mi>p</mi></math>; <math><mi>i</mi><mo>/</mo><mi>N</mi></math> se <math><mi>r</mi><mo>=</mo><mn>1</mn></math></td><td>passeio com barreiras</td></tr>
+    <tr><td>duração do jogo</td><td><math><mi>i</mi><mo>(</mo><mi>N</mi><mo>−</mo><mi>i</mi><mo>)</mo></math> se <math><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math>; <math><mo>(</mo><mi>i</mi><mo>−</mo><mi>N</mi><msub><mi>P</mi><mi>i</mi></msub><mo>)</mo><mo>/</mo><mo>(</mo><mi>q</mi><mo>−</mo><mi>p</mi><mo>)</mo></math></td><td>idem</td></tr>
+    <tr><td>ramificação</td><td><math><mi>E</mi><mo>=</mo><msup><mi>μ</mi><mi>n</mi></msup></math>; <math><msub><mi>π</mi><mn>0</mn></msub></math> = menor raiz de <math><mi>π</mi><mo>=</mo><mo>∑</mo><msup><mi>π</mi><mi>j</mi></msup><msub><mi>P</mi><mi>j</mi></msub></math></td><td><math><msub><mi>X</mi><mn>0</mn></msub><mo>=</mo><mn>1</mn></math></td></tr>
+    <tr><td>reversível</td><td><math><msub><mi>π</mi><mi>i</mi></msub><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>π</mi><mi>j</mi></msub><msub><mi>P</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub></math></td><td>ciclos simétricos</td></tr>
+    <tr><td>Metropolis</td><td><math><mi>α</mi><mo>=</mo><mo movablelimits="false">min</mo><mo>(</mo><mfrac><mrow><mi>b</mi><mo>(</mo><mi>j</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>j</mi><mo>,</mo><mi>i</mi><mo>)</mo></mrow><mrow><mi>b</mi><mo>(</mo><mi>i</mi><mo>)</mo><mi>q</mi><mo>(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>)</mo></mrow></mfrac><mo>,</mo><mn>1</mn><mo>)</mo></math></td><td><math><mi>q</mi></math> irredutível</td></tr>
+    <tr><td>HMM</td><td><math><msub><mi>F</mi><mi>n</mi></msub><mo>(</mo><mi>j</mi><mo>)</mo><mo>=</mo><mi>p</mi><mo>(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>|</mo><mi>j</mi><mo>)</mo><mo>∑</mo><msub><mi>F</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>(</mo><mi>i</mi><mo>)</mo><msub><mi>P</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></math></td><td>Viterbi: <em>max</em> no lugar de <math><mo>∑</mo></math></td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="bloco teo">
+  <h4>Em R, o mínimo que resolve a lista</h4>
+<pre><code>potencia &lt;- function(P, n) {
+  R &lt;- diag(nrow(P))
+  for (k in seq_len(n)) R &lt;- R %*% P
+  R }
+estacionaria &lt;- function(P) {   <span class="cmt"># pi = pi P, soma 1</span>
+  m &lt;- nrow(P)
+  A &lt;- rbind(t(P) - diag(m), rep(1, m))
+  qr.solve(A, c(rep(0, m), 1)) }
+S &lt;- solve(diag(t) - PT)        <span class="cmt"># transientes</span>
+rowSums(S)                      <span class="cmt"># tempo ate absorver</span>
+</code></pre>
+</div>
+
+<div class="nota">
+  <p>Condensado de Ross, S. M., <em>Introduction to Probability Models</em>, 13ª ed., Academic Press / Elsevier, 2024, capítulo 4 (págs. 201–299), para estudo pessoal. Numeração de equações e resultados igual à do livro. Todos os valores numéricos foram recalculados. Desenvolvimento completo, com as demonstrações longas: <a href="04-00-cadeias-de-markov.html">aula do capítulo 4</a>.</p>
+</div>
+
+<nav class="fim">
+  <span><a href="04-00-cadeias-de-markov.html">← Aula completa do capítulo 4</a></span>
+  <span><a href="../index.html">Menu →</a></span>
+</nav>
+
+</div>
+</body>
+</html>
