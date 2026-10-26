@@ -126,6 +126,19 @@ window.MathJax = {
       <p class="dica" hidden>Dica: como de cada estado só há um destino possível, a taxa de saída é a própria taxa do evento que leva embora dali. O ciclo é a soma dos três tempos médios.</p>
       <div class="resolucao" hidden><p>$v_0 = \lambda = 1$, $v_1 = \mu_1 = 2$, $v_2 = \mu_2 = 3$. Todas as probabilidades de transição valem 1, porque o ciclo é forçado: $P_{01}=P_{12}=P_{20}=1$. O ciclo médio é $1 + 0{,}5 + 1/3 = 11/6 \approx 1{,}83$ hora.</p></div>
     </div>
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Numa cadeia de Markov em tempo contínuo, o tempo que o processo passa num estado e o estado para onde ele vai ao sair são:</p>
+      <div class="alts">
+        <button data-op="a">(a) Dependentes, porque uma taxa alta encurta a estadia e torna aquele destino mais provável.</button>
+        <button data-op="b">(b) Independentes, e é isso que permite descrever a cadeia por uma taxa de saída e uma probabilidade de destino.</button>
+        <button data-op="c">(c) Independentes, mas só quando todas as taxas de saída são iguais.</button>
+        <button data-op="d">(d) Dependentes, porque a estadia é exponencial e a exponencial não tem memória.</button>
+      </div>
+      <div class="fb" data-op="a">A observação sobre as taxas é verdadeira: uma taxa grande numa seta aumenta tanto a chance daquele destino quanto a taxa total de saída. Mas isso é uma relação entre <em>parâmetros</em>; sorteado o estado, a duração da visita e o destino são variáveis independentes.</div>
+      <div class="fb" data-op="b">Correto. Se não fossem independentes, a duração da estadia informaria sobre o futuro, e o estado sozinho deixaria de resumir o passado.</div>
+      <div class="fb" data-op="c">A independência vale sempre, com taxas iguais ou não. Taxas de saída todas iguais é a hipótese de outra coisa, a uniformização, que serve para calcular a função de transição.</div>
+      <div class="fb" data-op="d">A falta de memória é o que obriga a estadia a ser exponencial; ela não cria vínculo com o destino. O argumento está invertido: é justamente por não haver memória que o destino não pode depender do tempo já passado.</div>
+    </div>
    </aside>
   </section>
 
@@ -230,6 +243,19 @@ window.MathJax = {
       <button class="btn" data-conferir>Conferir</button>
       <p class="dica" hidden>Dica: com $n$ paradas, são $M-n$ máquinas em uso, cada uma com o seu relógio de quebra. O técnico é um só, não importa quantas estejam na fila dele.</p>
       <div class="resolucao" hidden><p>$\lambda_n = (M-n)\lambda$, então $\lambda_0 = 3$ e $\lambda_2 = 1$. E $\mu_n = \mu = 4$ para todo $n \ge 1$, porque o técnico conserta uma de cada vez. Repare que a quebra faz o papel de chegada e o conserto, o de saída.</p></div>
+    </div>
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Numa fila com 3 servidores, cada um atendendo a uma taxa $\mu$, e chegadas em Poisson de taxa $\lambda$, a taxa total com que clientes <em>saem</em> quando há 5 no sistema é:</p>
+      <div class="alts">
+        <button data-op="a">(a) $5\mu$, um relógio por cliente presente.</button>
+        <button data-op="b">(b) $3\mu$, porque os três servidores estão ocupados.</button>
+        <button data-op="c">(c) $\mu$, porque só um cliente termina de cada vez.</button>
+        <button data-op="d">(d) $\lambda + 3\mu$, a taxa com que o estado muda.</button>
+      </div>
+      <div class="fb" data-op="a">Quem está esperando na fila não tem relógio correndo: ninguém está atendendo essa pessoa. Com 3 servidores, no máximo 3 relógios de serviço correm ao mesmo tempo, por mais gente que haja esperando.</div>
+      <div class="fb" data-op="b">Correto. Com 5 clientes, 3 estão em serviço e 2 esperam, e os três relógios somam $3\mu$. Essa é a razão de a taxa de saída travar em $s\mu$ a partir de $n = s$.</div>
+      <div class="fb" data-op="c">Os servidores trabalham em paralelo, então os relógios correm juntos e as taxas somam. Seria $\mu$ se houvesse um servidor só.</div>
+      <div class="fb" data-op="d">Essa é a taxa de saída do <em>estado</em> 5, somando chegadas e partidas: é o que vale para o tempo de permanência no estado. A pergunta é sobre a saída de <em>clientes</em>, que usa só a parte do serviço. Confundir as duas é o erro mais comum do capítulo.</div>
     </div>
    </aside>
   </section>
@@ -765,6 +791,19 @@ window.MathJax = {
       <p class="dica" hidden>Dica: as relações vêm das setas, $P_0 q_{01} = P_1 q_{10}$ e $P_1 q_{12} = P_2 q_{21}$. Falta só impor que os três somem 1.</p>
       <div class="resolucao" hidden><p>Das setas: $2P_0 = P_1$ e $3P_1 = 6P_2$, ou seja $P_2 = P_1/2$. Escrevendo tudo em $P_0$: $P_0(1 + 2 + 1) = 1$, então $P_0 = 0{,}25$, $P_1 = 0{,}5$ e $P_2 = 0{,}25$. Como as relações seta a seta foram satisfeitas, a cadeia é reversível e esses são os valores certos.</p></div>
     </div>
+    <div class="quiz" data-correta="c">
+      <p class="enunciado">Um conjunto de proporções satisfaz o balanço de cada estado (taxa de entrada igual à de saída), mas não satisfaz a igualdade entre os dois sentidos de todos os pares de estados. Pode-se concluir que:</p>
+      <div class="alts">
+        <button data-op="a">(a) As proporções estão erradas e o sistema precisa ser refeito.</button>
+        <button data-op="b">(b) A cadeia é reversível, e o chute das proporções é que foi mal escolhido.</button>
+        <button data-op="c">(c) As proporções estão certas, e a cadeia não é reversível.</button>
+        <button data-op="d">(d) A cadeia tem transições só entre estados vizinhos.</button>
+      </div>
+      <div class="fb" data-op="a">Numa cadeia ergódica, o balanço de cada estado mais a soma valer 1 determinam as proporções de forma única. Se um conjunto satisfaz isso, ele é a resposta, reversível ou não.</div>
+      <div class="fb" data-op="b">A igualdade entre os dois sentidos não depende de chute: ou ela vale para as proporções verdadeiras, e a cadeia é reversível, ou não vale, e ela não é. Como as proporções são únicas, não existe um chute melhor escondido.</div>
+      <div class="fb" data-op="c">Correto. O balanço vale em toda cadeia ergódica; a igualdade par a par é mais forte e caracteriza a reversibilidade. Satisfazer o primeiro sem o segundo é o retrato de uma cadeia que gira num sentido só, como o ciclo de três estados da engraxataria.</div>
+      <div class="fb" data-op="d">Seria o contrário: transições só entre vizinhos <em>obrigam</em> a igualdade par a par a valer, pelo argumento de contagem das travessias. Um fluxo que gira em ciclo precisa de pelo menos três estados e de setas que não voltam pelo mesmo caminho.</div>
+    </div>
    </aside>
   </section>
 
@@ -822,6 +861,19 @@ window.MathJax = {
       <button class="btn" data-conferir>Conferir</button>
       <p class="dica" hidden>Dica: $P_j = (3/4)^j$ dividido pela soma dada. Um cliente é recusado quando chega e encontra o sistema cheio.</p>
       <div class="resolucao" hidden><p>$P_0 = 1/2{,}7344 = 0{,}366$ e $P_3 = 0{,}4219/2{,}7344 = 0{,}154$. Como as chegadas são de Poisson, a proporção de clientes que encontra o sistema cheio é igual à proporção de <em>tempo</em> em que ele está cheio, que é $P_3$. Essa coincidência entre o que o cliente vê e o que o relógio vê é propriedade das chegadas de Poisson, e não vale para outros processos de chegada.</p></div>
+    </div>
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Numa fila com $s$ servidores exponenciais de taxa $\mu$ cada e chegadas em Poisson de taxa $\lambda$, <em>sem</em> limite de capacidade, a condição para existirem proporções de tempo de longo prazo é:</p>
+      <div class="alts">
+        <button data-op="a">(a) $\lambda &lt; \mu$, para o servidor dar conta.</button>
+        <button data-op="b">(b) $\lambda &lt; s\mu$.</button>
+        <button data-op="c">(c) $\lambda \le s\mu$, valendo também a igualdade.</button>
+        <button data-op="d">(d) Nenhuma: toda cadeia com infinitos estados tem proporções de tempo.</button>
+      </div>
+      <div class="fb" data-op="a">Essa é a condição do caso de um servidor só. Com $s$ servidores a capacidade total de atendimento é $s$ vezes maior, e a fila aguenta uma taxa de chegada bem maior.</div>
+      <div class="fb" data-op="b">Correto. A capacidade total é $s\mu$, e a soma dos produtos de razões converge exatamente quando $\lambda/(s\mu) &lt; 1$.</div>
+      <div class="fb" data-op="c">Na igualdade o sistema ainda volta a esvaziar, mas o tempo médio de retorno é infinito, e aí todas as proporções de tempo valem zero. É a mesma fronteira delicada do passeio aleatório equilibrado.</div>
+      <div class="fb" data-op="d">Com infinitos estados o processo pode fugir para o infinito, e é exatamente o que uma fila sobrecarregada faz. Espaço de estados finito é que garante solução, e é por isso que limitar a capacidade dispensa qualquer condição.</div>
     </div>
    </aside>
   </section>
