@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="estudo-chave" content="estocasticos/cap-05">
+<title>Cap. 5 — A exponencial e o processo de Poisson</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" defer></script>
+<link rel="stylesheet" href="../assets/estudo.css">
+</head>
+<body>
+<nav class="trilho" id="trilho" tabindex="0" aria-label="Sumário do capítulo" aria-expanded="false">
+  <div class="trilho-tracos" id="trilho-tracos" aria-hidden="true"></div>
+  <div class="trilho-painel">
+    <p class="trilho-cap" id="trilho-cap"></p>
+    <div class="trilho-lista" id="trilho-lista"></div>
+    <div class="trilho-rodape" id="trilho-rodape">
+      <button class="btn pequeno" id="btn-formulas">Fórmulas até aqui</button>
+      <button class="btn pequeno" id="btn-ir-resumo">Resumo</button>
+      <a class="btn pequeno" id="btn-inicio" href="../index.html" hidden>Início</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<h1>Cap. 5 — A exponencial e o processo de Poisson</h1>
+<p class="contexto">Onde isso se encaixa: até aqui o tempo andava de passo em passo. Aqui ele passa a correr continuamente, e tudo depende de uma única distribuição: a exponencial. Ela é a peça que faz o tempo contínuo ficar tratável, e o processo de Poisson é o primeiro processo construído com ela.</p>
+
+<div class="abas" role="tablist">
+  <button role="tab" aria-selected="true" data-aba="trilha">Trilha</button>
+  <button role="tab" aria-selected="false" data-aba="resumo">Resumo</button>
+</div>
+
+<div id="trilha">
+  <nav class="subtopicos" id="subtopicos" aria-label="Passos desta seção"></nav>
+  <div class="retomada" id="retomada" hidden></div>
+
+  <!-- ===================== SEÇÃO 1 ===================== -->
+  <div class="secao" data-numero="5.1" data-titulo="A exponencial" data-livro="§5.1–5.2.2">
+
+  <section class="passo" data-titulo="Quanto falta">
+   <div class="texto">
+    <h2>O tempo até a próxima coisa acontecer</h2>
+    <p>Você entra num banco com um único caixa. Tem uma pessoa sendo atendida. Para dizer qualquer coisa sobre a sua espera, você precisa de uma distribuição para "quanto tempo dura um atendimento".</p>
+    <p>Qualquer distribuição em $[0,\infty)$ serviria. Na prática, uma delas domina os modelos de tempo contínuo, por um motivo que vai ficar claro em dois passos: ela é a única que não guarda rancor do passado.</p>
+    <div class="formula" data-ref-id="f-exp-dens" data-ref-tipo="formula" data-ref-nome="Densidade exponencial">
+      $$f(x) = \class{s1}{\lambda} e^{-\class{s1}{\lambda} x}, \quad x \ge 0; \qquad F(x) = 1 - e^{-\class{s1}{\lambda} x}$$
+      <ul class="legenda">
+        <li><span class="s1">$\lambda$</span>: a taxa, em eventos por unidade de tempo</li>
+      </ul>
+    </div>
+    <p>A cauda sai de graça e vale a pena guardar de cabeça: $\bar F(x) = P\{X > x\} = e^{-\lambda x}$.</p>
+    <div class="ideia">A exponencial tem um único parâmetro, a taxa $\lambda$, e a sua cauda é $e^{-\lambda x}$.</div>
+    <div class="pare">
+      <p>No banco, o atendimento tem média de 10 minutos. Qual é $\lambda$, e em que unidade?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>A média é $1/\lambda$, então $\lambda = 1/10$ por minuto: um décimo de atendimento concluído por minuto. Se você trocar a unidade para horas, $\lambda = 6$ por hora. A taxa carrega a unidade; a média é o seu inverso.</p></div>
+    </div>
+   </div>
+   <aside class="apoio">
+    <div class="exemplo" data-ref-id="ex-banco" data-ref-tipo="exemplo" data-ref-nome="O caixa do banco">
+      <p>Um banco com um único caixa. Cada atendimento dura um tempo exponencial de média 10 minutos, independente dos outros. Quando você chega, há uma pessoa sendo atendida e você entra na fila.</p>
+      <p>Esse caso volta várias vezes: primeiro para a falta de memória, depois para a soma de exponenciais, e por último como a fila mais simples que existe.</p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Momentos">
+   <div class="texto">
+    <h2>Todos os momentos de uma vez</h2>
+    <p>A função geradora de momentos da exponencial é curta:</p>
+    <div class="formula" data-ref-id="f-exp-fgm" data-ref-tipo="formula" data-ref-nome="Geradora de momentos da exponencial">
+      $$\phi(t) = E[e^{tX}] = \frac{\lambda}{\lambda - t}, \qquad t &lt; \lambda$$
+    </div>
+    <p>Derivando em $t = 0$ saem todos os momentos sem nenhuma integral nova:</p>
+    <div class="formula" data-ref-id="f-exp-mom" data-ref-tipo="formula" data-ref-nome="Momentos da exponencial">
+      $$E[X^n] = \frac{n!}{\lambda^n}$$
+      $$E[X] = \frac{1}{\lambda}, \qquad Var(X) = \frac{1}{\lambda^2}$$
+    </div>
+    <p>Repare no desvio padrão: ele é igual à média. A exponencial é uma distribuição muito dispersa, com coeficiente de variação exatamente 1. Isso é uma consequência direta da falta de memória, no próximo passo, e é um bom detector: se os seus dados têm desvio padrão muito menor do que a média, a exponencial não serve.</p>
+    <p>Somar exponenciais de mesma taxa dá uma gama: $\sum_{i=1}^{n} X_i$ tem densidade $\lambda e^{-\lambda x}(\lambda x)^{n-1}/(n-1)!$, com média $n/\lambda$ e variância $n/\lambda^2$. Esse fato volta na primeira linha da seção das somas.</p>
+    <details class="demo">
+      <summary>Demonstração: $E[X^n] = n!/\lambda^n$ por integração por partes</summary>
+      <p>Integrando por partes, com $u = x^n$ e $dv = \lambda e^{-\lambda x}dx$:</p>
+      $$\begin{aligned}E[X^n] &= \int_0^\infty x^n \lambda e^{-\lambda x}\,dx\\ &= \Big[-x^n e^{-\lambda x}\Big]_0^\infty + \frac{n}{\lambda}\int_0^\infty x^{n-1}\lambda e^{-\lambda x}\,dx\end{aligned}$$
+      <p>O primeiro termo é zero nos dois extremos, então sobra a recursão $E[X^n] = (n/\lambda)E[X^{n-1}]$. Com $E[X^0] = 1$, iterar dá $E[X^n] = n!/\lambda^n$. Em particular $E[X^2] = 2/\lambda^2$, e daí $Var(X) = 2/\lambda^2 - 1/\lambda^2 = 1/\lambda^2$.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>No <span class="ref" data-ref="ex-banco">caixa do banco</span>, com média de 10 minutos:</p>
+      <p>$\lambda =$ <input class="lacuna" data-resp="0.1" data-tol="0.001" aria-label="taxa lambda"> por minuto.</p>
+      <p>Desvio padrão do atendimento $=$ <input class="lacuna" data-resp="10" data-tol="0.1" aria-label="desvio padrao"> minutos.</p>
+      <p>$E[X^2] =$ <input class="lacuna" data-resp="200" data-tol="1" aria-label="segundo momento"> minutos ao quadrado.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: o desvio padrão é $1/\lambda$, igual à média. E $E[X^2] = 2/\lambda^2$, não $(1/\lambda)^2$.</p>
+      <div class="resolucao" hidden><p>$\lambda = 1/10 = 0{,}1$. Desvio padrão $= 1/\lambda = 10$. E $E[X^2] = 2/\lambda^2 = 2 \times 100 = 200$, que confere com $Var + (E[X])^2 = 100 + 100$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Falta de memória">
+   <div class="texto">
+    <h2>Dez minutos esperando não mudam nada</h2>
+    <p>Você está há 10 minutos na fila do banco e a pessoa da frente continua sendo atendida. Quanto falta?</p>
+    <p>Com um tempo exponencial, a resposta é: exatamente o mesmo que faltava quando você chegou. Em contas,</p>
+    $$P\{X > 10 + 15 \mid X > 10\} = \frac{e^{-\lambda(25)}}{e^{-\lambda(10)}} = e^{-\lambda(15)}$$
+    <p>Com $\lambda = 1/10$ isso dá $0{,}223$ nos dois casos. O atendimento não "está quase acabando" por já ter durado: ele recomeça do zero a cada instante.</p>
+    <div class="definicao" data-ref-id="d-sem-memoria" data-ref-tipo="definicao" data-ref-nome="Falta de memória">
+      <p><strong>Sem memória:</strong> uma variável não negativa $X$ é <em>sem memória</em> quando $P\{X > s + t \mid X > t\} = P\{X > s\}$ para todo $s, t \ge 0$. Equivale a $\bar F(s+t) = \bar F(s)\bar F(t)$.</p>
+    </div>
+    <div class="ideia">Para uma variável sem memória, o tempo já decorrido não traz informação nenhuma sobre o tempo que falta.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-memoria">
+      <p>Na simulação, muitos atendimentos exponenciais começam ao mesmo tempo. Se você olhar só os que já passaram de 10 minutos e medir o tempo que ainda falta, a distribuição desse tempo que falta vai ser…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>A mesma de sempre</button>
+        <button data-op="b">Mais curta</button>
+        <button data-op="c">Mais longa</button>
+      </div>
+      <div class="explica" hidden><p>Cortar a parte inicial de uma exponencial e deslocar o que sobra devolve a mesma exponencial. O histograma do tempo restante fica em cima do histograma original, com a mesma média.</p></div>
+    </div>
+    <div class="sim" id="sim-memoria">
+      <label>Já esperou <input type="range" id="mem-slider" min="0" max="30" step="1" value="10"> <strong id="mem-valor">10</strong> min</label>
+      <svg viewBox="0 0 400 200" id="mem-svg" role="img" aria-label="Histograma do tempo restante comparado com a exponencial original"></svg>
+      <p id="mem-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Só ela esquece">
+   <div class="texto">
+    <h2>Nenhuma outra distribuição contínua faz isso</h2>
+    <p>A falta de memória parece uma propriedade entre outras. Ela é mais forte do que isso: a exponencial é a <strong>única</strong> distribuição contínua sem memória.</p>
+    <p>Isso transforma a propriedade numa ferramenta de modelagem. Toda vez que um modelo disser "o tempo que falta não depende do tempo já passado", a distribuição já está escolhida, não há o que decidir. É exatamente esse argumento que vai forçar a exponencial a aparecer nas cadeias em tempo contínuo, no capítulo seguinte.</p>
+    <div class="ideia">"Sem memória" e "exponencial" são a mesma coisa, em distribuição contínua. Um dos dois implica o outro.</div>
+    <details class="demo">
+      <summary>Demonstração: sem memória implica exponencial</summary>
+      <p>A condição $\bar F(s+t) = \bar F(s)\bar F(t)$ é a equação funcional de Cauchy na forma multiplicativa. Tomando $s = t = 1/n$ e iterando,</p>
+      $$\begin{aligned}& \bar F(1) = \bar F\!\left(\tfrac1n + \dots + \tfrac1n\right) = \bar F\!\left(\tfrac1n\right)^{\!n}\\ & \Longrightarrow\ \bar F\!\left(\tfrac1n\right) = \bar F(1)^{1/n}\end{aligned}$$
+      <p>Do mesmo jeito, $\bar F(m/n) = \bar F(1)^{m/n}$ para todo racional positivo $m/n$. Como $\bar F$ é contínua à direita e os racionais são densos, $\bar F(x) = \bar F(1)^x$ para todo $x \ge 0$. Escrevendo $\bar F(1) = e^{-\lambda}$ com $\lambda = -\log \bar F(1) > 0$, chega-se a $\bar F(x) = e^{-\lambda x}$.</p>
+      <p>A hipótese de continuidade é necessária: no caso discreto a mesma equação dá a geométrica, que também é sem memória.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="c">
+      <p class="enunciado">Seja $X$ exponencial de taxa 1. Sem fazer nenhuma integral, qual igualdade é verdadeira?</p>
+      <div class="alts">
+        <button data-op="a">(a) $E[X^2 \mid X > 1] = E[X^2] + 1$</button>
+        <button data-op="b">(b) $E[X^2 \mid X > 1] = (1 + E[X])^2$</button>
+        <button data-op="c">(c) $E[X^2 \mid X > 1] = E[(X+1)^2]$</button>
+        <button data-op="d">(d) $E[X^2 \mid X > 1] = E[X^2]$</button>
+      </div>
+      <div class="fb" data-op="a">Somar 1 ao momento não é o que a falta de memória diz. Ela diz que o <em>excedente</em> acima de 1 tem a distribuição de $X$, ou seja, $X$ dado $X>1$ tem a distribuição de $X + 1$. Elevar ao quadrado depois disso gera $E[X^2] + 2E[X] + 1$, não $E[X^2]+1$.</div>
+        <div class="fb" data-op="b">Essa é $(E[X+1])^2$, o quadrado da média. Média de quadrado e quadrado de média são diferentes sempre que há variabilidade.</div>
+      <div class="fb" data-op="c">Correto. Dado $X > 1$, o excedente $X - 1$ volta a ser exponencial de taxa 1, então $X$ condicionado tem a distribuição de $X + 1$. Qualquer função pode ser aplicada depois: $E[g(X) \mid X>1] = E[g(X+1)]$.</div>
+      <div class="fb" data-op="d">Isso valeria se condicionar não mudasse nada. Muda: a falta de memória preserva a distribuição do <em>excedente</em>, e não da variável inteira, que agora começa em 1.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Taxa de falha">
+   <div class="texto">
+    <h2>A taxa de falha diz tudo sobre a distribuição</h2>
+    <p>Para uma variável contínua não negativa, defina</p>
+    <div class="formula" data-ref-id="f-taxa-falha" data-ref-tipo="formula" data-ref-nome="Função taxa de falha">
+      $$r(t) = \frac{f(t)}{\bar F(t)}$$
+    </div>
+    <p>Lendo com cuidado: $r(t)\,dt$ é, aproximadamente, a probabilidade de falhar nos próximos $dt$ instantes <em>dado que chegou intacto até $t$</em>. É o risco instantâneo de quem já sobreviveu.</p>
+    <p>Na exponencial, $r(t) = \lambda e^{-\lambda t}/e^{-\lambda t} = \lambda$: risco constante. Essa é a mesma falta de memória vista de outro ângulo.</p>
+    <p>E a taxa determina a distribuição, sem perda nenhuma de informação:</p>
+    <div class="formula" data-ref-id="f-taxa-det" data-ref-tipo="formula" data-ref-nome="A taxa determina a cauda">
+      $$\bar F(t) = \exp\left\{-\int_0^t r(s)\,ds\right\}$$
+    </div>
+    <p>Então escolher uma distribuição de tempo de vida é a mesma coisa que escolher a forma do risco: constante, crescente (desgasta), ou decrescente (sobreviveu ao começo difícil).</p>
+    <div class="ideia">Taxa constante é exponencial; taxa crescente envelhece; taxa decrescente melhora com o tempo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-taxa">
+      <p>Duas peças têm o mesmo risco inicial $r(0)$. Na primeira o risco cresce com o tempo, na segunda fica constante. Comparadas, a chance de a primeira passar de um tempo $t$ grande é…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Menor</button>
+        <button data-op="b">Maior</button>
+        <button data-op="c">Igual</button>
+      </div>
+      <div class="explica" hidden><p>A cauda é $\exp\{-\int_0^t r\}$. Se $r$ cresce, a integral acumulada fica maior, e a exponencial de menos isso fica menor. Risco acumulado maior significa sobreviver menos.</p></div>
+    </div>
+    <div class="sim" id="sim-taxa">
+      <label>Forma do risco
+        <select id="taxa-forma">
+          <option value="const">constante</option>
+          <option value="cresc">crescente</option>
+          <option value="decr">decrescente</option>
+        </select>
+      </label>
+      <svg viewBox="0 0 400 230" id="taxa-svg" role="img" aria-label="Curva do risco instantâneo e a curva de sobrevivência correspondente"></svg>
+      <p id="taxa-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 2 ===================== -->
+  <div class="secao" data-numero="5.2" data-titulo="Corrida de exponenciais" data-livro="§5.2.3">
+
+  <section class="passo" data-titulo="O mínimo">
+   <div class="texto">
+    <h2>Vários relógios correndo: o primeiro a tocar</h2>
+    <p>Três peças de uma máquina falham, independentemente, a taxas $\lambda_1 = 2$, $\lambda_2 = 3$ e $\lambda_3 = 5$ por ano. A máquina para quando a primeira falhar. Quanto dura a máquina?</p>
+    <p>O mínimo passar de $t$ significa que <em>todos</em> passaram de $t$, e por independência as caudas se multiplicam:</p>
+    $$P\{\min_i X_i > t\} = \prod_{i=1}^{n} e^{-\lambda_i t} = e^{-\left(\sum_i \lambda_i\right) t}$$
+    <div class="formula" data-ref-id="f-minimo" data-ref-tipo="formula" data-ref-nome="Mínimo de exponenciais">
+      $$\begin{aligned}\min(X_1, \dots, X_n) \ \sim \ & \text{ exponencial}\\ & \text{de taxa } \lambda_1 + \dots + \lambda_n\end{aligned}$$
+    </div>
+    <p>No exemplo, a máquina dura um tempo exponencial de taxa $2+3+5 = 10$, ou seja, média $0{,}1$ ano. Taxas somam; médias não.</p>
+    <div class="ideia">Riscos que agem em paralelo se somam na taxa, e o resultado continua exponencial.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-corrida">
+      <p>Três relógios exponenciais com taxas 2, 3 e 5. Se você dobrar a taxa do terceiro, a média do tempo até o primeiro toque…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Cai, mas menos que a metade</button>
+        <button data-op="b">Cai pela metade</button>
+        <button data-op="c">Não muda</button>
+      </div>
+      <div class="explica" hidden><p>A taxa total vai de 10 para 15, então a média vai de $1/10$ para $1/15$. Caiu um terço, não a metade: o que dobrou foi uma parte da taxa total, não ela toda.</p></div>
+    </div>
+    <div class="sim" id="sim-corrida">
+      <label>$\lambda_3$ <input type="range" id="cor-slider" min="1" max="10" step="1" value="5"> <strong id="cor-valor">5</strong></label>
+      <svg viewBox="0 0 400 210" id="cor-svg" role="img" aria-label="Barras com as taxas das três peças e a taxa total do mínimo"></svg>
+      <p id="cor-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Quem vence">
+   <div class="texto">
+    <h2>Qual relógio tocou primeiro</h2>
+    <p>Saber quando a máquina para é metade da história. A outra metade é saber <em>qual</em> peça falhou, porque é ela que vai ser trocada.</p>
+    <p>Condicionando no valor de $X_i$ e pedindo que todos os outros sejam maiores:</p>
+    $$\begin{aligned}P\{X_i &lt; \min_{j \ne i} X_j\} &= \int_0^\infty \lambda_i e^{-\lambda_i t}\, e^{-\left(\sum_{j \ne i}\lambda_j\right)t}\,dt\\ &= \frac{\lambda_i}{\sum_j \lambda_j}\end{aligned}$$
+    <div class="formula" data-ref-id="f-vencedor" data-ref-tipo="formula" data-ref-nome="Quem vence a corrida">
+      $$P\{X_i \text{ é o menor}\} = \frac{\lambda_i}{\lambda_1 + \dots + \lambda_n}$$
+    </div>
+    <p>Com as taxas 2, 3 e 5: a primeira peça falha primeiro em 20% das vezes, a segunda em 30%, a terceira em 50%. A probabilidade é a fatia que a peça tem do risco total, nada mais.</p>
+    <div class="ideia">Quem vence a corrida é sorteado proporcionalmente às taxas.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Duas peças, com taxas $\lambda_1 = 2$ e $\lambda_2 = 3$ por ano.</p>
+      <p>$P\{$a primeira falha antes$\} =$ <input class="lacuna" data-resp="0.4" data-tol="0.005" aria-label="probabilidade de a primeira falhar antes">.</p>
+      <p>Média do tempo até a primeira falha, em anos: <input class="lacuna" data-resp="0.2" data-tol="0.005" aria-label="media do minimo">.</p>
+      <p>Se uma terceira peça, de taxa 5, entrar na corrida, $P\{$a primeira falha antes das outras duas$\} =$ <input class="lacuna" data-resp="0.2" data-tol="0.005" aria-label="probabilidade com tres pecas">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: a probabilidade é a taxa da peça dividida pela soma de <em>todas</em> as taxas em corrida. A média do mínimo é 1 dividido por essa mesma soma.</p>
+      <div class="resolucao" hidden><p>$2/(2+3) = 0{,}4$; a média é $1/5 = 0{,}2$ ano; com a terceira peça, $2/(2+3+5) = 0{,}2$. Entrar um competidor novo diminui a chance de todos os antigos.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Independência">
+   <div class="texto">
+    <h2>Quando aconteceu e o que aconteceu não se conversam</h2>
+    <p>Esse é o passo que faz todo o resto do tempo contínuo funcionar, e ele é fácil de passar batido.</p>
+    <p>Repita a conta do passo anterior, mas pedindo também que o mínimo passe de $t$:</p>
+    $$P\{X_i \text{ é o menor},\ \min_j X_j > t\} = \frac{\lambda_i}{\sum_j \lambda_j}\, e^{-\left(\sum_j \lambda_j\right) t}$$
+    <p>A probabilidade conjunta se fatorou: é $P\{X_i$ é o menor$\}$ vezes $P\{\min > t\}$. Ou seja, <strong>qual</strong> relógio tocou e <strong>quando</strong> ele tocou são independentes.</p>
+    <p>Guarde isso. No capítulo seguinte, um processo em tempo contínuo vai ser descrito por "espere um tempo exponencial, depois sorteie para onde ir". Essas duas coisas só podem ser descritas separadamente porque, aqui, elas são independentes.</p>
+    <div class="ideia">Numa corrida de exponenciais, o tempo do mínimo não informa nada sobre quem venceu, e vice-versa.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>No banco, há dois caixas atendendo, com taxas $\lambda_1$ e $\lambda_2$. Você acabou de ver alguém sair. Isso muda a sua estimativa de qual caixa atendeu essa pessoa?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Não. A chance de ter sido o caixa 1 é $\lambda_1/(\lambda_1+\lambda_2)$, cedo ou tarde. Saber que a saída foi rápida não aumenta a suspeita sobre o caixa mais rápido — e essa é justamente a parte contraintuitiva.</p></div>
+    </div>
+    <details class="demo">
+      <summary>Demonstração: o que sobra depois da primeira falha</summary>
+      <p>Mais forte do que a independência acima: dado que $X_i$ foi o menor e valeu $t$, os demais $X_j - t$ voltam a ser exponenciais independentes de taxas $\lambda_j$. Para ver isso, condicione:</p>
+      $$P\{X_j - t > s \mid X_j > t\} = e^{-\lambda_j s}$$
+      <p>por falta de memória, para cada $j \ne i$ separadamente; e as variáveis seguem independentes porque condicionar cada uma no próprio evento $\{X_j > t\}$ não cria vínculo entre elas.</p>
+      <p>Consequência prática: depois de trocar a peça que falhou, as outras estão "como novas". Nenhuma informação precisa ser carregada adiante além de quais peças estão em uso. Essa é a propriedade de Markov aparecendo antes de ter nome.</p>
+    </details>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Ordem completa">
+   <div class="texto">
+    <h2>A ordem inteira, não só o primeiro</h2>
+    <p>Para a probabilidade de uma ordem completa, use o passo anterior: depois que o primeiro termina, a corrida recomeça entre os que sobraram, com as mesmas taxas.</p>
+    $$P\{X_1 &lt; X_2 &lt; \dots &lt; X_n\} = \prod_{i=1}^{n-1} \frac{\lambda_i}{\lambda_i + \dots + \lambda_n}$$
+    <p>Cada fator é "o $i$-ésimo vence a corrida que ainda está em jogo". Com taxas 2, 3 e 5, a probabilidade da ordem $1, 2, 3$ é $\tfrac{2}{10} \times \tfrac{3}{8} = 0{,}075$.</p>
+    <p>Um caso que vale a pena: dois caixas ocupados e você em terceiro lugar. Você entra em serviço quando o primeiro dos dois acabar, e aí disputa com o que sobrou. A chance de você <em>não</em> ser o último a sair do banco é</p>
+    $$\left(\frac{\lambda_1}{\lambda_1+\lambda_2}\right)^{\!2} + \left(\frac{\lambda_2}{\lambda_1+\lambda_2}\right)^{\!2}$$
+    <p>Com $\lambda_1 = \lambda_2$ isso dá exatamente $1/2$. Com $\lambda_1 = 1$ e $\lambda_2 = 2$, dá $5/9 \approx 0{,}556$: taxas desiguais aumentam a sua chance.</p>
+    <div class="ideia">Probabilidades de ordem saem como produto de corridas sucessivas entre os que ainda não terminaram.</div>
+   </div>
+   <aside class="apoio">
+    <div class="acheerro">
+      <p>Com $\lambda_1 = \lambda_2 = \mu$, alguém calculou a chance de você não ser o último. Toque na linha com erro.</p>
+      <ol class="linhas">
+        <li data-fb="Certa. Você entra no lugar de quem terminar primeiro, e nesse instante disputa com quem continua em atendimento.">Entro em serviço quando o primeiro dos dois terminar, e aí disputo com o outro.</li>
+        <li data-fb="Certa, e é o ponto delicado: por falta de memória, o que já se passou do atendimento do outro não conta. A disputa é entre duas exponenciais de mesma taxa, começando do zero.">Nesse instante o outro atendimento recomeça do zero, então a disputa é justa: 1/2 para cada.</li>
+        <li data-errada data-fb="Aqui está o erro. A chance de eu não ser o último é a de ganhar essa última disputa, que é 1/2. Multiplicar por 1/2 de novo contaria duas vezes a mesma disputa: a primeira terminar antes não é uma condição a satisfazer, é só o que define quando eu entro.">Então a chance de eu não ser o último é 1/2 de o primeiro acabar antes, vezes 1/2 de eu ganhar a disputa final: 1/4.</li>
+      </ol>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 3 ===================== -->
+  <div class="secao" data-numero="5.3" data-titulo="Somas e misturas" data-livro="§5.2.4–5.2.5">
+
+  <section class="passo" data-titulo="Mesma taxa">
+   <div class="texto">
+    <h2>Somar exponenciais iguais dá uma gama</h2>
+    <p>Volte ao <span class="ref" data-ref="ex-banco">caixa do banco</span>, agora com quatro pessoas na sua frente. A sua espera é a soma de cinco atendimentos exponenciais independentes de taxa $\lambda$.</p>
+    <div class="formula" data-ref-id="f-gama" data-ref-tipo="formula" data-ref-nome="Soma de exponenciais de mesma taxa">
+      $$f_{S_n}(x) = \lambda e^{-\lambda x}\frac{(\lambda x)^{n-1}}{(n-1)!}$$
+      $$E[S_n] = \frac{n}{\lambda}, \qquad Var(S_n) = \frac{n}{\lambda^2}$$
+    </div>
+    <p>Com média de 10 minutos por atendimento e cinco atendimentos, a sua espera tem média 50 minutos e desvio padrão $\sqrt{5} \times 10 \approx 22{,}4$ minutos.</p>
+    <p>Repare no que acontece com a forma relativa: o coeficiente de variação da soma é $1/\sqrt{n}$, que cai. Uma exponencial é muito dispersa; cinco somadas já começam a parecer uma curva com pico, e com $n$ grande viram quase uma normal. É o teorema central do limite agindo sobre a soma mais simples possível.</p>
+    <div class="ideia">Somar $n$ exponenciais de mesma taxa concentra a distribuição: a média cresce como $n$, o desvio padrão só como $\sqrt{n}$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-gama">
+      <p>Ao aumentar o número de atendimentos somados, mantendo a taxa, o pico da densidade…</p>
+      <div class="alts">
+        <button data-op="a">Continua em zero</button>
+        <button data-op="b" data-certa>Sai de zero e anda para a direita</button>
+        <button data-op="c">Fica cada vez mais alto</button>
+      </div>
+      <div class="explica" hidden><p>Com $n = 1$ a densidade é máxima em zero. Com $n \ge 2$ o fator $x^{n-1}$ zera a densidade na origem e o máximo passa para $(n-1)/\lambda$. A curva também fica mais baixa e larga, porque a área continua valendo 1 enquanto a média cresce.</p></div>
+    </div>
+    <div class="sim" id="sim-gama">
+      <label>Atendimentos somados <input type="range" id="gama-slider" min="1" max="12" step="1" value="1"> <strong id="gama-valor">1</strong></label>
+      <svg viewBox="0 0 400 200" id="gama-svg" role="img" aria-label="Densidade da soma de exponenciais para vários valores do número de termos"></svg>
+      <p id="gama-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Taxas distintas">
+   <div class="texto">
+    <h2>Somar exponenciais de taxas diferentes</h2>
+    <p>Um processo em duas etapas: a primeira dura exponencial de taxa $\lambda_1$, a segunda exponencial de taxa $\lambda_2$, independentes. O total não é mais gama.</p>
+    <div class="formula" data-ref-id="f-hipo" data-ref-tipo="formula" data-ref-nome="Soma de exponenciais de taxas distintas">
+      $$f_S(t) = \sum_{i=1}^{n} C_{i,n}\, \lambda_i e^{-\lambda_i t}, \qquad C_{i,n} = \prod_{j \ne i} \frac{\lambda_j}{\lambda_j - \lambda_i}$$
+    </div>
+    <p>A cauda sai com os mesmos coeficientes, e é a forma mais útil na prática:</p>
+    <div class="formula" data-ref-id="f-hipo-cauda" data-ref-tipo="formula" data-ref-nome="Cauda da soma de taxas distintas">
+      $$P\{S > t\} = \sum_{i=1}^{n} C_{i,n}\, e^{-\lambda_i t}$$
+    </div>
+    <p>Com $\lambda_1 = 1$ e $\lambda_2 = 2$: $C_{1,2} = 2/(2-1) = 2$ e $C_{2,2} = 1/(1-2) = -1$, então $f_S(t) = 2e^{-t} - 2e^{-2t}$ e $P\{S>t\} = 2e^{-t} - e^{-2t}$. Em $t = 2$ isso dá $0{,}252$. Média $1 + 0{,}5 = 1{,}5$; variância $1 + 0{,}25 = 1{,}25$.</p>
+    <p>Essa distribuição tem nome: <strong>hipoexponencial</strong>. O prefixo vem do coeficiente de variação, que é menor que 1 — ela é <em>menos</em> dispersa que uma exponencial de mesma média.</p>
+    <div class="ideia">Somar etapas exponenciais com taxas diferentes dá uma combinação de exponenciais, com coeficientes que podem ser negativos.</div>
+    <details class="demo">
+      <summary>Demonstração: a densidade por indução</summary>
+      <p>Para $n = 2$, convolução direta:</p>
+      $$\begin{aligned}f_S(t) &= \int_0^t \lambda_1 e^{-\lambda_1 s}\lambda_2 e^{-\lambda_2(t-s)}\,ds\\ &= \lambda_1\lambda_2 e^{-\lambda_2 t}\int_0^t e^{-(\lambda_1-\lambda_2)s}\,ds\end{aligned}$$
+      <p>que, integrando, dá $\dfrac{\lambda_2}{\lambda_2-\lambda_1}\lambda_1 e^{-\lambda_1 t} + \dfrac{\lambda_1}{\lambda_1-\lambda_2}\lambda_2 e^{-\lambda_2 t}$, exatamente a fórmula com $n=2$.</p>
+      <p>No passo de indução, suponha a fórmula válida para $n-1$ termos e convolua com $\lambda_n e^{-\lambda_n t}$. Cada parcela $K_i \lambda_i e^{-\lambda_i t}$ convoluída com a nova exponencial reproduz, pelo caso $n=2$, um termo em $e^{-\lambda_i t}$ e um termo em $e^{-\lambda_n t}$. Agrupando os termos em $e^{-\lambda_i t}$ sai o coeficiente $C_{i,n}$; o coeficiente de $e^{-\lambda_n t}$ fica determinado pela condição $\int f_S = 1$, que força $\sum_i C_{i,n} = 1$. Essa identidade é um bom teste de conta: os coeficientes sempre somam 1, mesmo tendo sinais alternados.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Duas etapas independentes, com $\lambda_1 = 1$ e $\lambda_2 = 3$ por hora.</p>
+      <p>Média do total, em horas: <input class="lacuna" data-resp="1.3333" data-tol="0.01" aria-label="media do total">.</p>
+      <p>$C_{1,2} = \lambda_2/(\lambda_2-\lambda_1) =$ <input class="lacuna" data-resp="1.5" data-tol="0.01" aria-label="coeficiente um">.</p>
+      <p>$C_{2,2} =$ <input class="lacuna" data-resp="-0.5" data-tol="0.01" aria-label="coeficiente dois">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: no segundo coeficiente, o índice que muda é o do denominador: $C_{2,2} = \lambda_1/(\lambda_1-\lambda_2)$. E os dois têm que somar 1.</p>
+      <div class="resolucao" hidden><p>Média $= 1/1 + 1/3 = 4/3 \approx 1{,}33$. $C_{1,2} = 3/(3-1) = 1{,}5$ e $C_{2,2} = 1/(1-3) = -0{,}5$. Somam 1, como tem que ser.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Misturar">
+   <div class="texto">
+    <h2>Misturar não é somar, e o risco anda para o outro lado</h2>
+    <p>Duas situações parecidas de enunciado e opostas de comportamento.</p>
+    <p><strong>Somar:</strong> o item passa pela etapa 1 <em>e depois</em> pela etapa 2. <strong>Misturar:</strong> o item é de um dos dois tipos, sorteado na fabricação, e aí tem uma única duração exponencial com a taxa do seu tipo.</p>
+    <div class="formula" data-ref-id="f-hiper" data-ref-tipo="formula" data-ref-nome="Mistura de exponenciais">
+      $$f(x) = \sum_{i=1}^{n} p_i\, \lambda_i e^{-\lambda_i x}, \qquad \sum_i p_i = 1$$
+    </div>
+    <p>A mistura chama-se <strong>hiperexponencial</strong>, e o coeficiente de variação dela é maior que 1: mais dispersa que a exponencial.</p>
+    <p>O que separa as duas de verdade é a taxa de falha. Na soma, o risco <em>cresce</em>: quanto mais tempo passa, mais provável é que a primeira etapa já tenha terminado e você esteja na etapa de taxa maior. Na mistura, o risco <em>decresce</em>: sobreviver muito tempo é evidência de ser do tipo bom, e aí o risco converge para $\min_i \lambda_i$.</p>
+    <div class="ideia">Soma de exponenciais envelhece; mistura de exponenciais rejuvenesce. O que muda é se o tempo passado é informação sobre a etapa ou sobre o tipo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="compara">
+      <div><h4>Soma (duas etapas)</h4><p>Passa pela etapa 1 e depois pela 2. Menos dispersa que a exponencial. Risco crescente, de $0$ até $\min_i \lambda_i$.</p></div>
+      <div><h4>Mistura (dois tipos)</h4><p>É de um tipo ou do outro. Mais dispersa que a exponencial. Risco decrescente, de $\sum_i p_i\lambda_i$ até $\min_i \lambda_i$.</p></div>
+    </div>
+    <div class="quiz" data-correta="a">
+      <p class="enunciado">Um lote de componentes é feito em duas fábricas. Os da fábrica A duram um tempo exponencial de média 1 ano; os da B, exponencial de média 10 anos. Metade do lote vem de cada fábrica, e não há como saber de qual veio um componente só olhando. Sobre o risco instantâneo de falha de um componente do lote:</p>
+      <div class="alts">
+        <button data-op="a">(a) Decresce com a idade, e tende a $0{,}1$ por ano.</button>
+        <button data-op="b">(b) É constante e igual a $0{,}55$ por ano, a média das duas taxas.</button>
+        <button data-op="c">(c) Cresce com a idade, porque o componente desgasta.</button>
+        <button data-op="d">(d) É constante, porque mistura de exponenciais é exponencial.</button>
+      </div>
+      <div class="fb" data-op="a">Correto. No instante zero o risco é a média das taxas, $0{,}5(1) + 0{,}5(0{,}1) = 0{,}55$. Mas sobreviver dez anos é forte evidência de ser da fábrica B, e aí o risco cai para a taxa de B, $0{,}1$. O risco decresce de $0{,}55$ para $0{,}1$.</div>
+      <div class="fb" data-op="b">A média das taxas é o risco só no instante zero, quando nada se sabe. A partir daí, sobreviver é informação sobre o tipo, e o risco muda.</div>
+      <div class="fb" data-op="c">Nenhum componente aqui desgasta: cada um, sabido o tipo, é exponencial e sem memória. O risco muda por causa da nossa incerteza sobre o tipo, não por causa de desgaste. Risco crescente apareceria se o componente passasse por etapas em sequência.</div>
+      <div class="fb" data-op="d">Mistura de exponenciais não é exponencial. Soma de exponenciais também não (a não ser em distribuição gama, que não é exponencial para $n \ge 2$). O que é fechado por mistura ou soma é a família de fases, não a exponencial.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Fases">
+   <div class="texto">
+    <h2>Montando distribuições com fases exponenciais</h2>
+    <p>Somar e misturar podem ser combinados: passe por uma primeira fase exponencial e, ao terminar, ou pare, ou siga para uma segunda fase, e assim por diante. O número de fases percorridas é aleatório.</p>
+    <p>Essa construção tem nome, <strong>coxiana</strong>, e tem uma consequência prática grande: escolhendo o número de fases, as taxas e as probabilidades de continuar, dá para chegar arbitrariamente perto de praticamente qualquer distribuição de tempo positiva.</p>
+    <p>Por que isso importa aqui: tudo o que vai ser construído com exponenciais nos próximos capítulos — processos de Poisson, cadeias em tempo contínuo, filas — fica tratável porque a exponencial é sem memória. Fases são o jeito de manter essa facilidade de cálculo e ainda assim modelar durações que não são nada exponenciais. Em vez de trocar a exponencial por outra distribuição, você empilha exponenciais e aumenta o espaço de estados.</p>
+    <div class="ideia">A exponencial não é limitação: empilhando fases exponenciais você modela quase qualquer duração, sem perder a falta de memória dentro de cada fase.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Numa coxiana, o tempo restante depende de quanto já se passou. Mas cada fase, por dentro, é sem memória. Como as duas coisas convivem?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Porque o tempo decorrido é informação sobre <em>em qual fase você está</em>, e não sobre o progresso dentro da fase. Se alguém te contar a fase atual, o tempo que falta volta a ser sem memória. Esse é exatamente o truque que o capítulo seguinte usa: o estado da cadeia guarda a fase, e dado o estado o futuro não depende do passado.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 4 ===================== -->
+  <div class="secao" data-numero="5.4" data-titulo="O processo de Poisson" data-livro="§5.3.1–5.3.2">
+
+  <section class="passo" data-titulo="Contar eventos">
+   <div class="texto">
+    <h2>Contar coisas que chegam ao longo do tempo</h2>
+    <p>Ligações entrando numa central, clientes chegando a uma loja, partículas atingindo um detector. Em todos, o objeto de interesse é o mesmo: $N(t)$, o número de eventos ocorridos até o instante $t$.</p>
+    <div class="definicao" data-ref-id="d-contagem" data-ref-tipo="definicao" data-ref-nome="Processo de contagem">
+      <p><strong>Processo de contagem:</strong> uma família $\{N(t), t \ge 0\}$ em que $N(t)$ é o número de eventos até $t$. Então $N(t) \ge 0$, é inteiro, é não decrescente, e para $s &lt; t$ a diferença $N(t) - N(s)$ conta os eventos no intervalo $(s, t]$.</p>
+    </div>
+    <p>A trajetória é uma escada: fica plana e dá um salto de 1 em cada evento. Toda a informação está nos instantes dos saltos.</p>
+    <p>Daqui para frente, dois nomes: $T_n$ é o tempo entre o evento $n-1$ e o evento $n$, e $S_n = T_1 + \dots + T_n$ é o instante do $n$-ésimo evento. A escada $N(t)$ e a sequência $S_1, S_2, \dots$ descrevem a mesma coisa de dois jeitos.</p>
+    <div class="ideia">Um processo de contagem é uma escada; descrevê-lo é descrever os instantes dos saltos ou a altura da escada, e as duas descrições são equivalentes.</div>
+   </div>
+   <aside class="apoio">
+    <div class="sim" id="sim-escada">
+      <label>Taxa <input type="range" id="esc-slider" min="1" max="10" step="1" value="4"> <strong id="esc-valor">4</strong> por unidade</label>
+      <button class="btn pequeno" id="esc-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 190" id="esc-svg" role="img" aria-label="Instantes dos eventos numa linha de tempo e a escada de contagem correspondente"></svg>
+      <p id="esc-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+    <div class="pare">
+      <p>Olhando a escada da simulação: $N(t)$ é contínua em $t$? E $N(t) - N(s)$ pode ser negativo?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Não é contínua: salta nos instantes dos eventos (por convenção, contínua à direita, de modo que o evento já é contado no instante em que ocorre). E $N(t)-N(s)$ nunca é negativo para $s&lt;t$, porque eventos não se desfazem. Essas duas coisas juntas são o que "não decrescente e inteira" quer dizer.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Incrementos">
+   <div class="texto">
+    <h2>Duas hipóteses sobre os incrementos</h2>
+    <p>Existem muitos processos de contagem. O que isola o de Poisson são duas hipóteses sobre as contagens em intervalos.</p>
+    <div class="definicao" data-ref-id="d-incrementos" data-ref-tipo="definicao" data-ref-nome="Incrementos independentes e estacionários">
+      <p><strong>Incrementos independentes:</strong> as contagens em intervalos de tempo disjuntos são variáveis independentes.</p>
+      <p><strong>Incrementos estacionários:</strong> a distribuição de $N(t+s) - N(s)$ não depende de $s$, só do comprimento $t$ do intervalo.</p>
+    </div>
+    <p>Independentes diz que o que aconteceu ontem não ajuda a prever hoje. Estacionários diz que não há hora boa nem hora ruim: a distribuição só depende de quanto tempo você observou.</p>
+    <p>As duas são hipóteses fortes, e cada uma falha em situações diferentes. Chamadas a uma central falham na estacionariedade (de manhã chega mais que de madrugada). Terremotos falham na independência (um tremor grande provoca réplicas). Os dois casos ganham generalização própria no fim do capítulo.</p>
+    <div class="ideia">Independência é sobre memória; estacionariedade é sobre a hora do dia. São hipóteses separadas, e dá para violar uma sem violar a outra.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="d">
+      <p class="enunciado">Um processo conta clientes que entram numa padaria. Das quatro descrições, qual é incompatível com incrementos <em>independentes</em>, mas compatível com incrementos estacionários?</p>
+      <div class="alts">
+        <button data-op="a">(a) Chegam mais clientes de manhã do que à tarde.</button>
+        <button data-op="b">(b) A taxa média é a mesma em qualquer janela de uma hora.</button>
+        <button data-op="c">(c) Dois clientes nunca entram exatamente no mesmo instante.</button>
+        <button data-op="d">(d) Quem entra costuma chamar amigos, que entram minutos depois.</button>
+      </div>
+      <div class="fb" data-op="a">Essa viola a <em>estacionariedade</em>, não a independência: a distribuição da contagem passa a depender de qual hora é. É o caso que a taxa variável trata.</div>
+      <div class="fb" data-op="b">Essa é a própria estacionariedade enunciada em palavras, e não diz nada sobre independência.</div>
+      <div class="fb" data-op="c">Essa é a hipótese de não haver eventos simultâneos, que entra pelos axiomas e é separada das duas. Ela não é violada nem pela dependência nem pela variação da taxa.</div>
+      <div class="fb" data-op="d">Correto. Um evento aumenta a chance de eventos logo depois, então a contagem num intervalo informa sobre a contagem no intervalo seguinte: a independência cai. A taxa média ao longo do dia pode continuar a mesma, então a estacionariedade sobrevive. É o padrão de agrupamento que o processo autoexcitado modela.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Os axiomas">
+   <div class="texto">
+    <h2>Três axiomas, e um símbolo para "desprezível"</h2>
+    <p>Falta dizer quanto se espera num intervalo curtíssimo. Para isso, uma notação:</p>
+    <div class="definicao" data-ref-id="d-oh" data-ref-tipo="definicao" data-ref-nome="Ordem pequena de h">
+      <p><strong>$o(h)$:</strong> uma função $g$ é $o(h)$ quando $g(h)/h \to 0$ com $h \to 0$. Ou seja, some mais rápido que $h$. Por exemplo $h^2$ é $o(h)$; $h$ não é.</p>
+    </div>
+    <div class="definicao" data-ref-id="d-poisson" data-ref-tipo="definicao" data-ref-nome="Processo de Poisson">
+      <p><strong>Processo de Poisson de taxa $\lambda > 0$:</strong> um processo de contagem com</p>
+      <p>(i) $N(0) = 0$;</p>
+      <p>(ii) incrementos independentes e estacionários;</p>
+      <p>(iii) $P\{N(h) = 1\} = \lambda h + o(h)$ e $P\{N(h) \ge 2\} = o(h)$.</p>
+    </div>
+    <p>O terceiro axioma faz dois trabalhos. A primeira parte diz que, em janela curta, a chance de um evento é proporcional ao comprimento da janela, com constante $\lambda$. A segunda proíbe eventos simultâneos: dois eventos na mesma janela curta é desprezível de ordem superior.</p>
+    <p>Repare que nada foi dito sobre a distribuição de $N(t)$. Ela não é hipótese: vai sair dos três axiomas no próximo passo.</p>
+    <div class="ideia">Os axiomas falam só do comportamento local em janelas curtas; a distribuição de $N(t)$ é consequência, não hipótese.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Por que não basta exigir $P\{N(h) \ge 1\} = \lambda h + o(h)$, sem dizer nada sobre dois ou mais eventos?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Porque aí um processo em que os eventos chegam aos pares satisfaria a condição e não seria Poisson: ele teria $P\{N(h) \ge 1\} \approx \lambda h$ e $P\{N(h) = 2\} \approx \lambda h$ também. A contagem seria sempre par, nunca com distribuição Poisson. Proibir o agrupamento em um mesmo instante é uma hipótese genuína, não um detalhe técnico — e tirá-la é o que gera o processo composto, mais adiante.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Sai a Poisson">
+   <div class="texto">
+    <h2>De onde vem a distribuição de Poisson</h2>
+    <p>Com os três axiomas, a distribuição de $N(t)$ fica determinada.</p>
+    <div class="formula" data-ref-id="f-poisson-dist" data-ref-tipo="formula" data-ref-nome="Distribuição da contagem de Poisson">
+      $$P\{N(t) = n\} = e^{-\class{s1}{\lambda} t}\frac{(\class{s1}{\lambda} t)^n}{n!}$$
+      <ul class="legenda">
+        <li><span class="s1">$\lambda$</span>: taxa do processo; a contagem tem média e variância iguais a $\lambda t$</li>
+      </ul>
+    </div>
+    <p>A ideia da prova: fatie $(0,t]$ em janelas curtas. Em cada janela cabe zero ou um evento, com probabilidade de um evento aproximadamente $\lambda t/n$, e as janelas são independentes. Isso é uma binomial com muitos ensaios e probabilidade pequena, que converge para a Poisson. A conta formal vem por equação diferencial no recolhível.</p>
+    <p>Como média e variância são iguais a $\lambda t$, um teste barato de aderência é comparar média e variância amostrais da contagem. Variância muito maior que a média é sinal de que a taxa não é constante, ou de que os eventos vêm agrupados.</p>
+    <div class="ideia">A contagem num intervalo de comprimento $t$ é Poisson de média $\lambda t$, e a média é igual à variância.</div>
+    <details class="demo">
+      <summary>Demonstração: a equação diferencial de $P_0(t)$ e de $P_n(t)$</summary>
+      <p>Seja $P_n(t) = P\{N(t) = n\}$. Para $n = 0$, nenhum evento em $(0, t+h]$ é nenhum em $(0,t]$ e nenhum em $(t, t+h]$, eventos independentes pelos axiomas:</p>
+      $$P_0(t+h) = P_0(t)\,[1 - \lambda h + o(h)]$$
+      <p>Dividindo por $h$ e fazendo $h \to 0$, sobra $P_0'(t) = -\lambda P_0(t)$. Com $P_0(0)=1$, isso dá $P_0(t) = e^{-\lambda t}$.</p>
+      <p>Para $n \ge 1$, a contagem chega a $n$ em $t+h$ de três maneiras: estava em $n$ e nada aconteceu, estava em $n-1$ e um evento aconteceu, ou estava abaixo e dois ou mais aconteceram (que é $o(h)$):</p>
+      $$P_n(t+h) = P_n(t)(1-\lambda h) + P_{n-1}(t)\lambda h + o(h)$$
+      $$\Longrightarrow\quad P_n'(t) = -\lambda P_n(t) + \lambda P_{n-1}(t)$$
+      <p>Multiplicando por $e^{\lambda t}$, o lado esquerdo vira a derivada de $e^{\lambda t}P_n(t)$:</p>
+      $$\frac{d}{dt}\left[e^{\lambda t}P_n(t)\right] = \lambda e^{\lambda t}P_{n-1}(t)$$
+      <p>Com $n=1$ e $P_0(t)=e^{-\lambda t}$, o lado direito é a constante $\lambda$, então $e^{\lambda t}P_1(t) = \lambda t$ (a constante de integração é zero porque $P_1(0)=0$), ou seja $P_1(t) = \lambda t e^{-\lambda t}$. Indução em $n$ com o mesmo passo dá $P_n(t) = e^{-\lambda t}(\lambda t)^n/n!$.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-poisson">
+      <p>Com taxa 3 por hora e duas horas de observação, a contagem mais provável é…</p>
+      <div class="alts">
+        <button data-op="a">Só o 6</button>
+        <button data-op="b" data-certa>5 e 6 empatados</button>
+        <button data-op="c">Sempre o 0</button>
+      </div>
+      <div class="explica" hidden><p>Com média $\lambda t = 6$ inteira, a Poisson tem dois valores modais empatados: $n = 5$ e $n = 6$, os dois com probabilidade $0{,}1606$. Isso acontece sempre que $\lambda t$ é inteiro.</p></div>
+    </div>
+    <div class="sim" id="sim-poisson">
+      <label>Taxa <input type="range" id="poi-lam" min="1" max="8" step="1" value="3"> <strong id="poi-lam-v">3</strong></label>
+      <label>Tempo observado <input type="range" id="poi-t" min="1" max="4" step="1" value="2"> <strong id="poi-t-v">2</strong></label>
+      <svg viewBox="0 0 400 200" id="poi-svg" role="img" aria-label="Barras das probabilidades da contagem de Poisson"></svg>
+      <p id="poi-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Usando">
+   <div class="texto">
+    <h2>Contas com a contagem</h2>
+    <p>Uma central recebe chamadas segundo um processo de Poisson de taxa 3 por hora. Tudo o que se pergunta sobre contagens sai da distribuição e dos incrementos.</p>
+    <p>Em 2 horas, a contagem é Poisson de média 6. A chance de nenhuma chamada é $e^{-6} = 0{,}0025$; de exatamente 5 é $e^{-6}6^5/5! = 0{,}1606$.</p>
+    <p>A chance de 5 chamadas entre as 9h e as 11h e 2 chamadas entre as 11h e as 12h é o <em>produto</em> das duas probabilidades, por incrementos independentes. É sempre assim: intervalos disjuntos se multiplicam, e só o comprimento de cada um importa.</p>
+    <p>Cuidado com uma armadilha de leitura: "duas chamadas por hora, em média" não é a mesma informação que "uma chamada a cada meia hora". A primeira é uma taxa, a segunda sugere regularidade. Num processo de Poisson de taxa 2 por hora, é perfeitamente comum ter uma hora com nenhuma chamada: isso acontece com probabilidade $e^{-2} = 0{,}135$, uma hora em cada sete.</p>
+    <div class="ideia">Intervalos disjuntos se multiplicam; dentro de cada um, só o comprimento conta.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Chamadas em Poisson de taxa 3 por hora. Use quatro casas.</p>
+      <p>$P\{$nenhuma chamada em 1 hora$\} =$ <input class="lacuna" data-resp="0.0498" data-tol="0.0006" aria-label="nenhuma chamada em uma hora">.</p>
+      <p>$P\{$exatamente 4 chamadas em 2 horas$\} =$ <input class="lacuna" data-resp="0.1339" data-tol="0.0008" aria-label="quatro chamadas em duas horas">.</p>
+      <p>$P\{$nenhuma na primeira hora e nenhuma na segunda$\} =$ <input class="lacuna" data-resp="0.0025" data-tol="0.0004" aria-label="nenhuma nas duas horas">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: na última, use incrementos independentes e multiplique as duas primeiras parcelas de uma hora. O resultado tem que coincidir com $e^{-6}$.</p>
+      <div class="resolucao" hidden><p>$e^{-3} = 0{,}0498$. Em 2 horas a média é 6, e $e^{-6}6^4/4! = 0{,}1339$. Nenhuma em duas horas seguidas é $e^{-3}e^{-3} = e^{-6} = 0{,}0025$, o mesmo que calcular direto num intervalo de 2 horas: é a consistência entre independência e estacionariedade.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 5 ===================== -->
+  <div class="secao" data-numero="5.5" data-titulo="Tempos entre eventos" data-livro="§5.3.2">
+
+  <section class="passo" data-titulo="Intervalos">
+   <div class="texto">
+    <h2>Os intervalos entre eventos são exponenciais independentes</h2>
+    <p>Até agora o processo foi descrito pela contagem. Olhe pelos intervalos.</p>
+    <p>O primeiro é fácil: $T_1 > t$ é a mesma coisa que $N(t) = 0$, então $P\{T_1 > t\} = e^{-\lambda t}$. O primeiro intervalo é exponencial de taxa $\lambda$.</p>
+    <p>Para o segundo, condicione em $T_1 = s$. O que acontece depois de $s$ está em intervalos disjuntos do que aconteceu antes, então não depende de $s$; e pela estacionariedade a contagem em $(s, s+t]$ se comporta como a contagem em $(0,t]$. Logo $P\{T_2 > t \mid T_1 = s\} = e^{-\lambda t}$, para qualquer $s$. Isso é ao mesmo tempo a distribuição de $T_2$ e a independência entre $T_1$ e $T_2$.</p>
+    <div class="formula" data-ref-id="f-intervalos" data-ref-tipo="formula" data-ref-nome="Intervalos de um processo de Poisson">
+      $$\begin{aligned}& T_1, T_2, T_3, \dots \text{ independentes},\\ & \text{cada um exponencial de taxa } \lambda\end{aligned}$$
+    </div>
+    <p>Repetindo o argumento, todos os intervalos são independentes e exponenciais de taxa $\lambda$. Daí, pela <span class="ref" data-ref="f-gama">soma de exponenciais de mesma taxa</span>, o instante do $n$-ésimo evento é $S_n \sim$ gama, com média $n/\lambda$.</p>
+    <div class="ideia">Contar eventos com os axiomas de Poisson é a mesma coisa que esperar intervalos exponenciais independentes, um atrás do outro.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-interv">
+      <p>Numa amostra de um processo de Poisson, o histograma dos intervalos entre eventos consecutivos deve ter o pico…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Perto de zero</button>
+        <button data-op="b">Perto da média $1/\lambda$</button>
+        <button data-op="c">Simétrico em torno da média</button>
+      </div>
+      <div class="explica" hidden><p>Os intervalos são exponenciais, e a densidade exponencial é máxima em zero. Intervalos curtos são os mais frequentes, embora a média seja $1/\lambda$. É por isso que eventos de Poisson sempre parecem vir em grupos ao olho nu, sem que haja nenhum agrupamento de verdade.</p></div>
+    </div>
+    <div class="sim" id="sim-interv">
+      <label>Taxa <input type="range" id="int-slider" min="1" max="8" step="1" value="3"> <strong id="int-valor">3</strong></label>
+      <button class="btn pequeno" id="int-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 200" id="int-svg" role="img" aria-label="Histograma dos intervalos entre eventos com a densidade exponencial sobreposta"></svg>
+      <p id="int-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Como simular">
+   <div class="texto">
+    <h2>A terceira descrição, e a que se usa no computador</h2>
+    <p>Três descrições do mesmo processo, todas equivalentes:</p>
+    <p>(1) pelos axiomas locais em janelas curtas; (2) por $N(t)$ ser Poisson de média $\lambda t$ com incrementos independentes; (3) por $T_1, T_2, \dots$ serem exponenciais independentes de taxa $\lambda$.</p>
+    <p>A terceira é a que se usa para simular: sorteie exponenciais e some. Também é a que responde mais rápido às perguntas sobre instantes, enquanto a segunda responde às perguntas sobre contagens.</p>
+    <p>Com taxa 3 por hora: o instante do quinto evento tem média $5/3 \approx 1{,}67$ hora e desvio padrão $\sqrt{5}/3 \approx 0{,}745$ hora. E $P\{S_5 > 2\}$ é o mesmo que $P\{N(2) \le 4\}$ — "o quinto ainda não chegou" e "chegaram no máximo quatro" são o mesmo evento. Essa tradução entre as duas descrições resolve a maioria das questões.</p>
+    <div class="ideia">$S_n > t$ e $N(t) &lt; n$ são o mesmo evento. Toda pergunta sobre instantes vira uma pergunta sobre contagens, e ao contrário.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Processo de Poisson de taxa 3 por hora.</p>
+      <p>$E[S_5]$, em horas: <input class="lacuna" data-resp="1.6667" data-tol="0.01" aria-label="media do quinto instante">.</p>
+      <p>$Var(S_5)$, em horas ao quadrado: <input class="lacuna" data-resp="0.5556" data-tol="0.005" aria-label="variancia do quinto instante">.</p>
+      <p>$P\{S_1 > 1\} =$ <input class="lacuna" data-resp="0.0498" data-tol="0.0006" aria-label="probabilidade do primeiro passar de uma hora">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $S_n$ é soma de $n$ exponenciais de taxa $\lambda$, então média $n/\lambda$ e variância $n/\lambda^2$. E $S_1$ é só a primeira exponencial.</p>
+      <div class="resolucao" hidden><p>$E[S_5] = 5/3 = 1{,}667$; $Var(S_5) = 5/9 = 0{,}556$; $P\{S_1>1\} = e^{-3} = 0{,}0498$, que é também $P\{N(1)=0\}$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Reiniciar">
+   <div class="texto">
+    <h2>O processo reiniciado em qualquer instante é o mesmo processo</h2>
+    <p>Fixe um instante $s$ qualquer, escolhido sem olhar o processo, e defina $N_s(t) = N(s+t) - N(s)$: a contagem a partir de $s$. Esse processo novo é um processo de Poisson de taxa $\lambda$, idêntico ao original.</p>
+    <p>A consequência prática é forte: se você chega num ponto de ônibus em que os ônibus passam segundo um processo de Poisson de taxa 1 por hora, a sua espera é exponencial de média 1 hora, <strong>não importa</strong> há quanto tempo passou o último ônibus. Não adianta perguntar a quem está lá há 50 minutos.</p>
+    <p>Isso vale porque "quando foi o último evento" e "quando vem o próximo" são determinados por intervalos de tempo disjuntos, e os incrementos são independentes. O processo não guarda nada.</p>
+    <div class="ideia">Um processo de Poisson observado a partir de qualquer instante fixo é um processo de Poisson novo, com a mesma taxa e sem nenhuma herança do passado.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Ônibus passam num ponto segundo um processo de Poisson de taxa 1 por hora. Você chega ao ponto e descobre que o último ônibus passou há 50 minutos. Qual é a média da sua espera até o próximo?</p>
+      <div class="alts">
+        <button data-op="a">(a) 10 minutos, porque em média passa um por hora e já se passaram 50 minutos.</button>
+        <button data-op="b">(b) 60 minutos, porque o intervalo em curso é exponencial e não tem memória.</button>
+        <button data-op="c">(c) Menos de 60 minutos, porque saber que já faz 50 minutos é alguma informação.</button>
+        <button data-op="d">(d) Não dá para dizer sem saber quantos ônibus passaram antes.</button>
+      </div>
+      <div class="fb" data-op="a">Esse raciocínio trata o intervalo como se ele tivesse duração fixa de uma hora. A média é uma hora, mas a duração é exponencial: ter passado 50 minutos não aproxima nada do fim.</div>
+      <div class="fb" data-op="b">Correto. A espera restante é exponencial de taxa 1, média 60 minutos, qualquer que seja o tempo já decorrido. O intervalo em curso tem média <em>total</em> maior que uma hora justamente por isso, e é o que o paradoxo da inspeção explora.</div>
+      <div class="fb" data-op="c">É a intuição mais comum, e ela está errada aqui. Saber que já faz 50 minutos não informa nada sobre o que falta: essa é a definição de falta de memória. Em qualquer outra distribuição de intervalo, a sua resposta estaria certa.</div>
+      <div class="fb" data-op="d">Quantos ônibus passaram antes é contagem em intervalos anteriores, disjuntos do futuro, e por independência não informa nada sobre a espera.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 6 ===================== -->
+  <div class="secao" data-numero="5.6" data-titulo="Separar e juntar" data-livro="§5.3.3">
+
+  <section class="passo" data-titulo="Desbaste">
+   <div class="texto">
+    <h2>Separar os eventos em dois tipos</h2>
+    <p>Imigrantes chegam a uma região segundo um processo de Poisson de taxa 10 por semana. Cada um, independentemente dos outros, é falante de inglês com probabilidade $1/12$.</p>
+    <p>Chame $N_1(t)$ a contagem dos falantes de inglês e $N_2(t)$ a dos demais.</p>
+    <div class="formula" data-ref-id="f-desbaste" data-ref-tipo="formula" data-ref-nome="Desbaste de um processo de Poisson">
+      $$\begin{aligned}& N_1 \text{ é Poisson de taxa } \class{s1}{\lambda p}\\ & N_2 \text{ é Poisson de taxa } \class{s2}{\lambda(1-p)}\\ & \text{e os dois são independentes}\end{aligned}$$
+      <ul class="legenda">
+        <li><span class="s1">$\lambda p$</span>: taxa dos eventos do tipo 1</li>
+        <li><span class="s2">$\lambda(1-p)$</span>: taxa dos eventos do tipo 2</li>
+      </ul>
+    </div>
+    <p>No exemplo, os falantes de inglês chegam a uma taxa de $10/12 = 0{,}833$ por semana, e a chance de não chegar nenhum em duas semanas é $e^{-1{,}667} = 0{,}189$.</p>
+    <p>A parte das taxas é esperada: de dez por semana, um doze avos são ingleses. A parte surpreendente é a independência, e é o próximo passo.</p>
+    <div class="ideia">Marcar cada evento com um rótulo sorteado independentemente parte o processo em processos de Poisson, um por rótulo, com as taxas repartidas.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-desbaste">
+      <p>Numa semana em que chegaram muitos imigrantes no total, você esperaria ter chegado…</p>
+      <div class="alts">
+        <button data-op="a">Menos ingleses que o normal</button>
+        <button data-op="b" data-certa>Mais ingleses que o normal</button>
+        <button data-op="c">O mesmo número de ingleses</button>
+      </div>
+      <div class="explica" hidden><p>Mais ingleses, claro: numa semana cheia, tudo cresce. Mas repare no que a simulação mostra: isso não contradiz a independência entre $N_1$ e $N_2$. O total $N_1+N_2$ é correlacionado com $N_1$; o que é independente de $N_1$ é $N_2$, a contagem dos <em>outros</em>. Semanas com muitos ingleses não dizem nada sobre quantos não ingleses chegaram.</p></div>
+    </div>
+    <div class="sim" id="sim-desbaste">
+      <label>Fração do tipo 1 <input type="range" id="des-slider" min="5" max="95" step="5" value="25"> <strong id="des-valor">25</strong>%</label>
+      <button class="btn pequeno" id="des-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 220" id="des-svg" role="img" aria-label="Eventos coloridos por tipo numa linha de tempo e as duas linhas separadas"></svg>
+      <p id="des-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Por que independentes">
+   <div class="texto">
+    <h2>A independência é o resultado, não um detalhe</h2>
+    <p>Duas contagens que somam uma terceira normalmente são dependentes. Se você souber que $N_1(t) + N_2(t) = 10$, saber $N_1(t) = 9$ força $N_2(t) = 1$.</p>
+    <p>A saída desse aparente paradoxo é que o total <em>não</em> é fixo: ele é aleatório, e com a distribuição exatamente certa. Condicionando no total,</p>
+    $$\begin{aligned}P\{N_1(t)=n, N_2(t)=m\} = & \underbrace{e^{-\lambda t}\frac{(\lambda t)^{n+m}}{(n+m)!}}_{\text{total}}\\ & \underbrace{\binom{n+m}{n}p^n(1-p)^m}_{\text{rótulos}}\end{aligned}$$
+    <p>Abrindo o fatorial e separando os termos em $n$ dos termos em $m$, isso se fatora em duas Poissons:</p>
+    $$= e^{-\lambda p t}\frac{(\lambda p t)^n}{n!} \times e^{-\lambda(1-p)t}\frac{(\lambda(1-p)t)^m}{m!}$$
+    <p>É a Poisson que faz isso funcionar. Se o total fosse fixo em $N$, a contagem de rótulos seria binomial e as duas partes seriam dependentes.</p>
+    <div class="ideia">A fatoração só acontece porque o total é Poisson; com total fixo, os dois grupos seriam dependentes.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="c">
+      <p class="enunciado">Numa loja, clientes chegam segundo um processo de Poisson e cada um compra, independentemente, com probabilidade $0{,}3$. Sobre o número de compradores e o número de não compradores no mesmo dia:</p>
+      <div class="alts">
+        <button data-op="a">(a) São dependentes, porque somam o total de clientes.</button>
+        <button data-op="b">(b) São independentes, porque toda contagem de Poisson é independente de qualquer outra.</button>
+        <button data-op="c">(c) São independentes, porque o total é Poisson e os rótulos são sorteados independentemente.</button>
+        <button data-op="d">(d) São independentes, e o mesmo valeria se a loja atendesse exatamente 100 clientes por dia.</button>
+      </div>
+      <div class="fb" data-op="a">Somar uma terceira variável aleatória não cria dependência por si. Criaria se a soma fosse constante. Aqui o total é aleatório, e justamente com a distribuição que permite a fatoração.</div>
+      <div class="fb" data-op="b">A conclusão está certa, a razão não. Contagens de Poisson em intervalos que se sobrepõem são bem dependentes. O que dá a independência aqui é o desbaste, não o nome da distribuição.</div>
+      <div class="fb" data-op="c">Correto. São esses dois ingredientes: total com distribuição de Poisson e rótulos sorteados de forma independente entre si e do total. Juntos, fazem a conjunta se fatorar.</div>
+      <div class="fb" data-op="d">Com exatamente 100 clientes por dia, o número de compradores é binomial de 100 ensaios e os não compradores são $100$ menos isso: perfeitamente dependentes, com correlação $-1$. É o contraexemplo que mostra de onde vem a independência no caso de Poisson.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Superposição">
+   <div class="texto">
+    <h2>Juntar processos independentes</h2>
+    <p>O caminho de volta também funciona. Se $N_1$ e $N_2$ são processos de Poisson independentes de taxas $\lambda_1$ e $\lambda_2$, a contagem conjunta $N_1 + N_2$ é um processo de Poisson de taxa $\lambda_1 + \lambda_2$.</p>
+    <p>Verificar é direto: a soma de duas Poissons independentes é Poisson com as médias somadas, e incrementos independentes se preservam. Os axiomas locais também: a chance de um evento em janela curta é $\lambda_1 h + \lambda_2 h + o(h)$, e a chance de um de cada tipo na mesma janela é da ordem de $h^2$, portanto $o(h)$.</p>
+    <p>E qual processo gerou o próximo evento? Essa é a <span class="ref" data-ref="f-vencedor">corrida de exponenciais</span> de novo: o próximo evento é do tipo $i$ com probabilidade $\lambda_i/(\lambda_1+\lambda_2)$, independentemente de quando ele ocorre. Juntar e separar são operações inversas, e as duas respeitam a mesma aritmética de taxas.</p>
+    <div class="ideia">Taxas se somam ao juntar processos independentes e se repartem ao desbastar. Em ambos os casos o resultado continua Poisson.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Duas filiais mandam pedidos para o mesmo depósito, em processos de Poisson independentes: a primeira a 4 por hora, a segunda a 6 por hora.</p>
+      <p>Taxa dos pedidos no depósito, por hora: <input class="lacuna" data-resp="10" data-tol="0" aria-label="taxa total">.</p>
+      <p>$P\{$o próximo pedido vem da primeira filial$\} =$ <input class="lacuna" data-resp="0.4" data-tol="0.005" aria-label="probabilidade da primeira filial">.</p>
+      <p>$P\{$nenhum pedido em 30 minutos$\} =$ <input class="lacuna" data-resp="0.0067" data-tol="0.0004" aria-label="nenhum pedido em meia hora">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: meia hora com taxa 10 por hora dá média 5. E a origem do próximo pedido é a fatia da taxa.</p>
+      <div class="resolucao" hidden><p>Taxa total $4+6 = 10$ por hora; $P = 4/10 = 0{,}4$; em meia hora a média é 5, então $e^{-5} = 0{,}0067$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Esperar todos">
+   <div class="texto">
+    <h2>Um uso do desbaste: esperar até ter de tudo</h2>
+    <p>Há $m$ tipos de figurinha. Você compra pacotes um atrás do outro e cada pacote traz uma figurinha do tipo $j$ com probabilidade $p_j$. Quanto tempo até completar o álbum?</p>
+    <p>No tempo discreto, esse problema é desagradável: o que você já tem muda a chance de o próximo pacote ser útil, e as contagens dos tipos são dependentes.</p>
+    <p>O truque é mudar o relógio. Suponha que as compras ocorrem segundo um processo de Poisson de taxa 1. Pelo desbaste, as figurinhas do tipo $j$ chegam num processo de Poisson de taxa $p_j$, e esses $m$ processos são <strong>independentes</strong>. O instante em que o tipo $j$ aparece pela primeira vez é exponencial de taxa $p_j$, e o álbum fecha no máximo desses $m$ instantes independentes:</p>
+    $$P\{\text{álbum completo até } t\} = \prod_{j=1}^{m}\left(1 - e^{-p_j t}\right)$$
+    <p>A dependência desapareceu porque o número de pacotes comprados deixou de ser fixo. É o mesmo mecanismo do passo anterior, usado de propósito.</p>
+    <div class="ideia">Tornar aleatório o total, com distribuição de Poisson, transforma contagens dependentes em processos independentes.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Com $m$ tipos igualmente prováveis, a fórmula dá $P\{\text{completo até } t\} = (1-e^{-t/m})^m$. Isso conta o tempo em pacotes ou em unidades do relógio de Poisson? E por que dá na mesma, em média?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Conta no relógio de Poisson. Mas com taxa 1 o número de pacotes comprados até $t$ é Poisson de média $t$, então na média as duas escalas coincidem; e como a contagem se concentra em torno da média para $t$ grande, as respostas ficam praticamente iguais. Trocar um número fixo por um número com distribuição de Poisson de mesma média, para ganhar independência, é uma técnica que reaparece sempre que contagens dependentes atrapalham.</p></div>
+    </div>
+    <details class="demo">
+      <summary>Demonstração: a média do tempo até completar, com tipos iguais</summary>
+      <p>Com $p_j = 1/m$ para todo $j$, o tempo até completar é $X = \max_j X_j$ com $X_j$ exponenciais independentes de taxa $1/m$. Usando $E[X] = \int_0^\infty P\{X>t\}\,dt$ e $P\{X > t\} = 1 - (1-e^{-t/m})^m$:</p>
+      $$E[X] = \int_0^\infty \left[1 - (1-e^{-t/m})^m\right]dt$$
+      <p>Substituindo $u = e^{-t/m}$, com $dt = -m\,du/u$, a integral vira</p>
+      $$\begin{aligned}E[X] &= m\int_0^1 \frac{1-(1-u)^m}{u}\,du\\ &= m\int_0^1 \left(1 + (1-u) + \dots + (1-u)^{m-1}\right)du\\ &= m\sum_{k=1}^{m}\frac1k\end{aligned}$$
+      <p>que é o resultado clássico $m \log m$ aproximadamente. Com $m = 50$ figurinhas, $50 \times \sum_{k=1}^{50} 1/k \approx 225$ pacotes.</p>
+    </details>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 7 ===================== -->
+  <div class="secao" data-numero="5.7" data-titulo="Instantes dado o total" data-livro="§5.3.4 e §5.2.5">
+
+  <section class="passo" data-titulo="Um evento">
+   <div class="texto">
+    <h2>Soube que houve um evento: quando foi?</h2>
+    <p>Dado que ocorreu exatamente um evento até $t$, onde ele caiu? Pela estacionariedade, nenhum instante deveria ser privilegiado. A conta confirma: para $s \le t$,</p>
+    $$\begin{aligned}P\{S_1 &lt; s \mid N(t)=1\} &= \frac{P\{1 \text{ evento em } (0,s],\ 0 \text{ em } (s,t]\}}{P\{N(t)=1\}}\\ &= \frac{\lambda s e^{-\lambda s}e^{-\lambda(t-s)}}{\lambda t e^{-\lambda t}} \ = \ \frac{s}{t}\end{aligned}$$
+    <p>Ou seja, $S_1$ dado $N(t)=1$ é uniforme em $(0,t)$. Toda a dependência do $\lambda$ se cancelou: condicionado no número de eventos, a taxa deixa de importar.</p>
+    <p>Esse cancelamento não é coincidência. A taxa controla <em>quantos</em> eventos ocorrem; dado quantos, ela não tem mais nada a dizer sobre <em>onde</em> eles ocorrem.</p>
+    <div class="ideia">Condicionado na contagem, o processo de Poisson não sabe mais a sua própria taxa: os instantes são uniformes.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-unif">
+      <p>Dado que houve exatamente 1 evento até o instante 1, você sorteia muitas amostras e faz o histograma do instante do evento. Se você <em>dobrar</em> a taxa do processo, o histograma…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Fica igual</button>
+        <button data-op="b">Concentra no começo</button>
+        <button data-op="c">Concentra no fim</button>
+      </div>
+      <div class="explica" hidden><p>Fica igual, e plano. A taxa muda a frequência com que a condição "exatamente 1 evento" acontece, mas não muda onde o evento cai quando ela acontece.</p></div>
+    </div>
+    <div class="sim" id="sim-unif">
+      <label>Taxa <input type="range" id="unif-slider" min="1" max="6" step="1" value="2"> <strong id="unif-valor">2</strong></label>
+      <button class="btn pequeno" id="unif-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 200" id="unif-svg" role="img" aria-label="Histograma do instante do único evento, condicionado a haver exatamente um"></svg>
+      <p id="unif-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="n eventos">
+   <div class="texto">
+    <h2>Com $n$ eventos: uniformes ordenadas</h2>
+    <p>O caso geral é o resultado mais útil do capítulo.</p>
+    <div class="formula" data-ref-id="f-ordem" data-ref-tipo="formula" data-ref-nome="Instantes dado o total">
+      $$\begin{aligned}\text{Dado } N(t)=n, \ \text{o vetor } & (S_1, \dots, S_n) \text{ tem a distribuição}\\ \text{de } n \text{ uniformes em } & (0,t) \text{ colocadas em ordem}\end{aligned}$$
+    </div>
+    <p>A densidade conjunta é constante, $f(s_1,\dots,s_n) = n!/t^n$ na região $0 &lt; s_1 &lt; \dots &lt; s_n &lt; t$. O $n!$ aparece porque há $n!$ maneiras de ordenar as uniformes, e todas levam ao mesmo vetor ordenado.</p>
+    <p>Para usar: sempre que a pergunta for sobre os <em>instantes</em> dos eventos e você puder condicionar no número deles, troque o processo de Poisson por $n$ pontos jogados ao acaso no intervalo. Isso elimina a dinâmica temporal e deixa só um problema de pontos uniformes, que em geral é bem mais simples.</p>
+    <div class="ideia">Dado quantos eventos houve, eles estão espalhados como pontos jogados ao acaso no intervalo.</div>
+    <details class="demo">
+      <summary>Demonstração: a densidade conjunta condicional</summary>
+      <p>Tome $0 &lt; s_1 &lt; \dots &lt; s_n &lt; t$ e janelas pequenas $h_i$ em volta de cada $s_i$, disjuntas. O evento "um evento em cada janela e nenhum fora delas" tem, por incrementos independentes,</p>
+      $$\begin{aligned}P &= \left[\prod_{i=1}^n \lambda h_i e^{-\lambda h_i}\right] e^{-\lambda\left(t - \sum_i h_i\right)}\\ &= \lambda^n \left(\prod_i h_i\right) e^{-\lambda t}\end{aligned}$$
+      <p>Dividindo por $P\{N(t)=n\} = e^{-\lambda t}(\lambda t)^n/n!$ e depois por $\prod_i h_i$, o $\lambda^n$ e o $e^{-\lambda t}$ se cancelam:</p>
+      $$f(s_1,\dots,s_n \mid N(t)=n) = \frac{\lambda^n e^{-\lambda t}}{e^{-\lambda t}(\lambda t)^n/n!} = \frac{n!}{t^n}$$
+      <p>que é a densidade conjunta das estatísticas de ordem de $n$ uniformes em $(0,t)$.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Dado que ocorreram 3 eventos até o instante 10.</p>
+      <p>$E[S_1]$, o instante do primeiro: <input class="lacuna" data-resp="2.5" data-tol="0.05" aria-label="media do primeiro">.</p>
+      <p>$E[S_2]$: <input class="lacuna" data-resp="5" data-tol="0.05" aria-label="media do segundo">.</p>
+      <p>$P\{$todos os 3 na primeira metade$\} =$ <input class="lacuna" data-resp="0.125" data-tol="0.002" aria-label="todos na primeira metade">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: a $k$-ésima de $n$ uniformes em $(0,t)$ tem média $kt/(n+1)$. Para a última lacuna, cada ponto cai na primeira metade com probabilidade $1/2$, e eles são independentes antes de ordenar.</p>
+      <div class="resolucao" hidden><p>$E[S_k] = k \times 10/4$, então $2{,}5$ e $5$. E $P = (1/2)^3 = 0{,}125$, porque ordenar não muda o conjunto de pontos.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Proporções">
+   <div class="texto">
+    <h2>As proporções do intervalo</h2>
+    <p>Um resultado gêmeo, que vem das mesmas contas. Tome $n$ exponenciais independentes $X_1,\dots,X_n$ de mesma taxa e olhe as frações</p>
+    $$\frac{X_1}{\sum_j X_j},\ \frac{X_2}{\sum_j X_j},\ \dots,\ \frac{X_n}{\sum_j X_j}$$
+    <p>Essas frações somam 1 e têm uma distribuição com nome, a <strong>Dirichlet</strong>: as primeiras $n-1$ têm densidade conjunta constante igual a $(n-1)!$ na região em que são positivas e somam menos de 1. Em palavras: as proporções são tão uniformes quanto podem ser, dado que somam 1.</p>
+    <p>Traduzindo para o processo: dado o instante do $n$-ésimo evento, os $n-1$ primeiros são uniformes ordenados no intervalo até ele. É o resultado do passo anterior com o fim do intervalo ancorado num evento, em vez de num instante fixo. A conexão é direta: dividir o intervalo até $S_n$ em $n$ pedaços exponenciais é a mesma coisa que jogar $n-1$ pontos ao acaso nele.</p>
+    <div class="ideia">Normalizar exponenciais pela soma destrói a escala e deixa só a repartição, que é uniforme sobre todas as repartições possíveis.</div>
+    <details class="demo">
+      <summary>Demonstração: a densidade das proporções</summary>
+      <p>Seja $S = \sum_{j=1}^n X_j$ e $W_i = X_i/S$ para $i = 1,\dots,n-1$. Faça a mudança de variável $(X_1,\dots,X_n) \mapsto (W_1,\dots,W_{n-1},S)$, cuja inversa é $X_i = W_i S$ para $i&lt;n$ e $X_n = S(1 - \sum_{i&lt;n} W_i)$. O jacobiano dessa transformação é $S^{n-1}$.</p>
+      <p>A densidade conjunta das exponenciais é $\lambda^n e^{-\lambda \sum_j x_j} = \lambda^n e^{-\lambda s}$, que só depende da soma. Então a conjunta transformada é</p>
+      $$f(w_1,\dots,w_{n-1},s) = \lambda^n e^{-\lambda s}\, s^{n-1}$$
+      <p>Isso se fatora: um pedaço que só depende de $s$ (e é exatamente a densidade gama de $S$, a menos da constante) e um pedaço constante em $w$. Integrando em $s$ de 0 a $\infty$, com $\int_0^\infty \lambda^n e^{-\lambda s}s^{n-1}ds = (n-1)!$, sai</p>
+      $$f(w_1,\dots,w_{n-1}) = (n-1)!$$
+      <p>na região $w_i > 0$, $\sum_i w_i &lt; 1$. Duas coisas de brinde: as proporções são independentes da soma $S$, e a densidade constante confirma a uniformidade.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Três intervalos exponenciais independentes de mesma taxa, e $W_1$ a fração do total que o primeiro ocupa.</p>
+      <p>$E[W_1] =$ <input class="lacuna" data-resp="0.3333" data-tol="0.005" aria-label="media da fracao">.</p>
+      <p>Com $n$ intervalos, $E[W_1] =$ <input class="lacuna" data-resp="0.25" data-tol="0.005" aria-label="media da fracao com quatro"> para $n = 4$.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: as $n$ frações têm a mesma distribuição e somam 1. Isso já determina a média de cada uma, sem integral nenhuma.</p>
+      <div class="resolucao" hidden><p>Por simetria, as $n$ frações têm a mesma média, e somam 1, então cada média é $1/n$: $1/3 \approx 0{,}333$ e $1/4 = 0{,}25$. Note que isso vale mesmo que as frações sejam dependentes entre si.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Classificar pelo instante">
+   <div class="texto">
+    <h2>Quando o rótulo depende da hora em que o evento ocorreu</h2>
+    <p>No desbaste, cada evento era rotulado com a mesma probabilidade $p$. Agora deixe a probabilidade depender do instante: um evento ocorrido em $s$ é do tipo $i$ com probabilidade $P_i(s)$, independentemente dos outros.</p>
+    <div class="formula" data-ref-id="f-classif" data-ref-tipo="formula" data-ref-nome="Classificação dependente do instante">
+      $$\begin{aligned}& N_i(t) \text{ são independentes, e}\\ & N_i(t) \sim \text{Poisson}\left(\lambda\int_0^t P_i(s)\,ds\right)\end{aligned}$$
+    </div>
+    <p>A prova é o resultado dos instantes uniformes em ação: dado $N(t) = n$, os eventos caem uniformemente, então cada um é do tipo $i$ com probabilidade $\frac1t\int_0^t P_i(s)ds$, independentemente. Aí é só aplicar o desbaste com essa probabilidade média.</p>
+    <p>O exemplo central: uma fila com infinitos servidores. Clientes chegam em Poisson de taxa $\lambda$ e cada um é atendido imediatamente, por um tempo com distribuição $G$. Chame de tipo 1 quem ainda está em atendimento no instante $t$. Um cliente que chegou em $s$ ainda está lá com probabilidade $\bar G(t-s)$, então o número em atendimento é Poisson de média $\lambda\int_0^t \bar G(y)\,dy$.</p>
+    <div class="ideia">Quando o rótulo depende do instante, a contagem de cada tipo continua Poisson e os tipos continuam independentes; só a média muda para uma integral.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Clientes chegam a uma fila com infinitos servidores em Poisson de taxa 5 por hora. Cada atendimento dura um tempo uniforme entre 0 e 1 hora.</p>
+      <p>Para $t = 0{,}5$ hora: $\int_0^{0{,}5}(1-y)\,dy =$ <input class="lacuna" data-resp="0.375" data-tol="0.005" aria-label="integral da cauda">.</p>
+      <p>Média do número em atendimento em $t = 0{,}5$: <input class="lacuna" data-resp="1.875" data-tol="0.02" aria-label="media em atendimento">.</p>
+      <p>$P\{$ninguém em atendimento em $t=0{,}5\} =$ <input class="lacuna" data-resp="0.1534" data-tol="0.002" aria-label="probabilidade de ninguem">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: para a uniforme em $(0,1)$, $\bar G(y) = 1-y$ enquanto $y&lt;1$. A contagem é Poisson, então a última lacuna é $e^{-\text{média}}$.</p>
+      <div class="resolucao" hidden><p>$\int_0^{0{,}5}(1-y)\,dy$ $= 0{,}5 - 0{,}125$ $= 0{,}375$. Média $= 5 \times 0{,}375 = 1{,}875$. E $e^{-1{,}875} = 0{,}1534$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Somar valores">
+   <div class="texto">
+    <h2>Somando algo que depende do instante de cada evento</h2>
+    <p>Uma seguradora recebe avisos de sinistro em Poisson de taxa $\lambda$. Um sinistro avisado no instante $s$ custa, em valor de hoje, $e^{-\alpha s}$ vezes o seu valor nominal, por desconto financeiro. Qual o valor presente esperado dos sinistros até $t$?</p>
+    <p>Chamando $D = \sum_{i=1}^{N(t)} e^{-\alpha S_i}$, condicione em $N(t) = n$ e use os instantes uniformes:</p>
+    $$E[D \mid N(t) = n] = n\, E\!\left[e^{-\alpha U}\right] = \frac{n}{t}\int_0^t e^{-\alpha s}ds$$
+    <p>com $U$ uniforme em $(0,t)$. Tomando a esperança em $N(t)$, que tem média $\lambda t$:</p>
+    $$E[D] = \lambda \int_0^t e^{-\alpha s}\,ds = \frac{\lambda}{\alpha}\left(1 - e^{-\alpha t}\right)$$
+    <p>O padrão vale geral: para qualquer função $g$, $E\!\left[\sum_i g(S_i)\right] = \lambda \int_0^t g(s)\,ds$. O $t$ do denominador da uniforme cancelou com o $t$ da média da contagem, e sobrou uma integral limpa.</p>
+    <div class="ideia">A soma de uma função dos instantes tem média $\lambda\int_0^t g(s)\,ds$: cada instante contribui com peso $\lambda\,ds$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Eventos ocorrem em Poisson de taxa $\lambda$ em $(0,t)$, e para cada evento registra-se o quadrado do instante em que ocorreu. A média da soma desses quadrados é:</p>
+      <div class="alts">
+        <button data-op="a">(a) $\lambda t \times t^2$, a média da contagem vezes o quadrado do tempo total.</button>
+        <button data-op="b">(b) $\lambda t^3/3$.</button>
+        <button data-op="c">(c) $\lambda t \times (t/2)^2$, a contagem vezes o quadrado do instante médio.</button>
+        <button data-op="d">(d) $\lambda t^2/2$.</button>
+      </div>
+      <div class="fb" data-op="a">Isso trata todo evento como se tivesse ocorrido no fim do intervalo. Os eventos estão espalhados; o fator certo é $E[U^2]$, não $t^2$.</div>
+      <div class="fb" data-op="b">Correto. $E[\text{soma}] = \lambda\int_0^t s^2 ds = \lambda t^3/3$. Pelo outro caminho: $\lambda t \times E[U^2] = \lambda t \times t^2/3$, a mesma coisa.</div>
+      <div class="fb" data-op="c">Aqui está a troca mais tentadora: usar o quadrado da média em vez da média do quadrado. Para $U$ uniforme, $E[U^2] = t^2/3$, e não $(t/2)^2 = t^2/4$. A diferença é a variância da uniforme.</div>
+      <div class="fb" data-op="d">Esse é o resultado para $g(s) = s$, ou seja, somando os próprios instantes em vez dos quadrados. Confira sempre qual $g$ está dentro da integral.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 8 ===================== -->
+  <div class="secao" data-numero="5.8" data-titulo="Contar o que não se vê" data-livro="§5.3.5">
+
+  <section class="passo" data-titulo="Bugs">
+   <div class="texto">
+    <h2>Quantos defeitos ainda estão escondidos no programa</h2>
+    <p>Um programa novo entra em teste. Ele tem um número desconhecido de defeitos. O defeito $i$ é descoberto segundo um processo de Poisson de taxa $\lambda_i$, e os processos dos vários defeitos são independentes.</p>
+    <p>As taxas são diferentes de propósito: há defeito que aparece na primeira tela e defeito que precisa de uma combinação improvável de dados.</p>
+    <p>A pergunta que interessa a quem decide lançar o programa não é "quantos defeitos já achei", e sim: <strong>a que taxa um defeito ainda não descoberto vai aparecer depois do lançamento?</strong> Formalmente,</p>
+    <div class="formula" data-ref-id="f-lambda-t" data-ref-tipo="formula" data-ref-nome="Taxa de erro remanescente">
+      $$\begin{aligned}\Lambda(t) = \sum_i \lambda_i\, \mathbb{1}\{& \text{defeito } i \text{ não}\\ & \text{foi descoberto até } t\}\end{aligned}$$
+    </div>
+    <p>$\Lambda(t)$ é aleatório, porque depende de quais defeitos já apareceram. Ele é a medida natural de qualidade: um programa com $\Lambda(t)$ pequeno vai falhar pouco em produção, mesmo que tenha muitos defeitos restantes, desde que sejam todos raros.</p>
+    <div class="ideia">O que mede a qualidade do programa não é quantos defeitos restam, é a soma das taxas dos que restam.</div>
+    <details class="demo">
+      <summary>Demonstração: a média de $\Lambda(t)$</summary>
+      <p>O defeito $i$ não foi descoberto até $t$ exatamente quando o seu processo de Poisson não teve nenhum evento em $(0,t]$, o que tem probabilidade $e^{-\lambda_i t}$. Pela linearidade,</p>
+      $$E[\Lambda(t)] = \sum_i \lambda_i e^{-\lambda_i t}$$
+      <p>Essa expressão explica por que o teste tem retorno decrescente: os termos com $\lambda_i$ grande somem rápido do somatório, e o que sobra são os defeitos raros, que contribuem pouco cada um e demoram muito para serem achados. Mas ela não serve para estimar nada, porque nem os $\lambda_i$ nem o número de defeitos são conhecidos. O próximo passo resolve isso.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Dois programas em teste. O primeiro tem 100 defeitos, todos com taxa $0{,}001$ por unidade de tempo. O segundo tem 2 defeitos, com taxa 1 cada. Qual está em pior situação, do ponto de vista de quem vai usar?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>O segundo: $\Lambda = 2$ contra $\Lambda = 0{,}1$. Contar defeitos daria a resposta oposta. Mas há um porém com cara de boa notícia: os dois defeitos do segundo programa vão aparecer quase imediatamente no teste, e aí $\Lambda$ cai para zero. Os 100 defeitos raros do primeiro vão ficar lá por muito tempo. Com $\Lambda(t)$ você acompanha essa evolução; contando defeitos, não.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="O estimador">
+   <div class="texto">
+    <h2>Estimando a taxa restante com o que se observou</h2>
+    <p>Não se conhecem os $\lambda_i$. Mas há um dado observável com a média certa: $M(t)$, o número de defeitos que foram descobertos <strong>exatamente uma vez</strong> até $t$.</p>
+    <p>O defeito $i$ aparece exatamente uma vez com probabilidade $\lambda_i t e^{-\lambda_i t}$, pela distribuição de Poisson com média $\lambda_i t$. Então</p>
+    $$E[M(t)] = \sum_i \lambda_i t\, e^{-\lambda_i t} = t\, E[\Lambda(t)]$$
+    <p>Os dois somatórios são o mesmo, a menos do fator $t$. Isso dá um estimador que não precisa saber nada sobre as taxas nem sobre o número de defeitos:</p>
+    <div class="formula" data-ref-id="f-estim-bugs" data-ref-tipo="formula" data-ref-nome="Estimador da taxa restante">
+      $$\widehat{\Lambda(t)} = \frac{M(t)}{t}$$
+    </div>
+    <p>Num teste de 100 unidades de tempo foram encontrados 20 defeitos distintos, dos quais 10 apareceram uma única vez. A estimativa é $10/100 = 0{,}1$ defeito novo por unidade de tempo. Repare no que o estimador ignora: os 10 defeitos que apareceram duas ou mais vezes não entram. Eles são os fáceis, já estão identificados e corrigidos, e não dizem nada sobre o que ficou escondido.</p>
+    <div class="ideia">Os defeitos vistos uma única vez são a pista do que ainda não foi visto: eles vêm da mesma faixa de taxas baixas.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Em 200 horas de teste encontraram-se 31 defeitos distintos: 18 apareceram uma única vez, 9 duas vezes e 4 três vezes ou mais.</p>
+      <p>$\widehat{\Lambda}$, em defeitos novos por hora: <input class="lacuna" data-resp="0.09" data-tol="0.002" aria-label="estimativa da taxa">.</p>
+      <p>Número esperado de falhas novas nas 100 primeiras horas de uso: <input class="lacuna" data-resp="9" data-tol="0.2" aria-label="falhas esperadas">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: só os defeitos vistos uma única vez entram na conta. Divida pelo tempo de teste, não pelo número de defeitos.</p>
+      <div class="resolucao" hidden><p>$\widehat{\Lambda} = 18/200 = 0{,}09$ por hora. Em 100 horas de uso, $0{,}09 \times 100 = 9$ falhas novas esperadas.</p></div>
+    </div>
+    <div class="quiz" data-correta="d">
+      <p class="enunciado">Num teste de software, o número de defeitos vistos exatamente uma vez serve para estimar a taxa com que defeitos ainda desconhecidos vão aparecer. Por que não usar todos os defeitos encontrados?</p>
+      <div class="alts">
+        <button data-op="a">(a) Porque defeitos vistos várias vezes já foram corrigidos e não contam mais.</button>
+        <button data-op="b">(b) Porque usar todos daria uma estimativa com variância maior.</button>
+        <button data-op="c">(c) Porque o número total de defeitos encontrados não é observável.</button>
+        <button data-op="d">(d) Porque quem aparece muitas vezes tem taxa alta, e os que restam escondidos têm taxa baixa.</button>
+      </div>
+      <div class="fb" data-op="a">A correção dos defeitos não é o que o argumento usa. Mesmo sem corrigir nada, a conta seria a mesma: o critério é a informação que cada defeito traz sobre as taxas pequenas.</div>
+      <div class="fb" data-op="b">A variância não é o motivo, e usar mais dados normalmente a reduziria. O problema com usar todos é de viés, não de precisão: seria uma estimativa sistematicamente errada.</div>
+      <div class="fb" data-op="c">O total de defeitos <em>encontrados</em> é perfeitamente observável; é o total de defeitos <em>existentes</em> que não é. O estimador não precisa de nenhum dos dois.</div>
+      <div class="fb" data-op="d">Correto. Um defeito visto muitas vezes tem $\lambda_i$ grande, e esses já saíram todos do bolo dos escondidos. Os que ficaram escondidos têm taxa pequena, a mesma faixa dos vistos uma única vez. A conta confirma a intuição: $E[M(t)] = t\,E[\Lambda(t)]$, exatamente.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 9 ===================== -->
+  <div class="secao" data-numero="5.9" data-titulo="Taxa variando no tempo" data-livro="§5.4.1">
+
+  <section class="passo" data-titulo="Taxa variável">
+   <div class="texto">
+    <h2>Quando a hora do dia importa</h2>
+    <p>Um carrinho de cachorro-quente abre às 8h. Das 8h às 11h o movimento cresce de forma aproximadamente linear, de 5 para 20 clientes por hora; das 11h às 13h fica em 20 por hora; das 13h às 17h cai de 20 para 12 por hora.</p>
+    <p>Esse processo não tem incrementos estacionários, então não é de Poisson. Mas tudo o mais pode ser mantido: solte só a estacionariedade e deixe a taxa ser uma função do tempo.</p>
+    <div class="definicao" data-ref-id="d-nhpp" data-ref-tipo="definicao" data-ref-nome="Processo de Poisson não homogêneo">
+      <p><strong>Processo de Poisson não homogêneo</strong> com função de intensidade $\lambda(t)$: um processo de contagem com $N(0)=0$, incrementos <em>independentes</em>, e</p>
+      $$P\{N(t+h)-N(t) = 1\} = \lambda(t)h + o(h)$$
+      <p>e dois ou mais eventos no mesmo intervalo curto é $o(h)$.</p>
+    </div>
+    <p>O objeto central deixa de ser a taxa e passa a ser a taxa acumulada:</p>
+    <div class="formula" data-ref-id="f-m-t" data-ref-tipo="formula" data-ref-nome="Função média acumulada">
+      $$m(t) = \int_0^t \lambda(s)\,ds$$
+    </div>
+    <p>No carrinho, $\lambda(s) = 5 + 5s$ para $s$ em horas desde a abertura, até $s=3$.</p>
+    <div class="ideia">Soltar a estacionariedade e manter a independência troca a taxa constante por uma taxa acumulada $m(t)$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-nhpp">
+      <p>Dois intervalos de uma hora, um no começo da manhã (taxa baixa) e um no almoço (taxa alta). Comparando as duas contagens, a <em>razão</em> entre as variâncias é…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Igual à razão entre as médias</button>
+        <button data-op="b">1, porque a variância não depende da taxa</button>
+        <button data-op="c">O quadrado da razão entre as médias</button>
+      </div>
+      <div class="explica" hidden><p>Cada contagem continua sendo Poisson, agora com média igual à área sob $\lambda$ naquele intervalo. Numa Poisson, variância e média são iguais, então a razão entre as variâncias é a mesma razão entre as médias.</p></div>
+    </div>
+    <div class="sim" id="sim-nhpp">
+      <label>Forma da taxa
+        <select id="nhpp-forma">
+          <option value="carrinho">o carrinho</option>
+          <option value="const">constante</option>
+          <option value="pico">um pico</option>
+        </select>
+      </label>
+      <button class="btn pequeno" id="nhpp-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 240" id="nhpp-svg" role="img" aria-label="Curva da taxa ao longo do dia, eventos sorteados e a taxa acumulada"></svg>
+      <p id="nhpp-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="A contagem">
+   <div class="texto">
+    <h2>A contagem continua Poisson, com média $m$</h2>
+    <p>O resultado é o que se poderia esperar, e vale a pena guardar como fórmula:</p>
+    <div class="formula" data-ref-id="f-nhpp-conta" data-ref-tipo="formula" data-ref-nome="Contagem no caso não homogêneo">
+      $$\begin{aligned}& N(t+s) - N(t) \ \sim\\ & \text{Poisson}\big(m(t+s) - m(t)\big)\end{aligned}$$
+    </div>
+    <p>Em palavras: a contagem num intervalo é Poisson com média igual à <strong>área sob a curva da taxa</strong> naquele intervalo. Se $\lambda$ é constante, a área é $\lambda t$ e tudo volta ao caso de antes.</p>
+    <p>No carrinho, quantos clientes entre 8h30 e 9h30? A área é</p>
+    $$\int_{0{,}5}^{1{,}5}(5+5s)\,ds = 5 + \frac{5}{2}\left(1{,}5^2 - 0{,}5^2\right) = 10$$
+    <p>Dez clientes em média, e a chance de nenhum é $e^{-10}$, cerca de 1 em 22 mil.</p>
+    <p>Da abertura até as 11h a área é $5(3) + \tfrac52(9) = 37{,}5$ clientes.</p>
+    <div class="ideia">A média da contagem é a área sob a curva da taxa; a distribuição continua Poisson.</div>
+    <details class="demo">
+      <summary>Demonstração: a contagem é Poisson com média $m$</summary>
+      <p>Fixe $t$ e escreva $P_n(s) = P\{N(t+s)-N(t) = n\}$. Pelos axiomas, com os incrementos em $(t+s, t+s+h]$ independentes do que veio antes,</p>
+      $$\begin{aligned}& P_0(s+h) = P_0(s)\left[1 - \lambda(t+s)h + o(h)\right]\\ & \Longrightarrow\ P_0'(s) = -\lambda(t+s)P_0(s)\end{aligned}$$
+      <p>Integrando com $P_0(0) = 1$:</p>
+      $$P_0(s) = \exp\left\{-\int_0^s \lambda(t+u)\,du\right\} = e^{-[m(t+s)-m(t)]}$$
+      <p>Para $n \ge 1$ vale a mesma recursão de antes, agora com coeficiente variável:</p>
+      $$P_n'(s) = -\lambda(t+s)P_n(s) + \lambda(t+s)P_{n-1}(s)$$
+      <p>Escrevendo $\mu(s) = m(t+s)-m(t)$ e tentando $P_n(s) = e^{-\mu(s)}\mu(s)^n/n!$, derive: o termo $-\mu'(s)e^{-\mu}\mu^n/n!$ dá a primeira parcela e o termo $e^{-\mu}\mu'(s)\mu^{n-1}/(n-1)!$ dá a segunda, já que $\mu'(s) = \lambda(t+s)$. A condição inicial $P_n(0)=0$ para $n\ge1$ fecha a verificação, e a solução da equação é única.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>No carrinho, com $\lambda(s) = 5+5s$ clientes por hora a partir da abertura.</p>
+      <p>Média de clientes na primeira hora, $\int_0^1(5+5s)ds =$ <input class="lacuna" data-resp="7.5" data-tol="0.05" aria-label="media na primeira hora">.</p>
+      <p>Média na terceira hora, $\int_2^3(5+5s)ds =$ <input class="lacuna" data-resp="17.5" data-tol="0.05" aria-label="media na terceira hora">.</p>
+      <p>$P\{$nenhum cliente na primeira meia hora$\} =$ <input class="lacuna" data-resp="0.0439" data-tol="0.0006" aria-label="nenhum na primeira meia hora">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $\int_a^b (5+5s)\,ds$ $= 5(b-a) + \tfrac52(b^2-a^2)$. Na última lacuna, a área da primeira meia hora é $2{,}5 + \tfrac52(0{,}25) = 2{,}5+0{,}625$.</p>
+      <div class="resolucao" hidden><p>$5 + 2{,}5 = 7{,}5$ na primeira hora; $5 + \tfrac52(9-4) = 5+12{,}5 = 17{,}5$ na terceira. Na meia hora, a área é $3{,}125$, e $e^{-3{,}125} = 0{,}0439$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="O que se perde">
+   <div class="texto">
+    <h2>O que deixa de valer quando a taxa varia</h2>
+    <p>Vale a pena separar o que sobrevive do que cai, porque é aqui que as questões de prova se concentram.</p>
+    <p><strong>Sobrevive:</strong> a contagem em cada intervalo é Poisson; intervalos disjuntos continuam independentes; o desbaste continua funcionando; a contagem continua tendo média igual à variância.</p>
+    <p><strong>Cai:</strong> os intervalos entre eventos não são mais exponenciais nem têm a mesma distribuição; os incrementos não são mais estacionários; não existe "a taxa" do processo, só a taxa num instante; e, o mais perigoso, $P\{N(t)=0\}$ deixa de ser $e^{-\lambda t}$ e passa a ser $e^{-m(t)}$.</p>
+    <p>E o resultado dos instantes uniformes muda de cara: dado $N(t)=n$, os instantes continuam sendo estatísticas de ordem de $n$ variáveis independentes, mas com densidade $\lambda(s)/m(t)$ em vez de uniforme. Faz sentido: os eventos se concentram onde a taxa é alta.</p>
+    <div class="ideia">A estrutura de Poisson sobrevive intervalo por intervalo; o que se perde é a possibilidade de comparar intervalos diferentes.</div>
+   </div>
+   <aside class="apoio">
+    <div class="compara">
+      <div><h4>Taxa constante</h4><p>Intervalos exponenciais independentes de mesma taxa. Incrementos estacionários. Instantes uniformes dado o total. $P\{N(t)=0\} = e^{-\lambda t}$.</p></div>
+      <div><h4>Taxa variável</h4><p>Intervalos não exponenciais e de distribuições diferentes. Incrementos não estacionários. Instantes com densidade proporcional a $\lambda(s)$ dado o total. $P\{N(t)=0\} = e^{-m(t)}$.</p></div>
+    </div>
+    <div class="quiz" data-correta="a">
+      <p class="enunciado">Num processo de Poisson com taxa que varia no tempo, qual afirmação é verdadeira?</p>
+      <div class="alts">
+        <button data-op="a">(a) A contagem em qualquer intervalo tem média igual à variância.</button>
+        <button data-op="b">(b) O tempo até o primeiro evento é exponencial de taxa $\lambda(0)$.</button>
+        <button data-op="c">(c) Dado o total de eventos num intervalo, eles estão uniformemente distribuídos nele.</button>
+        <button data-op="d">(d) As contagens em dois intervalos disjuntos são dependentes, porque a taxa é a mesma função.</button>
+      </div>
+      <div class="fb" data-op="a">Correto. A contagem é Poisson com média igual à área sob a taxa naquele intervalo, e numa Poisson média e variância coincidem. Isso vale intervalo por intervalo, mesmo que a média mude de intervalo para intervalo.</div>
+      <div class="fb" data-op="b">A taxa no instante zero governa só o comportamento instantâneo. A cauda do primeiro evento é $P\{T_1>t\} = e^{-m(t)}$, que só é exponencial se $m$ for linear, isto é, se a taxa for constante.</div>
+      <div class="fb" data-op="c">Essa é a versão de taxa constante. Com taxa variável, a densidade dos instantes é $\lambda(s)/m(t)$: os eventos se concentram onde a taxa é maior. Só fica uniforme quando $\lambda$ é constante.</div>
+      <div class="fb" data-op="d">A independência dos incrementos é hipótese da definição e continua valendo. Compartilhar a mesma função de taxa não cria dependência: a taxa é determinística, não é sorteada. Quando ela <em>é</em> sorteada, aí sim a independência cai — é o caso do processo misto.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Desbaste variável">
+   <div class="texto">
+    <h2>Taxa variável aparece desbastando uma taxa constante</h2>
+    <p>Há uma maneira de construir qualquer processo de taxa variável a partir de um de taxa constante, e ela é tanto um método de simulação quanto uma fonte de exemplos.</p>
+    <p>Tome um processo de Poisson de taxa constante $\lambda$, com $\lambda \ge \lambda(s)$ para todo $s$ de interesse. Guarde cada evento ocorrido em $s$ com probabilidade $\lambda(s)/\lambda$, descartando os demais, independentemente. O processo dos guardados é um processo de Poisson com função de intensidade $\lambda(s)$.</p>
+    <p>É o <span class="ref" data-ref="f-classif">desbaste com probabilidade dependente do instante</span>, sem nada de novo: a taxa dos guardados em $s$ é $\lambda \times \lambda(s)/\lambda = \lambda(s)$, e os guardados continuam com incrementos independentes.</p>
+    <p>E um exemplo bonito do mesmo mecanismo: na fila com infinitos servidores, a contagem dos clientes que <em>já terminaram</em> o atendimento até $t$ é um processo de Poisson com taxa $\lambda G(s)$ no instante $s$. Ou seja, a saída da fila é um processo de taxa variável, mesmo com a entrada de taxa constante.</p>
+    <div class="ideia">Todo processo de taxa variável é um processo de taxa constante com eventos descartados por uma probabilidade que depende do instante.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Para simular o carrinho de cachorro-quente das 8h às 11h pelo desbaste, qual $\lambda$ constante você usaria, e qual fração dos eventos sorteados seria descartada em média?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Use $\lambda = 20$, o máximo de $\lambda(s) = 5+5s$ em $(0,3)$. Em três horas isso gera 60 candidatos em média, dos quais são guardados $m(3) = 37{,}5$. Descartam-se $22{,}5/60 = 37{,}5\%$. Escolher $\lambda$ maior do que o necessário não torna a simulação errada, só mais lenta: o desbaste corrige.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 10 ===================== -->
+  <div class="secao" data-numero="5.10" data-titulo="Poisson composto" data-livro="§5.4.2">
+
+  <section class="passo" data-titulo="Cada evento vale">
+   <div class="texto">
+    <h2>Quando cada evento traz um valor</h2>
+    <p>Famílias chegam a uma região segundo um processo de Poisson de taxa 2 por semana. Cada família traz 1, 2, 3 ou 4 pessoas, com probabilidades $\tfrac16, \tfrac13, \tfrac13, \tfrac16$. Quantas <em>pessoas</em> chegaram em 5 semanas?</p>
+    <p>Não é uma contagem de Poisson: pessoas chegam em grupos, e o terceiro axioma está violado de propósito.</p>
+    <div class="definicao" data-ref-id="d-composto" data-ref-tipo="definicao" data-ref-nome="Processo de Poisson composto">
+      <p><strong>Processo de Poisson composto:</strong> $X(t) = \sum_{i=1}^{N(t)} Y_i$, com $\{N(t)\}$ um processo de Poisson de taxa $\lambda$ e $Y_1, Y_2, \dots$ variáveis independentes e de mesma distribuição, independentes de $N$.</p>
+    </div>
+    <p>A trajetória continua sendo uma escada, mas os saltos têm alturas aleatórias. Se $Y_i \equiv 1$, volta a ser o processo de Poisson.</p>
+    <p>Dois casos que valem a pena notar: com $Y_i$ assumindo valores inteiros, $X(t)$ é uma contagem com agrupamento; com $Y_i$ real, $X(t)$ é um total acumulado — valor de sinistros, volume vendido, perda financeira.</p>
+    <div class="ideia">O processo composto separa "com que frequência algo acontece" de "quanto vale cada vez".</div>
+   </div>
+   <aside class="apoio">
+    <div class="sim" id="sim-composto">
+      <label>Taxa <input type="range" id="comp-lam" min="1" max="6" step="1" value="2"> <strong id="comp-lam-v">2</strong> por semana</label>
+      <button class="btn pequeno" id="comp-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 200" id="comp-svg" role="img" aria-label="Trajetória em escada com saltos de alturas diferentes"></svg>
+      <p id="comp-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+    <div class="pare">
+      <p>Na simulação, por que a escada do processo composto tem menos degraus do que pessoas chegadas, enquanto a de um processo de Poisson tem exatamente um degrau por evento?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Porque um degrau corresponde a uma família, não a uma pessoa. O número de degraus é $N(t)$, com média $\lambda t$; a altura total é $X(t)$, com média $\lambda t E[Y]$. Essa é a distinção que o modelo foi feito para capturar: o número de eventos e o total acumulado são duas contagens diferentes.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Média e variância">
+   <div class="texto">
+    <h2>Média e variância, por condicionamento</h2>
+    <p>A técnica aqui é da matéria e vale aprender: condicione em $N(t)$ e use as fórmulas da média e da variância condicionais.</p>
+    <p>Dado $N(t) = n$, a soma é de $n$ parcelas independentes, então $E[X(t)\mid N(t)=n] = nE[Y]$ e $Var(X(t)\mid N(t)=n) = nVar(Y)$. Tomando a esperança em $N(t)$, que tem média e variância $\lambda t$:</p>
+    $$E[X(t)] = E\big[N(t)E[Y]\big] = \lambda t\, E[Y]$$
+    $$\begin{aligned}Var(X(t)) &= \underbrace{E\big[N(t)Var(Y)\big]}_{\lambda t\,Var(Y)} + \underbrace{Var\big(N(t)E[Y]\big)}_{\lambda t\,(E[Y])^2}\\ &= \lambda t\, E[Y^2]\end{aligned}$$
+    <div class="formula" data-ref-id="f-composto-mom" data-ref-tipo="formula" data-ref-nome="Média e variância do composto">
+      $$E[X(t)] = \lambda t\, E[Y], \qquad Var(X(t)) = \lambda t\, E[Y^2]$$
+    </div>
+    <p>A variância ficou com $E[Y^2]$, e não com $Var(Y)$. Esse é o detalhe que mais cai: a variabilidade do total vem de duas fontes, o número de eventos e o tamanho de cada um, e as duas se juntam exatamente nesse segundo momento.</p>
+    <p>No exemplo das famílias: $E[Y] = 2{,}5$ e $E[Y^2] = 43/6 \approx 7{,}167$. Em 5 semanas, média $2(5)(2{,}5) = 25$ pessoas e variância $2(5)(7{,}167) = 71{,}7$, com desvio padrão $8{,}47$.</p>
+    <div class="ideia">A variância do total é $\lambda t\,E[Y^2]$: aparece o segundo momento, não a variância de $Y$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Sinistros chegam a uma seguradora em Poisson de taxa 3 por mês. Cada sinistro custa 10 ou 20 mil, com probabilidade $0{,}5$ cada.</p>
+      <p>$E[Y]$, em milhares: <input class="lacuna" data-resp="15" data-tol="0.1" aria-label="media do valor">.</p>
+      <p>$E[Y^2]$, em milhares ao quadrado: <input class="lacuna" data-resp="250" data-tol="1" aria-label="segundo momento do valor">.</p>
+      <p>Média do total de um mês, em milhares: <input class="lacuna" data-resp="45" data-tol="0.5" aria-label="media do total">.</p>
+      <p>Desvio padrão do total de um mês, em milhares: <input class="lacuna" data-resp="27.386" data-tol="0.2" aria-label="desvio do total">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $E[Y^2] = 0{,}5(100) + 0{,}5(400)$. A variância do total é $\lambda t E[Y^2]$, e o desvio é a raiz dela.</p>
+      <div class="resolucao" hidden><p>$E[Y]=15$; $E[Y^2] = 50+200 = 250$; média $=3(1)(15)=45$; variância $=3(1)(250)=750$, desvio $=\sqrt{750}=27{,}39$. Note que o desvio é enorme perto da média: num mês, o total é muito pouco previsível.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Decompor">
+   <div class="texto">
+    <h2>Decompor e aproximar</h2>
+    <p>Quando $Y$ assume poucos valores, há uma releitura útil. Chame de tipo $j$ um evento com $Y_i = y_j$, que ocorre com probabilidade $p_j$. Pelo <span class="ref" data-ref="f-desbaste">desbaste</span>, os eventos de cada tipo formam processos de Poisson independentes de taxas $\lambda p_j$. Então</p>
+    $$\begin{aligned}& X(t) = \sum_j y_j N_j(t),\\ & \text{com } N_j \text{ Poisson independentes de taxa } \lambda p_j\end{aligned}$$
+    <p>O total é uma combinação linear de Poissons independentes. Isso dá outra via para média e variância (confira: $\sum_j y_j \lambda p_j t = \lambda t E[Y]$ e $\sum_j y_j^2\lambda p_j t = \lambda t E[Y^2]$) e, mais importante, deixa claro de onde vem a variabilidade.</p>
+    <p>Para $t$ grande, $X(t)$ é soma de muitas parcelas independentes e a normal aproxima bem. No exemplo das famílias, em 50 semanas: média 250 pessoas, variância $716{,}7$, desvio $26{,}8$. A chance de pelo menos 240 pessoas é aproximadamente</p>
+    $$P\{X \ge 240\} \approx P\left\{Z \ge \frac{239{,}5 - 250}{26{,}8}\right\} \approx 0{,}65$$
+    <div class="ideia">O composto é uma combinação linear de Poissons independentes, uma por valor possível do salto.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="c">
+      <p class="enunciado">Num processo de Poisson composto, a taxa é 4 eventos por hora e cada evento vale 0 ou 10, com probabilidade $0{,}5$ cada. Em uma hora, a variância do total é:</p>
+      <div class="alts">
+        <button data-op="a">(a) $4 \times 25 = 100$, usando a variância de $Y$.</button>
+        <button data-op="b">(b) $4 \times 25 = 100$, e isso coincide com $\lambda t\,E[Y^2]$ porque $E[Y]=0$.</button>
+        <button data-op="c">(c) $4 \times 50 = 200$, usando o segundo momento de $Y$.</button>
+        <button data-op="d">(d) $4 \times 5 = 20$, a taxa vezes a média de $Y$.</button>
+      </div>
+      <div class="fb" data-op="a">A variância de $Y$ é 25, mas a fórmula pede o segundo momento, que aqui é 50. Trocar um pelo outro perde a parcela $\lambda t (E[Y])^2$, que vem da variabilidade do <em>número</em> de eventos.</div>
+      <div class="fb" data-op="b">A média de $Y$ é 5, não 0. Os valores possíveis são 0 e 10, e a média deles é 5. A coincidência que você propõe só aconteceria com $E[Y]=0$, e aí a conta nem seria de um total acumulado interessante.</div>
+      <div class="fb" data-op="c">Correto. $E[Y^2] = 0{,}5(0) + 0{,}5(100) = 50$, então a variância é $4(1)(50) = 200$. Pela decomposição: só os eventos de valor 10 contam, e eles formam um processo de taxa 2, com $Var(10 N_2(1)) = 100 \times 2 = 200$. Confere.</div>
+      <div class="fb" data-op="d">Essa é a <em>média</em> do total, $\lambda t E[Y] = 20$, não a variância. Num composto, média e variância são bem diferentes, ao contrário do que acontece na Poisson simples.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 11 ===================== -->
+  <div class="secao" data-numero="5.11" data-titulo="Taxa sorteada" data-livro="§5.4.3">
+
+  <section class="passo" data-titulo="Taxa sorteada">
+   <div class="texto">
+    <h2>A taxa também pode ser desconhecida</h2>
+    <p>Uma seguradora tem muitos segurados. Cada um causa sinistros num processo de Poisson, mas com uma taxa própria: há motorista cuidadoso e motorista descuidado, e a seguradora não sabe qual é qual.</p>
+    <p>Modele assim: sorteie $\Lambda$ de uma distribuição $G$ e, dado $\Lambda = \lambda$, rode um processo de Poisson de taxa $\lambda$.</p>
+    <div class="definicao" data-ref-id="d-misto" data-ref-tipo="definicao" data-ref-nome="Processo de Poisson misto">
+      <p><strong>Processo de Poisson misto:</strong> com $G$ a distribuição da taxa aleatória $\Lambda$,</p>
+      $$P\{N(t)=n\} = \int_0^\infty e^{-\lambda t}\frac{(\lambda t)^n}{n!}\,dG(\lambda)$$
+    </div>
+    <p>Duas fontes de variabilidade se somam: a do processo de Poisson, dada a taxa, e a da própria taxa. O efeito é <strong>superdispersão</strong>: a variância da contagem fica maior que a média.</p>
+    <p>Em contas, $E[N(t)] = tE[\Lambda]$ e</p>
+    $$Var(N(t)) = \underbrace{t\,E[\Lambda]}_{\text{dentro}} + \underbrace{t^2 Var(\Lambda)}_{\text{entre}}$$
+    <p>A primeira parcela é a Poisson de sempre; a segunda é nova e cresce com $t^2$. Para $t$ grande, a variação entre segurados domina totalmente.</p>
+    <div class="ideia">Sortear a taxa adiciona uma variância que cresce com $t^2$, então a contagem fica muito mais dispersa que uma Poisson.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-misto">
+      <p>Em comparação com uma Poisson de mesma média, o histograma da contagem com taxa sorteada deve ter…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Mais zeros e mais valores altos</button>
+        <button data-op="b">Menos zeros e menos valores altos</button>
+        <button data-op="c">A mesma forma</button>
+      </div>
+      <div class="explica" hidden><p>Os dois extremos ganham peso: os segurados de taxa baixa produzem muitos zeros, e os de taxa alta produzem contagens grandes. A média pode ser a mesma, mas a cauda é bem mais gorda dos dois lados.</p></div>
+    </div>
+    <div class="sim" id="sim-misto">
+      <label>Dispersão da taxa <input type="range" id="misto-slider" min="0" max="9" step="1" value="4"> <strong id="misto-valor">4</strong></label>
+      <svg viewBox="0 0 400 210" id="misto-svg" role="img" aria-label="Barras da contagem com taxa sorteada comparadas com a Poisson de mesma média"></svg>
+      <p id="misto-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Mistura gama">
+   <div class="texto">
+    <h2>O caso que fecha em fórmula</h2>
+    <p>Com $G$ gama, a integral sai em forma fechada. Tome $\Lambda$ com densidade $\theta^a \lambda^{a-1}e^{-\theta\lambda}/\Gamma(a)$, de média $a/\theta$. Então</p>
+    <div class="formula" data-ref-id="f-misto-gama" data-ref-tipo="formula" data-ref-nome="Contagem com taxa gama">
+      $$\begin{aligned}P\{N(t)=n\} = \binom{n+a-1}{n} & \left(\frac{\theta}{\theta+t}\right)^{\!a}\\ & \times \left(\frac{t}{\theta+t}\right)^{\!n}\end{aligned}$$
+    </div>
+    <p>Essa é a distribuição binomial negativa. Não é coincidência que ela apareça: a binomial negativa é a distribuição de contagem superdispersa mais usada na prática, e esse é o motivo pelo qual ela aparece tanto — ela <em>é</em> uma Poisson com taxa gama.</p>
+    <p>Com $a = 2$ e $\theta = 1$, em $t = 1$: as probabilidades de 0, 1, 2, 3 sinistros são $0{,}25$; $0{,}25$; $0{,}1875$; $0{,}125$. A média é $a/\theta = 2$, a variância é $2 + 2 = 4$: o dobro da média.</p>
+    <div class="ideia">Poisson com taxa gama é binomial negativa, e isso explica por que a binomial negativa serve tão bem para contagens superdispersas.</div>
+    <details class="demo">
+      <summary>Demonstração: a integral da mistura gama</summary>
+      <p>Substituindo a densidade da gama na definição:</p>
+      $$\begin{aligned}P\{N(t)=n\} &= \int_0^\infty e^{-\lambda t}\frac{(\lambda t)^n}{n!}\cdot\frac{\theta^a \lambda^{a-1}e^{-\theta\lambda}}{\Gamma(a)}\,d\lambda\\ &= \frac{t^n\theta^a}{n!\,\Gamma(a)}\int_0^\infty \lambda^{n+a-1}e^{-(\theta+t)\lambda}\,d\lambda\end{aligned}$$
+      <p>A integral é a da densidade gama de parâmetros $n+a$ e $\theta+t$, a menos da constante: ela vale $\Gamma(n+a)/(\theta+t)^{n+a}$. Então</p>
+      $$\begin{aligned}P\{N(t)=n\} &= \frac{\Gamma(n+a)}{n!\,\Gamma(a)}\cdot\frac{t^n\theta^a}{(\theta+t)^{n+a}}\\ &= \binom{n+a-1}{n}\left(\frac{\theta}{\theta+t}\right)^{a}\left(\frac{t}{\theta+t}\right)^{n}\end{aligned}$$
+      <p>usando $\Gamma(n+a)/(n!\Gamma(a)) = \binom{n+a-1}{n}$, que para $a$ inteiro é um coeficiente binomial comum.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Taxa com distribuição gama de parâmetros $a=2$ e $\theta=1$ sinistros por ano. Observa-se um ano.</p>
+      <p>$E[N(1)] =$ <input class="lacuna" data-resp="2" data-tol="0.05" aria-label="media da contagem">.</p>
+      <p>$Var(N(1)) =$ <input class="lacuna" data-resp="4" data-tol="0.05" aria-label="variancia da contagem">.</p>
+      <p>$P\{N(1)=0\} =$ <input class="lacuna" data-resp="0.25" data-tol="0.005" aria-label="probabilidade de zero">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $E[\Lambda]=a/\theta$ e $Var(\Lambda)=a/\theta^2$. Depois use $Var(N) = tE[\Lambda] + t^2Var(\Lambda)$. Para a última, basta a fórmula com $n=0$.</p>
+      <div class="resolucao" hidden><p>$E[\Lambda]=2$, $Var(\Lambda)=2$. Então $E[N(1)]=2$ e $Var(N(1)) = 2 + 2 = 4$. E $P\{N(1)=0\} = (1/2)^2 = 0{,}25$. Compare com uma Poisson de média 2, em que $P\{0\} = e^{-2} = 0{,}135$: a mistura tem quase o dobro de zeros.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Sem independência">
+   <div class="texto">
+    <h2>Aqui os incrementos não são independentes</h2>
+    <p>Esta é a diferença fundamental entre os dois jeitos de soltar a taxa. No caso não homogêneo, a taxa varia mas é conhecida, e os incrementos continuam independentes. No caso misto, a taxa é constante mas desconhecida, e os incrementos <strong>deixam</strong> de ser independentes.</p>
+    <p>Por quê: observar muitos sinistros no primeiro ano é informação sobre $\Lambda$, e $\Lambda$ governa também o segundo ano. Formalmente, com a mistura gama,</p>
+    $$E[\Lambda \mid N(t)=n] = \frac{a+n}{\theta+t}$$
+    <p>que cresce com $n$. Com $a=2$, $\theta=1$ e $t=1$: um segurado sem nenhum sinistro no ano tem taxa esperada $2/2 = 1$; um com três sinistros tem $5/2 = 2{,}5$. A seguradora usa exatamente isso para calcular o prêmio do ano seguinte.</p>
+    <p>Note que a condicional também é gama, de parâmetros $a+n$ e $\theta+t$. O histórico atualiza os dois parâmetros sem sair da família.</p>
+    <div class="ideia">Com a taxa sorteada, o passado informa sobre o futuro, porque os dois são governados pela mesma taxa desconhecida.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="d">
+      <p class="enunciado">Um processo de contagem tem taxa sorteada uma única vez no início e mantida fixa depois. Sobre esse processo:</p>
+      <div class="alts">
+        <button data-op="a">(a) É um processo de Poisson com taxa igual à média da taxa sorteada.</button>
+        <button data-op="b">(b) Tem incrementos independentes, porque a taxa não muda ao longo do tempo.</button>
+        <button data-op="c">(c) A contagem num intervalo tem variância igual à média.</button>
+        <button data-op="d">(d) Tem incrementos estacionários, mas não independentes.</button>
+      </div>
+      <div class="fb" data-op="a">A média da contagem bate, mas a distribuição não. Uma Poisson de média 2 dá $P\{0\} = 0{,}135$; a mistura com a mesma média pode dar $0{,}25$. Médias iguais não fazem distribuições iguais.</div>
+      <div class="fb" data-op="b">A taxa ser constante no tempo não basta: ela é <em>desconhecida</em>, e observar o passado é informação sobre ela. Essa é a diferença entre taxa constante conhecida e taxa constante sorteada.</div>
+      <div class="fb" data-op="c">A variância é maior que a média, pela parcela $t^2Var(\Lambda)$. Variância igual à média é marca da Poisson, e a mistura é superdispersa por construção.</div>
+      <div class="fb" data-op="d">Correto. A estacionariedade sobrevive: dada a taxa, intervalos de mesmo comprimento têm a mesma distribuição, e integrar em $\Lambda$ preserva isso. A independência é o que cai, porque o passado informa sobre $\Lambda$.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 12 ===================== -->
+  <div class="secao" data-numero="5.12" data-titulo="Eventos que puxam eventos" data-livro="§5.5">
+
+  <section class="passo" data-titulo="Intensidade aleatória">
+   <div class="texto">
+    <h2>A taxa pode depender do que já aconteceu</h2>
+    <p>Terremotos são o exemplo clássico: um tremor grande aumenta a chance de tremores nos dias seguintes. Nem taxa constante nem taxa variável conhecida descrevem isso, porque aqui a taxa depende do <em>histórico do próprio processo</em>.</p>
+    <div class="definicao" data-ref-id="d-intens-ale" data-ref-tipo="definicao" data-ref-nome="Função de intensidade aleatória">
+      <p><strong>Intensidade aleatória:</strong> o processo tem intensidade aleatória $R(t)$ quando, condicionando em todo o histórico até $t$,</p>
+      $$P\{N(t+h)-N(t)=1 \mid \text{histórico até } t\} = R(t)h + o(h)$$
+      <p>e dois ou mais eventos é $o(h)$,</p>
+      <p>com $R(t)$ uma variável cujo valor é determinado pelo histórico até $t$.</p>
+    </div>
+    <p>Os três processos deste capítulo entram como casos particulares: taxa constante é $R(t) = \lambda$; taxa variável conhecida é $R(t) = \lambda(t)$, ainda determinística; taxa sorteada é $R(t) = \Lambda$, aleatória mas constante e não informada pelo histórico depois do sorteio inicial.</p>
+    <p>O que é novo é $R(t)$ reagir aos eventos à medida que eles ocorrem.</p>
+    <div class="ideia">A intensidade aleatória é o nível mais geral: ela é sorteada continuamente, e o que a determina é o que o próprio processo já fez.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Quatro modelos de contagem. Em qual deles a intensidade no instante $t$ depende de quantos eventos já ocorreram antes de $t$?</p>
+      <div class="alts">
+        <button data-op="a">(a) Taxa constante $\lambda$.</button>
+        <button data-op="b">(b) Taxa que aumenta a cada evento e decai com o tempo desde ele.</button>
+        <button data-op="c">(c) Taxa $\lambda(t)$ dada por uma função conhecida da hora do dia.</button>
+        <button data-op="d">(d) Taxa constante sorteada uma vez no início.</button>
+      </div>
+      <div class="fb" data-op="a">A intensidade é a mesma sempre, e não depende de nada: é o caso mais simples.</div>
+      <div class="fb" data-op="b">Correto. Essa é a autoexcitação. A intensidade carrega a marca de cada evento passado, com peso que decai conforme o evento fica antigo. É o único dos quatro em que o histórico entra na intensidade.</div>
+      <div class="fb" data-op="c">A intensidade varia, mas com o relógio, não com os eventos. Dado o instante, ela é um número conhecido, independentemente do que o processo fez.</div>
+      <div class="fb" data-op="d">Essa é a mais traiçoeira. A intensidade é aleatória, e observar eventos realmente muda a nossa <em>opinião</em> sobre ela. Mas a intensidade em si não muda com os eventos: ela foi sorteada uma vez e ficou. A diferença é entre a taxa mudar e a nossa informação sobre ela mudar.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Autoexcitação">
+   <div class="texto">
+    <h2>Cada evento empurra a taxa para cima</h2>
+    <p>O modelo autoexcitado mais usado monta $R(t)$ assim: há uma intensidade de base $\lambda$; cada evento $i$ traz uma <strong>marca</strong> $M_i \ge 0$, sorteada independentemente de tudo; quando o evento ocorre, a intensidade sobe em $M_i$; e esse empurrão decai exponencialmente a uma taxa $\alpha$.</p>
+    <div class="formula" data-ref-id="f-hawkes" data-ref-tipo="formula" data-ref-nome="Intensidade autoexcitada">
+      $$R(t) = \class{s1}{\lambda} + \sum_{i=1}^{N(t)} \class{s2}{M_i}\, e^{-\class{s3}{\alpha}(t-S_i)}$$
+      <ul class="legenda">
+        <li><span class="s1">$\lambda$</span>: intensidade de base, quando nada aconteceu</li>
+        <li><span class="s2">$M_i$</span>: marca do evento $i$, o tamanho do empurrão</li>
+        <li><span class="s3">$\alpha$</span>: velocidade com que o empurrão se dissipa</li>
+      </ul>
+    </div>
+    <p>Dito em três regras, que é como se simula: a intensidade começa em $\lambda$; a cada evento ela salta pelo valor da marca; e entre eventos ela desce suavemente de volta na direção de $\lambda$, segundo $R(s+t) = \lambda + (R(s)-\lambda)e^{-\alpha t}$.</p>
+    <p>O efeito visível é agrupamento: um evento torna o próximo mais provável, que torna o seguinte mais provável, e aí a intensidade volta a cair. As trajetórias ficam com rajadas separadas por períodos calmos — bem diferente do espalhamento irregular mas sem rajadas de um processo de taxa constante.</p>
+    <div class="ideia">Autoexcitação produz agrupamento real: rajadas de eventos seguidas de silêncio, e não só a aparência de grupos que o espalhamento aleatório já dá.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-hawkes">
+      <p>Aumentando o tamanho típico das marcas, mantendo tudo o mais, o número médio de eventos no mesmo intervalo…</p>
+      <div class="alts">
+        <button data-op="a">Não muda, porque a base é a mesma</button>
+        <button data-op="b" data-certa>Cresce, e cresce cada vez mais rápido</button>
+        <button data-op="c">Cresce proporcionalmente à marca</button>
+      </div>
+      <div class="explica" hidden><p>Cresce de forma explosiva, não proporcional: cada evento extra gera novos empurrões, que geram novos eventos. A razão entre marca média e taxa de decaimento controla isso, e quando ela chega a 1 o processo deixa de ter média finita.</p></div>
+    </div>
+    <div class="sim" id="sim-hawkes">
+      <label>Marca média <input type="range" id="haw-slider" min="0" max="90" step="10" value="50"> <strong id="haw-valor">0,50</strong></label>
+      <button class="btn pequeno" id="haw-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 230" id="haw-svg" role="img" aria-label="Intensidade subindo em cada evento e decaindo entre eventos, com os eventos marcados na linha de tempo"></svg>
+      <p id="haw-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="A média">
+   <div class="texto">
+    <h2>Quantos eventos esperar, e quando o modelo explode</h2>
+    <p>Para qualquer processo de contagem com intensidade aleatória vale um fato simples e muito útil:</p>
+    <div class="formula" data-ref-id="f-media-intens" data-ref-tipo="formula" data-ref-nome="Média a partir da intensidade">
+      $$m(t) = E[N(t)] = \int_0^t E[R(s)]\,ds$$
+    </div>
+    <p>Em palavras: a média da contagem acumula a média da intensidade. Isso reduz o problema a achar $E[R(s)]$, o que no caso autoexcitado sai por equação diferencial. Com $\mu = E[M]$ a marca média, o resultado é</p>
+    $$E[R(t)] = \lambda + \frac{\lambda\mu}{\mu-\alpha}\left(e^{(\mu-\alpha)t}-1\right)$$
+    <p>Tudo depende do sinal de $\mu - \alpha$. Se $\mu &lt; \alpha$, a intensidade média estabiliza em $\lambda\alpha/(\alpha-\mu)$ e os eventos chegam, no longo prazo, a uma taxa constante maior que $\lambda$. Se $\mu \ge \alpha$, a intensidade média cresce sem limite: o modelo explode.</p>
+    <p>A razão $\mu/\alpha$ é o número médio de eventos que cada evento provoca diretamente. Com $\lambda=1$, $\mu=0{,}5$ e $\alpha=1$, essa razão é $0{,}5$: cada evento gera meio evento novo, e a taxa de longo prazo é 2, o dobro da base. Em $t=10$, a média é $18{,}0$ eventos, contra 10 se não houvesse autoexcitação.</p>
+    <div class="ideia">A razão entre a marca média e a taxa de decaimento é o número de filhos por evento; abaixo de 1 o processo se estabiliza, a partir de 1 ele explode.</div>
+    <details class="demo">
+      <summary>Demonstração: a equação diferencial de $E[R(t)]$</summary>
+      <p>Escreva $g(t) = E[R(t)]$ e seja $M_t(h)$ a soma das marcas dos eventos ocorridos em $(t, t+h]$. Pela regra do decaimento entre eventos,</p>
+      $$R(t+h) = \lambda + (R(t)-\lambda)e^{-\alpha h} + M_t(h) + o(h)$$
+      <p>Use $e^{-\alpha h} = 1 - \alpha h + o(h)$ e tome esperanças:</p>
+      $$g(t+h) = g(t) - \alpha h\,g(t) + \lambda\alpha h + E[M_t(h)] + o(h)$$
+      <p>Dado $R(t)$, há um evento em $(t,t+h]$ com probabilidade $R(t)h + o(h)$ e dois ou mais com probabilidade $o(h)$. Como a marca é independente do passado e tem média $\mu$,</p>
+      $$\begin{aligned}& E[M_t(h)\mid R(t)] = \mu R(t)h + o(h)\\ & \Longrightarrow\ E[M_t(h)] = \mu g(t)h + o(h)\end{aligned}$$
+      <p>Substituindo, dividindo por $h$ e fazendo $h \to 0$:</p>
+      $$g'(t) = (\mu-\alpha)g(t) + \lambda\alpha$$
+      <p>Com $f(t) = (\mu-\alpha)g(t) + \lambda\alpha$ vale $f'(t)/f(t) = \mu-\alpha$, então $f(t) = f(0)e^{(\mu-\alpha)t}$. Como $g(0)=\lambda$, tem-se $f(0) = \mu\lambda$, e daí a expressão de $g(t)$ acima. Integrando pela fórmula da média:</p>
+      $$\begin{aligned}E[N(t)] = \lambda t + \frac{\lambda\mu}{(\mu-\alpha)^2}\Big(& e^{(\mu-\alpha)t}-1\\ & -(\mu-\alpha)t\Big)\end{aligned}$$
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Processo autoexcitado com base $\lambda = 1$ por dia, marca média $\mu = 0{,}5$ e decaimento $\alpha = 1$.</p>
+      <p>Razão entre marca média e decaimento: <input class="lacuna" data-resp="0.5" data-tol="0.01" aria-label="razao de ramificacao">.</p>
+      <p>Taxa de longo prazo, $\lambda\alpha/(\alpha-\mu)$, por dia: <input class="lacuna" data-resp="2" data-tol="0.02" aria-label="taxa de longo prazo">.</p>
+      <p>Com $\alpha$ caindo para $0{,}5$, a razão vira <input class="lacuna" data-resp="1" data-tol="0.01" aria-label="razao com alfa menor"> e o processo deixa de ter média finita.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: a razão é $\mu/\alpha$. A taxa de longo prazo só existe se essa razão for menor que 1.</p>
+      <div class="resolucao" hidden><p>$\mu/\alpha = 0{,}5/1 = 0{,}5$; taxa de longo prazo $= 1(1)/(1-0{,}5) = 2$ por dia, o dobro da base. Com $\alpha = 0{,}5$, a razão é $0{,}5/0{,}5 = 1$: o denominador $\alpha-\mu$ zera, e a média cresce sem limite.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 13 ===================== -->
+  <div class="secao" data-numero="5.13" data-titulo="Qual processo usar" data-livro="§5.3–5.5">
+
+  <section class="passo" data-titulo="Comparando">
+   <div class="texto">
+    <h2>Os cinco processos do capítulo, lado a lado</h2>
+    <p>Todos são processos de contagem. O que os separa é o que foi solto de cada axioma.</p>
+    <p><strong>Poisson.</strong> Nada solto. Incrementos independentes e estacionários; contagem Poisson de média $\lambda t$.</p>
+    <p><strong>Taxa variável.</strong> Solta a estacionariedade. Incrementos independentes; contagem Poisson de média $m(t)$.</p>
+    <p><strong>Composto.</strong> Solta o um evento por instante. Incrementos independentes e estacionários; contagem igual à soma de $N(t)$ valores.</p>
+    <p><strong>Taxa sorteada.</strong> Solta a independência. Incrementos estacionários; contagem igual a uma mistura de Poissons.</p>
+    <p><strong>Autoexcitado.</strong> Solta a independência de forma mais funda. Em geral nem independentes nem estacionários; contagem sem forma fechada.</p>
+    <p>Para escolher, duas perguntas resolvem quase tudo. <strong>A taxa muda?</strong> Se muda com o relógio, é taxa variável; se é desconhecida mas fixa, é taxa sorteada; se reage aos eventos, é autoexcitado. <strong>Os eventos vêm em grupos ou trazem valores?</strong> Aí é composto, e pode ser combinado com qualquer um dos outros.</p>
+    <div class="ideia">Variância maior que a média é o sinal de alerta: a taxa constante não serve, e a causa é taxa variável, taxa sorteada, agrupamento ou autoexcitação.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="c">
+      <p class="enunciado">Numa amostra de contagens diárias de um mesmo fenômeno, a média é 4 e a variância amostral é 16. Qual conclusão é a mais defensável?</p>
+      <div class="alts">
+        <button data-op="a">(a) O fenômeno segue um processo de Poisson de taxa 4 por dia.</button>
+        <button data-op="b">(b) O fenômeno segue um processo de Poisson de taxa 16 por dia.</button>
+        <button data-op="c">(c) A hipótese de taxa constante e conhecida é suspeita, e vale investigar variação ao longo do tempo, agrupamento ou autoexcitação.</button>
+        <button data-op="d">(d) A contagem não pode ser Poisson porque a variância é maior que a média.</button>
+      </div>
+      <div class="fb" data-op="a">Se fosse Poisson de taxa 4, a variância deveria ficar perto de 4, não de 16. A média bate, e é justamente por isso que olhar só a média engana.</div>
+      <div class="fb" data-op="b">A variância não é uma estimativa da taxa. Numa Poisson as duas coincidem por acidente de família, e usar a variância como taxa quadruplicaria a média prevista.</div>
+      <div class="fb" data-op="c">Correto. Média 4 e variância 16 é superdispersão, e as três causas são taxa que varia no tempo, eventos chegando em grupos e autoexcitação. Distinguir entre elas exige olhar os instantes, não só as contagens diárias: agrupamento aparece em eventos simultâneos, autoexcitação em rajadas, variação de taxa em sazonalidade.</div>
+      <div class="fb" data-op="d">Cuidado com o "não pode": a variância <em>amostral</em> de uma Poisson flutua, e com poucos dias 16 contra 4 pode ser azar. A frase correta é que a hipótese fica suspeita, não que foi refutada.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Armadilhas">
+   <div class="texto">
+    <h2>Os erros que mais aparecem</h2>
+    <p>Um resumo do que deu errado ao longo do capítulo, reunido para a prova.</p>
+    <p><strong>Taxa não é período.</strong> Taxa 2 por hora não significa um evento a cada 30 minutos. Ao mudar de unidade, a taxa se multiplica; o período se divide.</p>
+    <p><strong>Falta de memória é sobre o excedente.</strong> Dado $X>t$, a variável $X-t$ volta a ser exponencial. É $X$ que passa a ter a distribuição de uma exponencial deslocada, não de uma exponencial.</p>
+    <p><strong>Somar não é misturar.</strong> Etapas em sequência fazem o risco subir; tipos sorteados fazem o risco cair.</p>
+    <p><strong>No composto, aparece $E[Y^2]$.</strong> A variância é $\lambda t\,E[Y^2]$, não $\lambda t\,Var(Y)$.</p>
+    <p><strong>Taxa variável conhecida mantém a independência; taxa sorteada não.</strong> As duas violam a estacionariedade? Não: a variável viola a estacionariedade e mantém a independência; a sorteada mantém a estacionariedade e viola a independência.</p>
+    <div class="ideia">Antes de aplicar qualquer fórmula, pergunte: os incrementos são independentes? São estacionários? Cabe mais de um evento no mesmo instante?</div>
+   </div>
+   <aside class="apoio">
+    <div class="acheerro">
+      <p>Uma colega resolveu: "Clientes chegam em Poisson de taxa 6 por hora. Cada um gasta 20 ou 60 reais, com probabilidade meio. Qual a média e o desvio padrão do gasto total em 2 horas?" Toque na linha com erro.</p>
+      <ol class="linhas">
+        <li data-fb="Certa. Em 2 horas a média da contagem é 12 clientes, e o gasto médio por cliente é 40. O total médio é 480.">Média do total $= 6(2)(40) = 480$ reais.</li>
+        <li data-fb="Certa, e é o cálculo correto do segundo momento: metade de 400 mais metade de 3600 dá 2000.">$E[Y^2] = 0{,}5(400) + 0{,}5(3600)$ $= 2000$.</li>
+        <li data-errada data-fb="Aqui está o erro: a fórmula da variância do total usa o segundo momento, não a variância de Y. O certo é 6(2)(2000) = 24000, com desvio padrão de cerca de 155 reais, e não 98. Usar Var(Y) esquece a contribuição da variabilidade do número de clientes.">Variância do total $= 6(2)Var(Y) = 12(400) = 4800$, desvio de cerca de 69 reais.</li>
+        <li data-fb="Essa conferência está correta como ideia: o desvio padrão do total tem que ser bem maior que o desvio de um gasto individual, porque o número de clientes também varia.">Confere: o desvio do total é maior que o desvio de um gasto individual, que é 20.</li>
+      </ol>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <div class="nav">
+    <button id="anterior">Anterior</button>
+    <button id="proximo" class="primario">Próximo</button>
+  </div>
+</div>
+
+<!-- ============ RESUMO ============ -->
+<div id="resumo" hidden>
+  <h2>Resumo</h2>
+  <div class="revisao" id="revisao">
+    <h3>Antes de reler, teste-se</h3>
+    <p class="rev-info"></p>
+    <div id="rev-palco"></div>
+    <div class="rev-acoes">
+      <button class="btn primario" id="rev-iniciar">Começar</button>
+      <button class="btn" id="rev-proxima" hidden>Próxima</button>
+    </div>
+  </div>
+  <div class="resumo-grid">
+  <div>
+  <h3>Ideias centrais</h3>
+  <ul class="resumo-lista">
+    <li>A exponencial tem um parâmetro, a taxa, e cauda $e^{-\lambda x}$.</li>
+    <li>Média, desvio padrão e $1/\lambda$ são a mesma coisa; $E[X^n]=n!/\lambda^n$.</li>
+    <li>Falta de memória: o tempo já decorrido não informa nada sobre o que falta.</li>
+    <li>Sem memória e exponencial são equivalentes, em distribuição contínua.</li>
+    <li>Taxa de falha constante é exponencial; crescente envelhece; decrescente rejuvenesce.</li>
+    <li>O mínimo de exponenciais é exponencial com as taxas somadas.</li>
+    <li>Quem vence a corrida é sorteado proporcionalmente às taxas.</li>
+    <li>Quando o mínimo ocorre e quem venceu são independentes.</li>
+    <li>Probabilidade de ordem é produto de corridas sucessivas.</li>
+    <li>Somar exponenciais iguais concentra: média cresce como $n$, desvio como $\sqrt n$.</li>
+    <li>Somar taxas distintas dá combinação de exponenciais, com coeficientes somando 1.</li>
+    <li>Soma de etapas envelhece; mistura de tipos rejuvenesce.</li>
+    <li>Empilhando fases exponenciais modela-se quase qualquer duração.</li>
+    <li>Processo de contagem é uma escada; instantes e contagem são descrições equivalentes.</li>
+    <li>Independência é sobre memória; estacionariedade é sobre a hora do dia.</li>
+    <li>Os axiomas falam do comportamento local; a distribuição de $N(t)$ é consequência.</li>
+    <li>A contagem é Poisson de média $\lambda t$, com média igual à variância.</li>
+    <li>Intervalos disjuntos se multiplicam, e só o comprimento conta.</li>
+    <li>Contar com os axiomas é o mesmo que esperar exponenciais independentes.</li>
+    <li>$S_n > t$ e $N(t) &lt; n$ são o mesmo evento.</li>
+    <li>O processo reiniciado em qualquer instante fixo é o mesmo processo.</li>
+    <li>Rotular eventos independentemente parte o processo em Poissons independentes.</li>
+    <li>A fatoração do desbaste só funciona porque o total é Poisson.</li>
+    <li>Taxas somam ao juntar e repartem ao desbastar.</li>
+    <li>Tornar o total aleatório, com distribuição de Poisson, cria independência.</li>
+    <li>Condicionado na contagem, o processo esquece a própria taxa.</li>
+    <li>Dado o total, os eventos são pontos jogados ao acaso no intervalo.</li>
+    <li>Normalizar exponenciais pela soma deixa só a repartição, que é uniforme.</li>
+    <li>Com rótulo dependente do instante, cada tipo é Poisson com média integral.</li>
+    <li>A soma de uma função dos instantes tem média $\lambda\int_0^t g$.</li>
+    <li>O que mede a qualidade do programa é a soma das taxas dos defeitos restantes.</li>
+    <li>Defeitos vistos uma única vez são a pista dos que nunca foram vistos.</li>
+    <li>Soltar a estacionariedade troca a taxa pela taxa acumulada.</li>
+    <li>A média da contagem é a área sob a curva da taxa.</li>
+    <li>A estrutura de Poisson sobrevive dentro de cada intervalo, não entre intervalos.</li>
+    <li>Taxa variável é taxa constante com eventos descartados.</li>
+    <li>O composto separa a frequência do valor de cada evento.</li>
+    <li>A variância do total é $\lambda t\,E[Y^2]$, com o segundo momento.</li>
+    <li>O composto é combinação linear de Poissons independentes.</li>
+    <li>Sortear a taxa adiciona variância que cresce com $t^2$.</li>
+    <li>Poisson com taxa gama é binomial negativa.</li>
+    <li>Com taxa sorteada, o passado informa sobre o futuro.</li>
+    <li>Intensidade aleatória é o nível mais geral, determinado pelo histórico.</li>
+    <li>Autoexcitação produz agrupamento real, em rajadas.</li>
+    <li>Marca média sobre decaimento é o número de filhos por evento.</li>
+    <li>Variância maior que a média é o sinal de que a taxa constante não serve.</li>
+  </ul>
+  </div>
+  <div>
+  <h3>Fórmulas</h3>
+  <p>Exponencial de taxa $\lambda$, com $x \ge 0$:</p>
+  $$f(x) = \lambda e^{-\lambda x}, \quad P\{X>x\} = e^{-\lambda x}$$
+  $$E[X^n] = \frac{n!}{\lambda^n}$$
+  <p>Corrida de exponenciais independentes de taxas $\lambda_1,\dots,\lambda_n$:</p>
+  $$\min_i X_i \sim \text{exponencial}\left(\textstyle\sum_i \lambda_i\right)$$
+  $$P\{X_i \text{ é o menor}\} = \frac{\lambda_i}{\sum_j \lambda_j}$$
+  <p>Taxa de falha $r(t) = f(t)/\bar F(t)$, e a distribuição que ela determina:</p>
+  $$\bar F(t) = \exp\left\{-\int_0^t r(s)\,ds\right\}$$
+  <p>Soma de $n$ exponenciais de mesma taxa (gama), e de taxas distintas:</p>
+  $$f_{S_n}(x) = \lambda e^{-\lambda x}\frac{(\lambda x)^{n-1}}{(n-1)!}$$
+  $$P\{S>t\} = \sum_i e^{-\lambda_i t}\prod_{j \ne i}\frac{\lambda_j}{\lambda_j-\lambda_i}$$
+  <p>Processo de Poisson de taxa $\lambda$: contagem, intervalos e instantes.</p>
+  $$P\{N(t)=n\} = e^{-\lambda t}\frac{(\lambda t)^n}{n!}$$
+  $$T_i \ \text{exponenciais independentes de taxa } \lambda$$
+  <p>Desbaste com probabilidade $p$, e classificação dependente do instante:</p>
+  $$N_1 \sim \text{Poisson}(\lambda p t)$$
+  $$N_i(t) \sim \text{Poisson}\left(\lambda\int_0^t P_i(s)\,ds\right), \ \text{independentes}$$
+  <p>Dado $N(t)=n$, os instantes são $n$ uniformes em $(0,t)$ ordenadas, com densidade conjunta $n!/t^n$; e para qualquer $g$,</p>
+  $$E\left[\sum_{i=1}^{N(t)} g(S_i)\right] = \lambda\int_0^t g(s)\,ds$$
+  <p>Taxa variável, com $m(t) = \int_0^t\lambda(s)ds$:</p>
+  $$N(t+s)-N(t) \sim \text{Poisson}\big(m(t+s)-m(t)\big)$$
+  <p>Composto $X(t)=\sum_{i=1}^{N(t)}Y_i$, com $Y_i$ independentes de mesma distribuição:</p>
+  $$E[X(t)] = \lambda t\,E[Y]$$
+  $$Var(X(t)) = \lambda t\,E[Y^2]$$
+  <p>Taxa sorteada $\Lambda$ com distribuição $G$:</p>
+  $$P\{N(t)=n\} = \int_0^\infty e^{-\lambda t}\frac{(\lambda t)^n}{n!}dG(\lambda)$$
+  $$Var(N(t)) = t\,E[\Lambda] + t^2 Var(\Lambda)$$
+  <p>Intensidade aleatória $R(t)$, e o caso autoexcitado com marca média $\mu$ e decaimento $\alpha$:</p>
+  $$E[N(t)] = \int_0^t E[R(s)]\,ds$$
+  $$E[R(t)] = \lambda + \frac{\lambda\mu}{\mu-\alpha}\left(e^{(\mu-\alpha)t}-1\right)$$
+  <h3>Quando usar e quando não usar</h3>
+  <div class="lado">
+    <div><strong>Use quando</strong><ul class="resumo-lista">
+      <li>Eventos chegam de fontes independentes, sem um guiar o outro.</li>
+      <li>Um evento por instante, sem chegadas simultâneas.</li>
+      <li>A variância amostral da contagem fica perto da média.</li>
+      <li>O tempo que falta não depende do tempo já passado.</li>
+    </ul></div>
+    <div><strong>Evite quando</strong><ul class="resumo-lista">
+      <li>Há hora boa e hora ruim do dia: use a taxa variável.</li>
+      <li>Eventos chegam em grupos: use o composto.</li>
+      <li>Unidades têm taxas diferentes e desconhecidas: use a taxa sorteada.</li>
+      <li>Um evento aumenta a chance dos seguintes: use o autoexcitado.</li>
+      <li>O risco de falha claramente cresce ou cai com a idade.</li>
+    </ul></div>
+  </div>
+  <h3>Armadilhas</h3>
+  <ul class="resumo-lista">
+    <li>Taxa 2 por hora não é um evento a cada 30 minutos.</li>
+    <li>Falta de memória vale para o excedente: dado $X>t$, é $X-t$ que volta a ser exponencial.</li>
+    <li>$E[X^2] = 2/\lambda^2$, e não $(1/\lambda)^2$.</li>
+    <li>Um competidor novo na corrida diminui a chance de todos os antigos.</li>
+    <li>Somar etapas faz o risco subir; misturar tipos faz o risco cair.</li>
+    <li>Mistura de exponenciais não é exponencial, e soma também não.</li>
+    <li>Com total <em>fixo</em>, os dois grupos do desbaste ficam dependentes.</li>
+    <li>Dado o total, não use o quadrado da média do instante no lugar da média do quadrado.</li>
+    <li>Com taxa variável, $P\{N(t)=0\} = e^{-m(t)}$, e não $e^{-\lambda(0)t}$.</li>
+    <li>Com taxa variável, os instantes dado o total não são uniformes: a densidade é $\lambda(s)/m(t)$.</li>
+    <li>No composto, a variância usa $E[Y^2]$, não $Var(Y)$.</li>
+    <li>Taxa variável conhecida preserva a independência; taxa sorteada não.</li>
+    <li>Superdispersão amostral levanta suspeita, mas não refuta a hipótese de Poisson por si só.</li>
+  </ul>
+  </div>
+  </div>
+</div>
+
+<div id="painel" hidden>
+  <button class="btn pequeno" id="painel-voltar">← Voltar</button>
+  <h2 id="painel-titulo" style="margin-top:1rem"></h2>
+  <div id="painel-corpo"></div>
+</div>
+
+</div>
+
+<div class="balao" id="balao" role="dialog" aria-live="polite" hidden></div>
+<div class="gaveta" id="gaveta" role="dialog" aria-modal="false" hidden>
+  <div class="gaveta-interno">
+    <div class="gaveta-topo"><strong id="gaveta-titulo"></strong><button class="btn pequeno" id="gaveta-fechar" aria-label="Fechar">✕</button></div>
+    <div id="gaveta-corpo"></div>
+  </div>
+</div>
+
+<script src="../assets/site.js"></script>
+<script src="../assets/refs.js"></script>
+<script src="../assets/estudo.js"></script>
+<script>
+/* Simulações do capítulo 5. Utilitários do estudo.js: svgEl, corVar, fmt, tipografar, recorte. */
+
+/* ---- auxiliares comuns ---- */
+function limparSvg(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+function gerador(semente) {
+  var a = semente;
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function expo(r, lam) { return -Math.log(1 - r() * 0.999999) / lam; }
+function eixoX(svg, x0, x1, y, de, ate, passo, casas) {
+  svg.appendChild(svgEl('line', { x1: x0, y1: y, x2: x1, y2: y, stroke: corVar('--border'), 'stroke-width': 1 }));
+  var ini = Math.ceil(de / passo - 1e-9) * passo;
+  for (var v = ini; v <= ate + 1e-9; v += passo) {
+    var x = x0 + (v - de) / (ate - de) * (x1 - x0);
+    svg.appendChild(svgEl('line', { x1: x, y1: y, x2: x, y2: y + 4, stroke: corVar('--border') }));
+    var anc = x > x1 - 12 ? 'end' : x < x0 + 12 ? 'start' : 'middle';
+    svg.appendChild(svgEl('text', { x: x, y: y + 15, 'font-size': 10, fill: corVar('--muted'), 'text-anchor': anc }, fmt(v, casas)));
+  }
+}
+function escrever(id, texto) {
+  var el = document.getElementById(id); if (!el) return;
+  el.innerHTML = texto; if (window.tipografar) tipografar(el);
+}
+function aoTrocarTema(fn) {
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', fn);
+  }
+}
+
+/* ===== 1. Falta de memória ===== */
+(function () {
+  var sl = document.getElementById('mem-slider'); if (!sl) return;
+  var svg = document.getElementById('mem-svg'), lam = 0.1, nb = 16, larg = 2.5;
+  var r = gerador(20250511), amostra = [];
+  for (var i = 0; i < 6000; i++) amostra.push(expo(r, lam));
+  function hist(vals) {
+    var h = new Array(nb).fill(0), n = 0;
+    for (var i = 0; i < vals.length; i++) { var b = Math.floor(vals[i] / larg); if (b < nb) { h[b]++; } n++; }
+    return h.map(function (c) { return n ? c / n : 0; });
+  }
+  function desenhar() {
+    var c = +sl.value;
+    document.getElementById('mem-valor').textContent = c;
+    var resto = [], soma = 0;
+    for (var i = 0; i < amostra.length; i++) if (amostra[i] > c) { resto.push(amostra[i] - c); soma += amostra[i] - c; }
+    var h0 = hist(amostra), h1 = hist(resto);
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 14, y1 = 158, esc = 0.26, bw = (x1 - x0) / nb;
+    for (var b = 0; b < nb; b++) {
+      var x = x0 + b * bw;
+      svg.appendChild(svgEl('rect', { x: x + 1, y: y1 - h0[b] / esc * (y1 - y0), width: bw - 2, height: h0[b] / esc * (y1 - y0), fill: corVar('--accent'), opacity: 0.28 }));
+    }
+    var d = '';
+    for (var b = 0; b < nb; b++) {
+      var xa = x0 + b * bw, ya = y1 - h1[b] / esc * (y1 - y0);
+      d += (b === 0 ? 'M' : 'L') + xa + ' ' + ya + 'L' + (xa + bw) + ' ' + ya;
+    }
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--ok'), 'stroke-width': 2 }));
+    eixoX(svg, x0, x1, y1, 0, nb * larg, 10, 0);
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 2, 'font-size': 11, fill: corVar('--accent') }, 'todos os atendimentos'));
+    svg.appendChild(svgEl('text', { x: x0 + 170, y: y0 - 2, 'font-size': 11, fill: corVar('--ok') }, 'o que ainda falta'));
+    svg.appendChild(svgEl('text', { x: x1, y: y1 + 28, 'font-size': 10, fill: corVar('--muted'), 'text-anchor': 'end' }, 'minutos'));
+    escrever('mem-nota', 'De ' + amostra.length + ' atendimentos, ' + resto.length + ' passaram de ' + c +
+      ' min. Média do tempo que ainda falta: ' + fmt(resto.length ? soma / resto.length : 0, 1) +
+      ' min. Média de todos: ' + fmt(1 / lam, 1) + ' min.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 2. Taxa de falha ===== */
+(function () {
+  var sel = document.getElementById('taxa-forma'); if (!sel) return;
+  var svg = document.getElementById('taxa-svg');
+  function risco(f, t) { return f === 'const' ? 1 : f === 'cresc' ? 1 + 0.75 * t : 1 / (1 + 0.8 * t); }
+  function acum(f, t) { return f === 'const' ? t : f === 'cresc' ? t + 0.375 * t * t : Math.log(1 + 0.8 * t) / 0.8; }
+  function desenhar() {
+    var f = sel.value, T = 4;
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, yA0 = 14, yA1 = 100, yB0 = 118, yB1 = 196, rmax = 4;
+    function px(t) { return x0 + t / T * (x1 - x0); }
+    svg.appendChild(svgEl('text', { x: x0, y: yA0 - 2, 'font-size': 11, fill: corVar('--muted') }, 'risco instantâneo'));
+    svg.appendChild(svgEl('text', { x: x0, y: yB0 - 2, 'font-size': 11, fill: corVar('--muted') }, 'chance de passar de t'));
+    var dA = '', dB = '', dRef = '';
+    for (var k = 0; k <= 160; k++) {
+      var t = k / 160 * T;
+      var yA = yA1 - Math.min(risco(f, t), rmax) / rmax * (yA1 - yA0);
+      var yB = yB1 - Math.exp(-acum(f, t)) * (yB1 - yB0);
+      var yR = yB1 - Math.exp(-t) * (yB1 - yB0);
+      dA += (k ? 'L' : 'M') + px(t).toFixed(1) + ' ' + yA.toFixed(1);
+      dB += (k ? 'L' : 'M') + px(t).toFixed(1) + ' ' + yB.toFixed(1);
+      dRef += (k ? 'L' : 'M') + px(t).toFixed(1) + ' ' + yR.toFixed(1);
+    }
+    svg.appendChild(svgEl('line', { x1: x0, y1: yA1 - 1 / rmax * (yA1 - yA0), x2: x1, y2: yA1 - 1 / rmax * (yA1 - yA0), stroke: corVar('--muted'), 'stroke-dasharray': '3 3', 'stroke-width': 1 }));
+    svg.appendChild(svgEl('path', { d: dRef, fill: 'none', stroke: corVar('--muted'), 'stroke-dasharray': '3 3', 'stroke-width': 1.3 }));
+    svg.appendChild(svgEl('path', { d: dA, fill: 'none', stroke: corVar('--s1'), 'stroke-width': 2.2 }));
+    svg.appendChild(svgEl('path', { d: dB, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2.2 }));
+    svg.appendChild(svgEl('line', { x1: x0, y1: yA1, x2: x1, y2: yA1, stroke: corVar('--border') }));
+    eixoX(svg, x0, x1, yB1, 0, T, 1, 0);
+    escrever('taxa-nota', 'Risco em $t=0$: ' + fmt(risco(f, 0), 2) + '; em $t=4$: ' + fmt(risco(f, 4), 2) +
+      '. Chance de passar de 4: ' + fmt(Math.exp(-acum(f, 4)), 3) +
+      ' (com risco constante seria ' + fmt(Math.exp(-4), 3) + '). O tracejado é o caso de risco constante.');
+  }
+  sel.addEventListener('change', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 3. Corrida de exponenciais ===== */
+(function () {
+  var sl = document.getElementById('cor-slider'); if (!sl) return;
+  var svg = document.getElementById('cor-svg');
+  function desenhar() {
+    var l3 = +sl.value, taxas = [2, 3, l3], tot = 5 + l3, nomes = ['peça 1', 'peça 2', 'peça 3'];
+    document.getElementById('cor-valor').textContent = l3;
+    limparSvg(svg);
+    var x0 = 70, x1 = 300, esc = 15;
+    for (var i = 0; i < 3; i++) {
+      var y = 18 + i * 34;
+      svg.appendChild(svgEl('text', { x: x0 - 6, y: y + 11, 'font-size': 11, fill: corVar('--muted'), 'text-anchor': 'end' }, nomes[i]));
+      svg.appendChild(svgEl('rect', { x: x0, y: y, width: Math.max(2, taxas[i] / esc * (x1 - x0)), height: 15, rx: 3, fill: corVar(i === 2 ? '--s1' : '--accent'), opacity: 0.75 }));
+      svg.appendChild(svgEl('text', { x: x0 + taxas[i] / esc * (x1 - x0) + 6, y: y + 12, 'font-size': 11, fill: corVar('--text') }, 'taxa ' + taxas[i] + ' → vence ' + fmt(taxas[i] / tot * 100, 0) + '%'));
+    }
+    var yt = 18 + 3 * 34 + 10;
+    svg.appendChild(svgEl('line', { x1: x0, y1: yt - 7, x2: x1, y2: yt - 7, stroke: corVar('--border') }));
+    svg.appendChild(svgEl('text', { x: x0 - 6, y: yt + 13, 'font-size': 11, fill: corVar('--muted'), 'text-anchor': 'end' }, 'o mínimo'));
+    svg.appendChild(svgEl('rect', { x: x0, y: yt + 2, width: Math.max(2, tot / esc * (x1 - x0)), height: 15, rx: 3, fill: corVar('--ok'), opacity: 0.8 }));
+    svg.appendChild(svgEl('text', { x: x0 + tot / esc * (x1 - x0) + 6, y: yt + 14, 'font-size': 11, fill: corVar('--text') }, 'taxa ' + tot));
+    escrever('cor-nota', 'A máquina dura um tempo exponencial de taxa ' + tot + ', ou seja, média ' +
+      fmt(1 / tot, 3) + ' ano. As três fatias de probabilidade somam 100%.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 4. Soma de exponenciais iguais ===== */
+(function () {
+  var sl = document.getElementById('gama-slider'); if (!sl) return;
+  var svg = document.getElementById('gama-svg');
+  function desenhar() {
+    var n = +sl.value, T = 20, lam = 1;
+    document.getElementById('gama-valor').textContent = n;
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 14, y1 = 158, ymax = 1.05;
+    var logfat = 0; for (var k = 2; k <= n - 1; k++) logfat += Math.log(k);
+    function dens(x) { return x <= 0 ? (n === 1 ? lam : 0) : Math.exp(Math.log(lam) - lam * x + (n - 1) * Math.log(lam * x) - logfat); }
+    var d = '';
+    for (var k = 0; k <= 200; k++) {
+      var x = k / 200 * T, y = y1 - Math.min(dens(x), ymax) / ymax * (y1 - y0);
+      d += (k ? 'L' : 'M') + (x0 + x / T * (x1 - x0)).toFixed(1) + ' ' + y.toFixed(1);
+    }
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2.2 }));
+    if (n > 1) {
+      var xm = x0 + (n - 1) / T * (x1 - x0);
+      svg.appendChild(svgEl('line', { x1: xm, y1: y1, x2: xm, y2: y1 - dens(n - 1) / ymax * (y1 - y0), stroke: corVar('--s1'), 'stroke-dasharray': '3 3' }));
+      svg.appendChild(svgEl('text', { x: xm, y: y0 + 10, 'font-size': 10, fill: corVar('--s1'), 'text-anchor': 'middle' }, 'pico'));
+    }
+    eixoX(svg, x0, x1, y1, 0, T, 4, 0);
+    escrever('gama-nota', 'Média ' + fmt(n / lam, 1) + '; desvio padrão ' + fmt(Math.sqrt(n) / lam, 2) +
+      '; coeficiente de variação ' + fmt(1 / Math.sqrt(n), 2) + '. O pico fica em ' + (n > 1 ? fmt(n - 1, 0) : 'zero') + '.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 5. Escada de contagem ===== */
+(function () {
+  var sl = document.getElementById('esc-slider'); if (!sl) return;
+  var svg = document.getElementById('esc-svg'), semente = 7;
+  document.getElementById('esc-nova').addEventListener('click', function () { semente = (semente * 31 + 17) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = +sl.value, T = 5, r = gerador(semente * 977 + lam), ev = [], t = 0;
+    document.getElementById('esc-valor').textContent = lam;
+    while (true) { t += expo(r, lam); if (t > T) break; ev.push(t); }
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, yL = 30, y0 = 54, y1 = 158;
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    svg.appendChild(svgEl('line', { x1: x0, y1: yL, x2: x1, y2: yL, stroke: corVar('--border'), 'stroke-width': 1.5 }));
+    ev.forEach(function (s) { svg.appendChild(svgEl('line', { x1: px(s), y1: yL - 7, x2: px(s), y2: yL + 7, stroke: corVar('--s1'), 'stroke-width': 1.6 })); });
+    svg.appendChild(svgEl('text', { x: x0, y: yL - 12, 'font-size': 11, fill: corVar('--muted') }, 'instantes dos eventos'));
+    var nmax = Math.max(1, ev.length), d = 'M' + px(0) + ' ' + y1, cur = y1;
+    ev.forEach(function (s, i) {
+      var y = y1 - (i + 1) / nmax * (y1 - y0);
+      d += 'L' + px(s).toFixed(1) + ' ' + cur.toFixed(1) + 'L' + px(s).toFixed(1) + ' ' + y.toFixed(1);
+      cur = y;
+    });
+    d += 'L' + px(T) + ' ' + cur.toFixed(1);
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2 }));
+    svg.appendChild(svgEl('text', { x: x0, y: y0 + 2, 'font-size': 11, fill: corVar('--accent') }, 'N(t) = ' + ev.length));
+    eixoX(svg, x0, x1, y1, 0, T, 1, 0);
+    escrever('esc-nota', 'Nesta amostra, ' + ev.length + ' eventos em 5 unidades de tempo. A média é $\\lambda t$ = ' + fmt(lam * T, 0) + '.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 6. Distribuição da contagem ===== */
+(function () {
+  var sl = document.getElementById('poi-lam'); if (!sl) return;
+  var st = document.getElementById('poi-t'), svg = document.getElementById('poi-svg');
+  function desenhar() {
+    var lam = +sl.value, T = +st.value, m = lam * T;
+    document.getElementById('poi-lam-v').textContent = lam;
+    document.getElementById('poi-t-v').textContent = T;
+    var nmax = Math.max(6, Math.ceil(m + 4 * Math.sqrt(m)) + 1), p = [], atual = Math.exp(-m), pmax = 0;
+    for (var n = 0; n <= nmax; n++) { p.push(atual); if (atual > pmax) pmax = atual; atual = atual * m / (n + 1); }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, y0 = 20, y1 = 158, bw = (x1 - x0) / (nmax + 1);
+    for (var n = 0; n <= nmax; n++) {
+      var h = p[n] / (pmax * 1.1) * (y1 - y0);
+      svg.appendChild(svgEl('rect', { x: x0 + n * bw + 0.6, y: y1 - h, width: Math.max(1, bw - 1.2), height: h, fill: corVar(p[n] > pmax * 0.9999 ? '--s1' : '--accent'), opacity: 0.8 }));
+    }
+    var xm = x0 + (m + 0.5) * bw;
+    svg.appendChild(svgEl('line', { x1: xm, y1: y0 - 6, x2: xm, y2: y1, stroke: corVar('--ok'), 'stroke-dasharray': '4 3', 'stroke-width': 1.5 }));
+    svg.appendChild(svgEl('text', { x: Math.min(xm + 4, x1 - 40), y: y0 - 8, 'font-size': 10, fill: corVar('--ok') }, 'média ' + fmt(m, 0)));
+    eixoX(svg, x0, x1, y1, -0.5, nmax + 0.5, Math.max(1, Math.round((nmax + 1) / 8)), 0);
+    escrever('poi-nota', 'Média e variância valem as duas ' + fmt(m, 0) + '. Desvio padrão ' + fmt(Math.sqrt(m), 2) +
+      '. Probabilidade de nenhum evento: ' + fmt(Math.exp(-m), 4) + '.');
+  }
+  sl.addEventListener('input', desenhar); st.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 7. Histograma dos intervalos ===== */
+(function () {
+  var sl = document.getElementById('int-slider'); if (!sl) return;
+  var svg = document.getElementById('int-svg'), semente = 13;
+  document.getElementById('int-nova').addEventListener('click', function () { semente = (semente * 41 + 7) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = +sl.value, nb = 16, T = 4 / lam, larg = T / nb, N = 3000, r = gerador(semente * 613 + lam);
+    document.getElementById('int-valor').textContent = lam;
+    var h = new Array(nb).fill(0), dentro = 0, soma = 0;
+    for (var i = 0; i < N; i++) {
+      var x = expo(r, lam); soma += x;
+      var b = Math.floor(x / larg); if (b < nb) { h[b]++; dentro++; }
+    }
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 16, y1 = 158;
+    var pmax = 1 - Math.exp(-lam * larg), bw = (x1 - x0) / nb, esc = pmax * 1.18;
+    for (var b = 0; b < nb; b++) {
+      var f = h[b] / N, alt = f / esc * (y1 - y0);
+      svg.appendChild(svgEl('rect', { x: x0 + b * bw + 1, y: y1 - alt, width: bw - 2, height: alt, fill: corVar('--accent'), opacity: 0.35 }));
+    }
+    var d = '';
+    for (var k = 0; k <= 160; k++) {
+      var x = k / 160 * T, f = lam * Math.exp(-lam * x) * larg;
+      d += (k ? 'L' : 'M') + (x0 + x / T * (x1 - x0)).toFixed(1) + ' ' + (y1 - f / esc * (y1 - y0)).toFixed(1);
+    }
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--s1'), 'stroke-width': 2.2 }));
+    eixoX(svg, x0, x1, y1, 0, T, T / 4, 2);
+    svg.appendChild(svgEl('text', { x: x1, y: y0 + 2, 'font-size': 10, fill: corVar('--s1'), 'text-anchor': 'end' }, 'densidade exponencial'));
+    escrever('int-nota', 'Média dos ' + N + ' intervalos: ' + fmt(soma / N, 3) + ' (o esperado é ' + fmt(1 / lam, 3) +
+      '). A barra mais alta é sempre a primeira.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 8. Desbaste ===== */
+(function () {
+  var sl = document.getElementById('des-slider'); if (!sl) return;
+  var svg = document.getElementById('des-svg'), semente = 5;
+  document.getElementById('des-nova').addEventListener('click', function () { semente = (semente * 53 + 11) % 99991; desenhar(); });
+  function desenhar() {
+    var p = +sl.value / 100, lam = 2, T = 10, r = gerador(semente * 331 + 1), ev = [], t = 0;
+    document.getElementById('des-valor').textContent = +sl.value;
+    while (true) { t += expo(r, lam); if (t > T) break; ev.push({ t: t, tipo: r() < p ? 1 : 2 }); }
+    limparSvg(svg);
+    var x0 = 70, x1 = 392, linhas = [['todos', 28, null], ['tipo 1', 86, 1], ['tipo 2', 144, 2]];
+    linhas.forEach(function (L) {
+      var y = L[1];
+      svg.appendChild(svgEl('text', { x: x0 - 8, y: y + 4, 'font-size': 11, fill: corVar('--muted'), 'text-anchor': 'end' }, L[0]));
+      svg.appendChild(svgEl('line', { x1: x0, y1: y, x2: x1, y2: y, stroke: corVar('--border'), 'stroke-width': 1.5 }));
+      ev.forEach(function (e) {
+        if (L[2] !== null && e.tipo !== L[2]) return;
+        svg.appendChild(svgEl('line', {
+          x1: x0 + e.t / T * (x1 - x0), y1: y - 8, x2: x0 + e.t / T * (x1 - x0), y2: y + 8,
+          stroke: corVar(e.tipo === 1 ? '--s1' : '--accent'), 'stroke-width': 1.8
+        }));
+      });
+    });
+    var n1 = ev.filter(function (e) { return e.tipo === 1; }).length;
+    eixoX(svg, x0, x1, 186, 0, T, 2, 0);
+    escrever('des-nota', 'Taxa total 2 por unidade. Tipo 1: taxa ' + fmt(lam * p, 2) + ', observados ' + n1 +
+      '. Tipo 2: taxa ' + fmt(lam * (1 - p), 2) + ', observados ' + (ev.length - n1) +
+      '. As duas linhas de baixo são processos de Poisson independentes entre si.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 9. Instante uniforme dado o total ===== */
+(function () {
+  var sl = document.getElementById('unif-slider'); if (!sl) return;
+  var svg = document.getElementById('unif-svg'), semente = 3;
+  document.getElementById('unif-nova').addEventListener('click', function () { semente = (semente * 67 + 19) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = +sl.value, tent = 120000, r = gerador(semente * 7919 + lam), nb = 10, h = new Array(nb).fill(0), ok = 0, soma = 0;
+    document.getElementById('unif-valor').textContent = lam;
+    for (var i = 0; i < tent; i++) {
+      var t1 = expo(r, lam); if (t1 >= 1) continue;
+      var t2 = expo(r, lam); if (t1 + t2 <= 1) continue;
+      ok++; soma += t1; h[Math.min(nb - 1, Math.floor(t1 * nb))]++;
+    }
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 20, y1 = 158, bw = (x1 - x0) / nb, esc = 0.135;
+    for (var b = 0; b < nb; b++) {
+      var f = ok ? h[b] / ok : 0, alt = Math.min(f / esc, 1) * (y1 - y0);
+      svg.appendChild(svgEl('rect', { x: x0 + b * bw + 1, y: y1 - alt, width: bw - 2, height: alt, fill: corVar('--accent'), opacity: 0.6 }));
+    }
+    var yr = y1 - 0.1 / esc * (y1 - y0);
+    svg.appendChild(svgEl('line', { x1: x0, y1: yr, x2: x1, y2: yr, stroke: corVar('--s1'), 'stroke-dasharray': '4 3', 'stroke-width': 1.8 }));
+    svg.appendChild(svgEl('text', { x: x1, y: yr - 5, 'font-size': 10, fill: corVar('--s1'), 'text-anchor': 'end' }, 'uniforme: 10% em cada faixa'));
+    eixoX(svg, x0, x1, y1, 0, 1, 0.25, 2);
+    escrever('unif-nota', 'De ' + tent + ' tentativas, ' + ok + ' tiveram exatamente um evento até o instante 1. ' +
+      'Média do instante nesses casos: ' + fmt(ok ? soma / ok : 0, 3) + ' (o esperado é 0,500). ' +
+      'Mudar a taxa muda quantas tentativas são aceitas, não a forma do histograma.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 10. Taxa variável ===== */
+(function () {
+  var sel = document.getElementById('nhpp-forma'); if (!sel) return;
+  var svg = document.getElementById('nhpp-svg'), semente = 9;
+  document.getElementById('nhpp-nova').addEventListener('click', function () { semente = (semente * 73 + 23) % 99991; desenhar(); });
+  function taxa(f, t) {
+    if (f === 'const') return 12;
+    if (f === 'pico') return 5 + 15 * Math.exp(-Math.pow((t - 4.5) / 1.2, 2));
+    return t <= 3 ? 5 + 5 * t : t <= 5 ? 20 : 20 - 2 * (t - 5);
+  }
+  function desenhar() {
+    var f = sel.value, T = 9, lmax = 20.5, r = gerador(semente * 1301 + f.length), ev = [], t = 0;
+    while (true) { t += expo(r, lmax); if (t > T) break; if (r() < taxa(f, t) / lmax) ev.push(t); }
+    var m = [], ac = 0, passos = 180;
+    for (var k = 0; k <= passos; k++) { if (k) ac += taxa(f, (k - 0.5) / passos * T) * T / passos; m.push(ac); }
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, yA0 = 16, yA1 = 92, yL = 112, yB0 = 130, yB1 = 198;
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    var dA = '', dB = '', mtot = m[passos];
+    for (var k = 0; k <= passos; k++) {
+      var tt = k / passos * T;
+      dA += (k ? 'L' : 'M') + px(tt).toFixed(1) + ' ' + (yA1 - taxa(f, tt) / lmax * (yA1 - yA0)).toFixed(1);
+      dB += (k ? 'L' : 'M') + px(tt).toFixed(1) + ' ' + (yB1 - m[k] / mtot * (yB1 - yB0)).toFixed(1);
+    }
+    svg.appendChild(svgEl('path', { d: dA, fill: 'none', stroke: corVar('--s1'), 'stroke-width': 2.2 }));
+    svg.appendChild(svgEl('text', { x: x0, y: yA0 - 2, 'font-size': 11, fill: corVar('--s1') }, 'taxa no instante t'));
+    svg.appendChild(svgEl('line', { x1: x0, y1: yL, x2: x1, y2: yL, stroke: corVar('--border'), 'stroke-width': 1.5 }));
+    ev.forEach(function (s) { svg.appendChild(svgEl('line', { x1: px(s), y1: yL - 6, x2: px(s), y2: yL + 6, stroke: corVar('--accent'), 'stroke-width': 0.9, opacity: 0.8 })); });
+    svg.appendChild(svgEl('path', { d: dB, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2.2 }));
+    svg.appendChild(svgEl('text', { x: x0, y: yB0 + 10, 'font-size': 11, fill: corVar('--accent') }, 'taxa acumulada'));
+    eixoX(svg, x0, x1, yB1, 0, T, 1, 0);
+    escrever('nhpp-nota', 'Área total sob a curva da taxa: ' + fmt(mtot, 1) + ' eventos esperados. Nesta amostra: ' +
+      ev.length + '. Onde a curva é mais alta, os traços ficam mais juntos.');
+  }
+  sel.addEventListener('change', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 11. Poisson composto ===== */
+(function () {
+  var sl = document.getElementById('comp-lam'); if (!sl) return;
+  var svg = document.getElementById('comp-svg'), semente = 11;
+  document.getElementById('comp-nova').addEventListener('click', function () { semente = (semente * 83 + 29) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = +sl.value, T = 5, r = gerador(semente * 499 + lam), ev = [], t = 0, tot = 0;
+    document.getElementById('comp-lam-v').textContent = lam;
+    while (true) {
+      t += expo(r, lam); if (t > T) break;
+      var u = r(), y = u < 1 / 6 ? 1 : u < 1 / 2 ? 2 : u < 5 / 6 ? 3 : 4;
+      tot += y; ev.push({ t: t, y: y });
+    }
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 20, y1 = 158, alvo = Math.max(tot, 1);
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    var d = 'M' + px(0) + ' ' + y1, cur = y1, ac = 0;
+    ev.forEach(function (e) {
+      ac += e.y;
+      var y = y1 - ac / alvo * (y1 - y0);
+      d += 'L' + px(e.t).toFixed(1) + ' ' + cur.toFixed(1) + 'L' + px(e.t).toFixed(1) + ' ' + y.toFixed(1);
+      cur = y;
+    });
+    d += 'L' + px(T) + ' ' + cur.toFixed(1);
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2 }));
+    ev.forEach(function (e) { svg.appendChild(svgEl('circle', { cx: px(e.t), cy: y1 + 10, r: 2 + e.y, fill: corVar('--s1'), opacity: 0.5 })); });
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 4, 'font-size': 11, fill: corVar('--accent') }, 'pessoas acumuladas'));
+    eixoX(svg, x0, x1, y1 + 24, 0, T, 1, 0);
+    escrever('comp-nota', ev.length + ' famílias chegaram, somando ' + tot + ' pessoas. As médias esperadas são ' +
+      fmt(lam * T, 1) + ' famílias e ' + fmt(lam * T * 2.5, 1) + ' pessoas. Cada círculo tem tamanho igual ao da família.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 12. Taxa sorteada ===== */
+(function () {
+  var sl = document.getElementById('misto-slider'); if (!sl) return;
+  var svg = document.getElementById('misto-svg'), tabela = [32, 24, 16, 12, 8, 6, 4, 3, 2, 1];
+  function desenhar() {
+    var a = tabela[Math.min(tabela.length - 1, +sl.value)], th = a / 2, m = 2, nmax = 12;
+    document.getElementById('misto-valor').textContent = +sl.value;
+    var q = th / (th + 1), p = 1 / (th + 1), neg = [], atual = Math.pow(q, a), poi = [], ap = Math.exp(-m), pmax = 0;
+    for (var n = 0; n <= nmax; n++) {
+      neg.push(atual); poi.push(ap);
+      if (atual > pmax) pmax = atual; if (ap > pmax) pmax = ap;
+      atual = atual * p * (a + n) / (n + 1); ap = ap * m / (n + 1);
+    }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, y0 = 26, y1 = 162, bw = (x1 - x0) / (nmax + 1), esc = pmax * 1.12;
+    for (var n = 0; n <= nmax; n++) {
+      var hp = poi[n] / esc * (y1 - y0), hn = neg[n] / esc * (y1 - y0), xb = x0 + n * bw;
+      svg.appendChild(svgEl('rect', { x: xb + 1, y: y1 - hp, width: bw / 2 - 1.5, height: hp, fill: corVar('--muted'), opacity: 0.45 }));
+      svg.appendChild(svgEl('rect', { x: xb + bw / 2, y: y1 - hn, width: bw / 2 - 1.5, height: hn, fill: corVar('--s1'), opacity: 0.8 }));
+    }
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 12, 'font-size': 11, fill: corVar('--muted') }, 'taxa fixa'));
+    svg.appendChild(svgEl('text', { x: x0 + 70, y: y0 - 12, 'font-size': 11, fill: corVar('--s1') }, 'taxa sorteada'));
+    eixoX(svg, x0, x1, y1, -0.5, nmax + 0.5, 2, 0);
+    escrever('misto-nota', 'As duas têm média 2. A variância da taxa sorteada é ' + fmt(4 / a, 2) +
+      ', então a variância da contagem é ' + fmt(2 + 4 / a, 2) + ' contra 2 da taxa fixa. Chance de zero: ' +
+      fmt(Math.pow(q, a), 3) + ' contra ' + fmt(Math.exp(-2), 3) + '.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 13. Autoexcitação ===== */
+(function () {
+  var sl = document.getElementById('haw-slider'); if (!sl) return;
+  var svg = document.getElementById('haw-svg'), semente = 17;
+  document.getElementById('haw-nova').addEventListener('click', function () { semente = (semente * 97 + 31) % 99991; desenhar(); });
+  function desenhar() {
+    var mu = +sl.value / 100, lam = 1, al = 1, T = 30, r = gerador(semente * 211 + +sl.value), ev = [], t = 0;
+    document.getElementById('haw-valor').textContent = fmt(mu, 2);
+    function R(x) { var s = lam; for (var i = 0; i < ev.length; i++) if (ev[i].t <= x) s += ev[i].m * Math.exp(-al * (x - ev[i].t)); return s; }
+    var guarda = 0;
+    while (t < T && ev.length < 400 && guarda++ < 20000) {
+      var M = R(t) + 1e-9, dt = expo(r, M); t += dt; if (t > T) break;
+      if (r() < R(t) / M) ev.push({ t: t, m: mu > 0 ? expo(r, 1 / mu) : 0 });
+    }
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 16, y1 = 150, yL = 174, rmax = 1;
+    for (var k = 0; k <= 300; k++) rmax = Math.max(rmax, R(k / 300 * T));
+    rmax = Math.max(rmax * 1.08, 2);
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    var d = '';
+    for (var k = 0; k <= 600; k++) {
+      var x = k / 600 * T;
+      d += (k ? 'L' : 'M') + px(x).toFixed(1) + ' ' + (y1 - Math.min(R(x), rmax) / rmax * (y1 - y0)).toFixed(1);
+    }
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--s1'), 'stroke-width': 1.8 }));
+    var yb = y1 - lam / rmax * (y1 - y0);
+    svg.appendChild(svgEl('line', { x1: x0, y1: yb, x2: x1, y2: yb, stroke: corVar('--muted'), 'stroke-dasharray': '3 3' }));
+    svg.appendChild(svgEl('text', { x: x0 + 2, y: yb + 12, 'font-size': 10, fill: corVar('--muted') }, 'intensidade de base'));
+    svg.appendChild(svgEl('line', { x1: x0, y1: yL, x2: x1, y2: yL, stroke: corVar('--border'), 'stroke-width': 1.5 }));
+    ev.forEach(function (e) { svg.appendChild(svgEl('line', { x1: px(e.t), y1: yL - 7, x2: px(e.t), y2: yL + 7, stroke: corVar('--accent'), 'stroke-width': 1.3 })); });
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 2, 'font-size': 11, fill: corVar('--s1') }, 'intensidade'));
+    eixoX(svg, x0, x1, yL + 16, 0, T, 5, 0);
+    var limite = mu < al ? fmt(lam * al / (al - mu), 2) : 'sem limite';
+    escrever('haw-nota', ev.length + ' eventos em 30 dias (sem autoexcitação seriam ' + fmt(lam * T, 0) +
+      '). Cada evento gera ' + fmt(mu / al, 2) + ' evento novo, em média, e a taxa de longo prazo é ' + limite + '.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+</script>
+</body>
+</html>

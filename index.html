@@ -2,22 +2,57 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Caderno de estudo pessoal: reproduz figuras de obra protegida
-     (Ross, Academic Press / Elsevier) para uso próprio. Fora dos buscadores. -->
-<meta name="robots" content="noindex, nofollow">
-<title>Processos Estocásticos — estudo</title>
-<!-- O site mora em estudo/. Esta página existe só para que a raiz do
-     repositório (e o GitHub Pages, que só serve a partir da raiz ou de
-     /docs) caiam no lugar certo. -->
-<meta http-equiv="refresh" content="0; url=estudo/index.html">
-<link rel="canonical" href="estudo/index.html">
-<style>
-  body { font-family: Georgia, serif; margin: 4rem auto; max-width: 32rem; padding: 0 1.5rem; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Livro</title>
+<link rel="stylesheet" href="assets/estudo.css">
 </head>
 <body>
-  <p>Redirecionando para o percurso de estudo…</p>
-  <p>Se nada acontecer: <a href="estudo/index.html">estudo/index.html</a></p>
+<main class="site">
+  <h1 id="titulo"></h1>
+  <p class="sub" id="sub"></p>
+  <nav class="site-nav">
+    <a class="btn primario" href="revisao.html">Revisão para prova</a>
+    <a class="btn" href="formulas.html">Fórmulas e definições</a>
+  </nav>
+  <div class="cap-lista" id="capitulos"></div>
+</main>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  var S = window.SITE || { slug: '', livro: { titulo: 'Livro' }, capitulos: [] };
+  var L = S.livro;
+  document.title = L.titulo;
+  document.getElementById('titulo').textContent = L.titulo;
+  document.getElementById('sub').textContent = [L.autores, L.edicao].filter(Boolean).join(', ') +
+    (L.autores || L.edicao ? ' — ' : '') + 'material de estudo baseado no livro, com a mesma notação.';
+  var lista = document.getElementById('capitulos');
+  S.capitulos.forEach(function (c) {
+    var pronto = c.status === 'pronto';
+    var d = document.createElement('div'); d.className = 'cap ' + (pronto ? 'pronto' : 'pendente');
+    var num = document.createElement('div'); num.className = 'num'; num.textContent = c.numero;
+    var meio = document.createElement('div');
+    var h = document.createElement('h2');
+    if (pronto) { var a = document.createElement('a'); a.href = c.arquivo; a.textContent = c.titulo; h.appendChild(a); }
+    else h.textContent = c.titulo;
+    var sec = document.createElement('p'); sec.className = 'secoes';
+    sec.textContent = pronto ? (c.secoes || []).map(function (s) { return s.numero + ' ' + s.titulo; }).join('; ') : 'Ainda não preparado.';
+    meio.appendChild(h); meio.appendChild(sec);
+    var acao = document.createElement('div'); acao.className = 'acao';
+    if (pronto) {
+      var est = null;
+      try { est = JSON.parse(localStorage.getItem('estatistica-tdah:' + S.slug + '/' + c.id) || 'null'); } catch (e) {}
+      var link = document.createElement('a');
+      if (est && typeof est.atual === 'number') {
+        link.href = c.arquivo + '#passo-' + (est.atual + 1); link.textContent = 'Continuar →';
+        acao.appendChild(link);
+        if (est.onde) { var o = document.createElement('span'); o.className = 'onde'; o.textContent = est.onde; acao.appendChild(o); }
+      } else { link.href = c.arquivo; link.textContent = 'Começar →'; acao.appendChild(link); }
+    }
+    d.appendChild(num); d.appendChild(meio); d.appendChild(acao);
+    lista.appendChild(d);
+  });
+  if (!S.capitulos.length) lista.textContent = 'Nenhum capítulo ainda.';
+})();
+</script>
 </body>
 </html>

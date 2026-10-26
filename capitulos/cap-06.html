@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="estudo-chave" content="estocasticos/cap-06">
+<title>Cap. 6 — Cadeias de Markov em tempo contínuo</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" defer></script>
+<link rel="stylesheet" href="../assets/estudo.css">
+</head>
+<body>
+<nav class="trilho" id="trilho" tabindex="0" aria-label="Sumário do capítulo" aria-expanded="false">
+  <div class="trilho-tracos" id="trilho-tracos" aria-hidden="true"></div>
+  <div class="trilho-painel">
+    <p class="trilho-cap" id="trilho-cap"></p>
+    <div class="trilho-lista" id="trilho-lista"></div>
+    <div class="trilho-rodape" id="trilho-rodape">
+      <button class="btn pequeno" id="btn-formulas">Fórmulas até aqui</button>
+      <button class="btn pequeno" id="btn-ir-resumo">Resumo</button>
+      <a class="btn pequeno" id="btn-inicio" href="../index.html" hidden>Início</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<h1>Cap. 6 — Cadeias de Markov em tempo contínuo</h1>
+<p class="contexto">Onde isso se encaixa: o capítulo anterior construiu um processo em que só uma coisa acontecia, sempre igual. Agora o processo tem estados, e troca de estado ao longo do tempo. A peça que faz isso funcionar é a mesma: a exponencial, porque ela não tem memória.</p>
+
+<div class="abas" role="tablist">
+  <button role="tab" aria-selected="true" data-aba="trilha">Trilha</button>
+  <button role="tab" aria-selected="false" data-aba="resumo">Resumo</button>
+</div>
+
+<div id="trilha">
+  <nav class="subtopicos" id="subtopicos" aria-label="Passos desta seção"></nav>
+  <div class="retomada" id="retomada" hidden></div>
+
+  <!-- ===================== SEÇÃO 1 ===================== -->
+  <div class="secao" data-numero="6.1" data-titulo="Tempo contínuo" data-livro="§6.1–6.2">
+
+  <section class="passo" data-titulo="O que muda">
+   <div class="texto">
+    <h2>Um processo com estados, num relógio que não para</h2>
+    <p>Uma engraxataria tem duas cadeiras. Na primeira a graxa é aplicada, na segunda o sapato é polido. Cada etapa demora um tempo exponencial, com taxas $\mu_1$ e $\mu_2$. Clientes chegam num processo de Poisson de taxa $\lambda$, mas só entram se a loja estiver vazia.</p>
+    <p>Em qualquer instante a loja está num de três estados: vazia, com um cliente na primeira cadeira, ou com um cliente na segunda. O estado muda em instantes que não são marcados por um relógio: eles acontecem quando acontecem.</p>
+    <div class="definicao" data-ref-id="d-ctmc" data-ref-tipo="definicao" data-ref-nome="Cadeia de Markov em tempo contínuo">
+      <p><strong>Cadeia de Markov em tempo contínuo:</strong> um processo $\{X(t), t \ge 0\}$ com valores inteiros não negativos tal que, para todos $s, t \ge 0$,</p>
+      $$P\{X(t+s)=j \mid X(s)=i, \text{todo o passado antes de } s\}$$
+      $$= P\{X(t+s)=j \mid X(s)=i\}$$
+      <p>Quando essa probabilidade também não depende de $s$, as probabilidades de transição são chamadas <em>estacionárias</em>, e é só desse caso que vamos tratar.</p>
+    </div>
+    <p>Isso é a mesma propriedade de Markov do tempo discreto, com uma diferença incômoda: lá, "o próximo passo" era um instante bem definido; aqui, não há próximo instante.</p>
+    <div class="ideia">Dado o estado de agora, o futuro não depende de como se chegou nele, nem de há quanto tempo se está nele.</div>
+   </div>
+   <aside class="apoio">
+    <div class="exemplo" data-ref-id="ex-engraxataria" data-ref-tipo="exemplo" data-ref-nome="A engraxataria de duas cadeiras">
+      <p>Duas cadeiras. O cliente passa pela cadeira 1 (graxa, tempo exponencial de taxa $\mu_1$) e depois pela cadeira 2 (polimento, exponencial de taxa $\mu_2$). Chegadas em Poisson de taxa $\lambda$; um cliente só entra se a loja estiver vazia.</p>
+      <p>Três estados: $0$ = loja vazia, $1$ = cliente na cadeira 1, $2$ = cliente na cadeira 2. O ciclo é sempre $0 \to 1 \to 2 \to 0$.</p>
+      <p>Números usados no site: $\lambda = 1$, $\mu_1 = 2$ e $\mu_2 = 3$ por hora.</p>
+    </div>
+    <div class="pare">
+      <p>No tempo discreto, a cadeia era descrita por uma matriz de probabilidades de transição em um passo. Por que isso não basta aqui?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Porque não existe "um passo". Entre dois instantes quaisquer cabe um número qualquer de transições, e a probabilidade de ir de um estado a outro depende de <em>quanto tempo</em> se olha. A descrição vai precisar de duas peças: quanto tempo se fica em cada estado, e para onde se vai ao sair.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Tempo exponencial">
+   <div class="texto">
+    <h2>O tempo em cada estado tem que ser exponencial</h2>
+    <p>Chame $T_i$ o tempo que o processo passa no estado $i$ antes de sair dele. Esse tempo não é uma escolha de modelagem: a propriedade de Markov o determina.</p>
+    <p>Suponha que o processo entrou em $i$ e já faz 10 minutos que está lá. Qual a chance de ficar mais 5? Como no instante 10 o processo está em $i$, a propriedade de Markov diz que o futuro depende só disso. Então a chance de permanecer durante $[10,15]$ é a mesma de permanecer durante os primeiros 5 minutos:</p>
+    $$P\{T_i > 15 \mid T_i > 10\} = P\{T_i > 5\}$$
+    <p>Isso vale para quaisquer tempos, ou seja, $T_i$ é <span class="ref" data-ref="d-sem-memoria">sem memória</span>. E como a única distribuição contínua sem memória é a exponencial, $T_i$ é exponencial. Chame $v_i$ a sua taxa, de modo que a média do tempo em $i$ é $1/v_i$.</p>
+    <div class="ideia">A exponencial não é hipótese do modelo: é consequência da propriedade de Markov em tempo contínuo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-traj">
+      <p>Na simulação, o processo percorre os três estados da engraxataria. Com $\lambda = 1$, $\mu_1 = 2$ e $\mu_2 = 3$, o estado em que o processo passa <strong>mais</strong> tempo é…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>O estado 0, a loja vazia</button>
+        <button data-op="b">O estado 1</button>
+        <button data-op="c">Os três por igual</button>
+      </div>
+      <div class="explica" hidden><p>Como o ciclo é sempre o mesmo, os três estados são visitados o mesmo número de vezes. O que difere é a duração de cada visita: $1/\lambda = 1$ hora no estado 0, $1/\mu_1 = 0{,}5$ no 1 e $1/\mu_2 \approx 0{,}33$ no 2. O estado mais lento é o que acumula mais tempo.</p></div>
+    </div>
+    <div class="sim" id="sim-traj">
+      <label>Taxa de chegada <input type="range" id="traj-lam" min="1" max="10" step="1" value="1"> <strong id="traj-lam-v">1</strong></label>
+      <button class="btn pequeno" id="traj-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 200" id="traj-svg" role="img" aria-label="Trajetória em degraus do estado da engraxataria ao longo do tempo"></svg>
+      <p id="traj-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Esperar e sortear">
+   <div class="texto">
+    <h2>A descrição que se usa: espere, depois sorteie</h2>
+    <p>Com o tempo em cada estado resolvido, a cadeia fica descrita por duas peças.</p>
+    <div class="formula" data-ref-id="f-vi-pij" data-ref-tipo="formula" data-ref-nome="As duas peças da cadeia">
+      $$\begin{aligned}& \class{s3}{v_i}: \text{ taxa de saída do estado } i\\ & P_{ij}: \text{ probabilidade de ir para } j \text{ ao sair de } i\end{aligned}$$
+      <ul class="legenda">
+        <li><span class="s3">$v_i$</span>: o tempo em $i$ é exponencial de média $1/v_i$</li>
+        <li>$P_{ii}=0$ e $\sum_j P_{ij}=1$ para todo $i$</li>
+      </ul>
+    </div>
+    <p>Há uma exigência escondida aí, e ela não é inocente: o tempo em $i$ e o próximo estado têm que ser <strong>independentes</strong>. Se o próximo estado dependesse de quanto tempo se ficou em $i$, então saber a duração da estadia ajudaria a prever o futuro, e a propriedade de Markov cairia.</p>
+    <p>Repare que essa independência é exatamente a que apareceu numa <span class="ref" data-ref="f-vencedor">corrida de exponenciais</span>: quando o mínimo ocorre e qual relógio venceu não se conversam. É por isso que uma corrida de exponenciais gera, automaticamente, uma cadeia em tempo contínuo.</p>
+    <div class="ideia">Uma cadeia em tempo contínuo é uma cadeia em tempo discreto em que cada visita a um estado dura um tempo exponencial, independente do destino.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Na <span class="ref" data-ref="ex-engraxataria">engraxataria</span>, com $\lambda = 1$, $\mu_1 = 2$ e $\mu_2 = 3$ por hora.</p>
+      <p>$v_0 =$ <input class="lacuna" data-resp="1" data-tol="0.01" aria-label="taxa de saida do estado zero">; $v_1 =$ <input class="lacuna" data-resp="2" data-tol="0.01" aria-label="taxa de saida do estado um">; $v_2 =$ <input class="lacuna" data-resp="3" data-tol="0.01" aria-label="taxa de saida do estado dois">.</p>
+      <p>$P_{01} =$ <input class="lacuna" data-resp="1" data-tol="0.01" aria-label="probabilidade de ir de zero a um">.</p>
+      <p>Média do tempo de um ciclo completo, em horas: <input class="lacuna" data-resp="1.8333" data-tol="0.01" aria-label="media do ciclo">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: como de cada estado só há um destino possível, a taxa de saída é a própria taxa do evento que leva embora dali. O ciclo é a soma dos três tempos médios.</p>
+      <div class="resolucao" hidden><p>$v_0 = \lambda = 1$, $v_1 = \mu_1 = 2$, $v_2 = \mu_2 = 3$. Todas as probabilidades de transição valem 1, porque o ciclo é forçado: $P_{01}=P_{12}=P_{20}=1$. O ciclo médio é $1 + 0{,}5 + 1/3 = 11/6 \approx 1{,}83$ hora.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Montar a cadeia">
+   <div class="texto">
+    <h2>Do enunciado em palavras para as taxas</h2>
+    <p>Esse é o procedimento que abre toda questão do capítulo, e ele tem três perguntas fixas.</p>
+    <p><strong>Primeira: o que o estado precisa guardar?</strong> O mínimo para que o futuro não dependa do passado. Na engraxataria não basta "há um cliente": é preciso saber em qual cadeira, porque as taxas são diferentes.</p>
+    <p><strong>Segunda: de cada estado, que relógios estão correndo?</strong> Cada evento possível é um relógio exponencial independente. No estado 0 só o relógio da chegada corre, com taxa $\lambda$.</p>
+    <p><strong>Terceira: quem vence a corrida?</strong> A taxa de saída é a soma das taxas dos relógios em curso, e a probabilidade de ir para cada destino é a fatia daquele relógio, pela <span class="ref" data-ref="f-vencedor">regra da corrida</span>.</p>
+    <p>Quando só um relógio corre, como aqui, a terceira pergunta é trivial e $P_{ij}=1$. Quando corre mais de um, é ela que dá os $P_{ij}$.</p>
+    <div class="ideia">Montar a cadeia é listar os relógios que correm em cada estado; as taxas somam e as probabilidades são as fatias.</div>
+   </div>
+   <aside class="apoio">
+    <svg class="fig" viewBox="0 0 360 150" role="img" aria-label="Diagrama dos três estados da engraxataria com as taxas de transição">
+        <defs><marker id="seta6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+        <g fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#seta6a)">
+          <path d="M72 58 Q110 28 148 58"/>
+          <path d="M212 58 Q250 28 288 58"/>
+          <path d="M288 92 Q180 140 72 92"/>
+        </g>
+        <g stroke="currentColor" stroke-width="1.4" fill="none">
+          <circle cx="50" cy="75" r="24"/><circle cx="180" cy="75" r="24"/><circle cx="310" cy="75" r="24"/>
+        </g>
+        <g fill="currentColor" font-size="15" text-anchor="middle">
+          <text x="50" y="80">0</text><text x="180" y="80">1</text><text x="310" y="80">2</text>
+        </g>
+        <g fill="currentColor" font-size="12" text-anchor="middle">
+          <text x="110" y="30">taxa 1</text><text x="250" y="30">taxa 2</text><text x="180" y="138">taxa 3</text>
+        </g>
+    </svg>
+    <p style="margin:.4rem 0 0;font-size:.93rem">Os três estados da engraxataria e as taxas que levam de um ao seguinte. O ciclo é forçado, então cada estado tem uma única seta saindo.</p>
+    <div class="pare">
+      <p>Se a loja passasse a aceitar um cliente esperando enquanto outro é atendido, quantos estados seriam necessários?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Cinco: vazia; um cliente na cadeira 1; um na cadeira 2; um na cadeira 1 com outro esperando; um na cadeira 2 com outro esperando. O estado tem que registrar as duas informações, porque as taxas dependem da cadeira ocupada e a chegada só é possível quando há vaga. Aumentar o detalhe do modelo quase sempre significa aumentar o espaço de estados, e esse é o preço de manter a propriedade de Markov.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 2 ===================== -->
+  <div class="secao" data-numero="6.2" data-titulo="Nascimento e morte" data-livro="§6.3">
+
+  <section class="passo" data-titulo="Subir e descer">
+   <div class="texto">
+    <h2>Quando o estado é uma contagem que sobe e desce de um</h2>
+    <p>Um caso particular cobre quase todos os modelos úteis do capítulo: o estado é o número de pessoas (ou peças, ou clientes) no sistema, e ele só muda de um em um.</p>
+    <div class="definicao" data-ref-id="d-nasc-morte" data-ref-tipo="definicao" data-ref-nome="Processo de nascimento e morte">
+      <p><strong>Processo de nascimento e morte:</strong> uma cadeia em tempo contínuo com estados $0, 1, 2, \dots$ em que, estando em $n$, chegadas ocorrem a uma taxa exponencial $\lambda_n$ e saídas a uma taxa exponencial $\mu_n$, com $\mu_0 = 0$. As transições a partir de $n$ vão só para $n-1$ ou $n+1$.</p>
+    </div>
+    <p>As duas peças da cadeia saem da corrida entre os dois relógios:</p>
+    <div class="formula" data-ref-id="f-nm-taxas" data-ref-tipo="formula" data-ref-nome="Taxas de um processo de nascimento e morte">
+      $$v_0 = \class{s1}{\lambda_0}, \qquad v_i = \class{s1}{\lambda_i} + \class{s2}{\mu_i}$$
+      $$P_{i,i+1} = \frac{\class{s1}{\lambda_i}}{\class{s1}{\lambda_i} + \class{s2}{\mu_i}}, \qquad P_{i,i-1} = \frac{\class{s2}{\mu_i}}{\class{s1}{\lambda_i} + \class{s2}{\mu_i}}$$
+      <ul class="legenda">
+        <li><span class="s1">$\lambda_i$</span>: taxa de nascimento quando há $i$ no sistema</li>
+        <li><span class="s2">$\mu_i$</span>: taxa de morte quando há $i$ no sistema</li>
+      </ul>
+    </div>
+    <p>Nada de novo: o tempo até o primeiro dos dois eventos é exponencial com as taxas somadas, e a chance de ser o nascimento é a fatia do nascimento. É a <span class="ref" data-ref="f-minimo">regra do mínimo</span> e a da corrida, aplicadas a dois relógios.</p>
+    <div class="ideia">Num nascimento e morte, a taxa de saída é a soma das duas taxas e o destino é sorteado proporcionalmente a elas.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-fila">
+      <p>Numa fila com um servidor, chegadas a taxa $\lambda$ e serviço a taxa $\mu$, com $\lambda$ bem perto de $\mu$. O número de clientes na fila ao longo do tempo vai…</p>
+      <div class="alts">
+        <button data-op="a">Ficar perto de 1</button>
+        <button data-op="b" data-certa>Passear longe, com picos grandes</button>
+        <button data-op="c">Crescer sempre</button>
+      </div>
+      <div class="explica" hidden><p>Com $\lambda$ quase igual a $\mu$, o processo sobe e desce quase sem preferência, e passeia para longe antes de voltar. Ele ainda volta a zero infinitas vezes (não cresce sempre), mas as excursões ficam enormes. É esse comportamento que faz a fila média explodir quando a utilização se aproxima de 1.</p></div>
+    </div>
+    <div class="sim" id="sim-fila">
+      <label>Chegada $\lambda$ <input type="range" id="fila-lam" min="1" max="39" step="1" value="20"> <strong id="fila-lam-v">2,0</strong></label>
+      <label>Serviço $\mu$ <input type="range" id="fila-mu" min="10" max="40" step="1" value="40"> <strong id="fila-mu-v">4,0</strong></label>
+      <button class="btn pequeno" id="fila-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 200" id="fila-svg" role="img" aria-label="Número de clientes na fila ao longo do tempo"></svg>
+      <p id="fila-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="A família">
+   <div class="texto">
+    <h2>Quase tudo é nascimento e morte, com taxas diferentes</h2>
+    <p>Mudando $\lambda_n$ e $\mu_n$ sai uma coleção de modelos clássicos.</p>
+    <p><strong>Processo de Poisson:</strong> $\lambda_n = \lambda$ e $\mu_n = 0$. Nunca desce, e o tempo entre subidas é exponencial de taxa $\lambda$: é o <span class="ref" data-ref="d-poisson">processo de Poisson</span> do capítulo anterior, agora como caso particular. Quando $\mu_n = 0$ para todo $n$, diz-se que o processo é de <strong>nascimento puro</strong>.</p>
+    <p><strong>População que só cresce:</strong> cada indivíduo gera um novo depois de um tempo exponencial de taxa $\lambda$, independentemente. Com $n$ indivíduos, correm $n$ relógios, então $\lambda_n = n\lambda$ e $\mu_n = 0$. Esse é o processo de nascimento com taxa linear.</p>
+    <p><strong>População com imigração:</strong> $\lambda_n = n\lambda + \theta$ e $\mu_n = n\mu$. Cada indivíduo gera e morre por conta própria, e ainda chega gente de fora a uma taxa $\theta$.</p>
+    <p><strong>Fila com um servidor:</strong> $\lambda_n = \lambda$ e $\mu_n = \mu$ para $n \ge 1$. Chegadas em Poisson, um servidor, serviço exponencial.</p>
+    <p><strong>Fila com $s$ servidores:</strong> $\lambda_n = \lambda$ e $\mu_n = \min(n,s)\mu$. Com $n \le s$ clientes, $n$ servidores estão ocupados e a taxa total de saída é $n\mu$; a partir de $s$, todos estão ocupados e a taxa trava em $s\mu$.</p>
+    <div class="ideia">A taxa é a soma dos relógios em curso: $n$ indivíduos gerando dão $n\lambda$, $n$ servidores ocupados dão $n\mu$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Uma oficina com $M = 3$ máquinas e um único técnico. Cada máquina em uso quebra a uma taxa $\lambda = 1$ por mês; o técnico conserta a uma taxa $\mu = 4$ por mês e atende uma máquina de cada vez. O estado $n$ é o número de máquinas <em>paradas</em>.</p>
+      <p>$\lambda_0 =$ <input class="lacuna" data-resp="3" data-tol="0.01" aria-label="taxa de nascimento em zero"> por mês.</p>
+      <p>$\lambda_2 =$ <input class="lacuna" data-resp="1" data-tol="0.01" aria-label="taxa de nascimento em dois"> por mês.</p>
+      <p>$\mu_2 =$ <input class="lacuna" data-resp="4" data-tol="0.01" aria-label="taxa de morte em dois"> por mês.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: com $n$ paradas, são $M-n$ máquinas em uso, cada uma com o seu relógio de quebra. O técnico é um só, não importa quantas estejam na fila dele.</p>
+      <div class="resolucao" hidden><p>$\lambda_n = (M-n)\lambda$, então $\lambda_0 = 3$ e $\lambda_2 = 1$. E $\mu_n = \mu = 4$ para todo $n \ge 1$, porque o técnico conserta uma de cada vez. Repare que a quebra faz o papel de chegada e o conserto, o de saída.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Média que evolui">
+   <div class="texto">
+    <h2>Como a média da população evolui no tempo</h2>
+    <p>Na população com imigração, $\lambda_n = n\lambda + \theta$ e $\mu_n = n\mu$. Começando com $i$ indivíduos, quanto vale $M(t) = E[X(t)]$?</p>
+    <p>A técnica é a do capítulo: olhe uma janela curta e jogue fora o que é $o(h)$. Dado $X(t)$, no intervalo $(t, t+h]$ a população sobe 1 com probabilidade $[\theta + X(t)\lambda]h$, desce 1 com probabilidade $X(t)\mu h$, e fica igual no resto. Então</p>
+    $$\begin{aligned}E[X(t+h)\mid X(t)] = \ & X(t)\\ & + [\theta + X(t)\lambda - X(t)\mu]h + o(h)\end{aligned}$$
+    <p>Tomando a esperança, subtraindo $M(t)$, dividindo por $h$ e fazendo $h \to 0$:</p>
+    <div class="formula" data-ref-id="f-eq-media" data-ref-tipo="formula" data-ref-nome="Equação da média da população">
+      $$M'(t) = (\lambda-\mu)M(t) + \theta$$
+    </div>
+    <p>Com $\lambda \ne \mu$ e $M(0)=i$, a solução é $M(t) = \dfrac{\theta}{\lambda-\mu}\left[e^{(\lambda-\mu)t}-1\right] + ie^{(\lambda-\mu)t}$; com $\lambda = \mu$, a equação vira $M'(t) = \theta$ e a solução é $M(t) = \theta t + i$.</p>
+    <p>O sinal de $\lambda - \mu$ decide tudo: nasce mais do que morre, a população explode exponencialmente; morre mais, ela estabiliza em $\theta/(\mu-\lambda)$, sustentada só pela imigração.</p>
+    <div class="ideia">Condicionar numa janela curta e descartar o $o(h)$ transforma o processo numa equação diferencial para a média.</div>
+    <details class="demo">
+      <summary>Demonstração: integrando a equação da média</summary>
+      <p>Defina $h(t) = (\lambda-\mu)M(t) + \theta$, que é o lado direito da equação. Derivando, $h'(t) = (\lambda-\mu)M'(t) = (\lambda-\mu)h(t)$, ou seja $h'(t)/h(t) = \lambda-\mu$. Integrando os dois lados,</p>
+      $$\log h(t) = (\lambda-\mu)t + c \ \Longrightarrow\ h(t) = Ke^{(\lambda-\mu)t}$$
+      <p>Voltando a $M$: $\theta + (\lambda-\mu)M(t) = Ke^{(\lambda-\mu)t}$. Em $t=0$, com $M(0)=i$, isso dá $K = \theta + (\lambda-\mu)i$. Substituindo e isolando $M(t)$:</p>
+      $$M(t) = \frac{\theta}{\lambda-\mu}\left[e^{(\lambda-\mu)t}-1\right] + ie^{(\lambda-\mu)t}$$
+      <p>Note o que foi preciso supor: $\lambda \ne \mu$, para dividir. Com $\lambda = \mu$ a equação original já é $M'(t) = \theta$, de solução imediata.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Numa população em que cada indivíduo gera a uma taxa $\lambda$ e ninguém morre, começando com um único indivíduo, a equação acima dá $M(t) = e^{\lambda t}$. Isso significa que a população <em>vale</em> $e^{\lambda t}$ no instante $t$?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Não: $e^{\lambda t}$ é a média, e a população real é uma variável bem dispersa em torno dela. Mais adiante vamos ver que, nesse caso, a distribuição exata é geométrica de média $e^{\lambda t}$, e numa geométrica o desvio padrão é quase igual à média. A média de um processo é informação útil e insuficiente: ela não diz nada sobre a chance de a população ser o dobro ou a metade disso.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Tempo de subida">
+   <div class="texto">
+    <h2>Quanto tempo para subir um degrau</h2>
+    <p>Pergunta prática: partindo de $i$ clientes, quanto tempo em média até haver $i+1$? Chame isso de $E[T_i]$.</p>
+    <p>Com $i = 0$ é fácil: só o relógio da chegada corre, então $E[T_0] = 1/\lambda_0$.</p>
+    <p>Com $i > 0$, condicione na primeira transição. Ela leva tempo médio $1/(\lambda_i+\mu_i)$. Se foi um nascimento, chegou. Se foi uma morte, o processo está em $i-1$ e precisa voltar a $i$ (tempo médio $E[T_{i-1}]$) e depois subir de novo (tempo médio $E[T_i]$). Isolando $E[T_i]$:</p>
+    <div class="formula" data-ref-id="f-tempo-subida" data-ref-tipo="formula" data-ref-nome="Tempo médio para subir um degrau">
+      $$E[T_i] = \frac{1}{\lambda_i} + \frac{\mu_i}{\lambda_i}E[T_{i-1}], \qquad E[T_0] = \frac{1}{\lambda_0}$$
+    </div>
+    <p>E o tempo de $k$ até $j$, com $k &lt; j$, é a soma $E[T_k] + \dots + E[T_{j-1}]$: para chegar a $j$ é preciso passar por todos os degraus, um de cada vez.</p>
+    <p>Com taxas constantes $\lambda$ e $\mu$, a recursão fecha: $E[T_i] = \dfrac{1-(\mu/\lambda)^{i+1}}{\lambda-\mu}$. Para $\lambda = 2$ e $\mu = 1$: $E[T_0] = 0{,}5$, $E[T_1] = 0{,}75$, $E[T_2] = 0{,}875$, e subir de 0 a 3 leva $2{,}125$ em média.</p>
+    <div class="ideia">Para subir um degrau é preciso vencer o degrau anterior quantas vezes for necessário, e é isso que a recursão conta.</div>
+    <details class="demo">
+      <summary>Demonstração: a variância do tempo de subida</summary>
+      <p>Seja $I_i$ igual a 1 se a primeira transição a partir de $i$ for um nascimento e 0 se for uma morte, e $X_i$ o tempo até essa primeira transição. Condicionando,</p>
+      $$\begin{aligned}E[T_i\mid I_i] = \ & \frac{1}{\lambda_i+\mu_i}\\ & + (1-I_i)\left(E[T_{i-1}]+E[T_i]\right)\end{aligned}$$
+      <p>Como $I_i$ é Bernoulli de parâmetro $\lambda_i/(\lambda_i+\mu_i)$, a variância dessa esperança condicional é</p>
+      $$\begin{aligned}Var\big(E[T_i\mid I_i]\big) = \ & \left(E[T_{i-1}]+E[T_i]\right)^2\\ & \times \frac{\mu_i\lambda_i}{(\mu_i+\lambda_i)^2}\end{aligned}$$
+      <p>Do outro lado, usando que o tempo até a transição é independente do destino e que as três parcelas são independentes,</p>
+      $$Var(T_i \mid I_i) = Var(X_i) + (1-I_i)\left[Var(T_{i-1}) + Var(T_i)\right]$$
+      <p>Tomando a esperança,</p>
+      $$\begin{aligned}E\big[Var(T_i\mid I_i)\big] = \ & \frac{1}{(\mu_i+\lambda_i)^2}\\ & + \frac{\mu_i}{\mu_i+\lambda_i}\left[Var(T_{i-1})+Var(T_i)\right]\end{aligned}$$
+      <p>Somando as duas pela fórmula da variância condicional e isolando $Var(T_i)$:</p>
+      $$\begin{aligned}Var(T_i) = \ & \frac{1}{\lambda_i(\lambda_i+\mu_i)} + \frac{\mu_i}{\lambda_i}Var(T_{i-1})\\ & + \frac{\mu_i}{\mu_i+\lambda_i}\left(E[T_{i-1}]+E[T_i]\right)^2\end{aligned}$$
+      <p>Com $Var(T_0) = 1/\lambda_0^2$, a recursão se resolve sozinha. E como os tempos de subir cada degrau são independentes, a variância do tempo de $k$ a $j$ é a soma das variâncias.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Fila com um servidor, $\lambda = 2$ e $\mu = 1$ por hora. Use a recursão.</p>
+      <p>$E[T_0] =$ <input class="lacuna" data-resp="0.5" data-tol="0.005" aria-label="tempo de subida de zero"> hora.</p>
+      <p>$E[T_1] = \tfrac12 + \tfrac12 E[T_0] =$ <input class="lacuna" data-resp="0.75" data-tol="0.005" aria-label="tempo de subida de um"> hora.</p>
+      <p>Tempo médio de 0 até 3 clientes: <input class="lacuna" data-resp="2.125" data-tol="0.01" aria-label="tempo de zero a tres"> horas.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: some $E[T_0] + E[T_1] + E[T_2]$, com $E[T_2] = \tfrac12 + \tfrac12 E[T_1]$.</p>
+      <div class="resolucao" hidden><p>$E[T_0] = 1/2$; $E[T_1] = 0{,}5 + 0{,}5(0{,}5) = 0{,}75$; $E[T_2] = 0{,}5+0{,}5(0{,}75) = 0{,}875$. A soma é $2{,}125$ horas. Confere com a fórmula fechada: $(1-(1/2)^{i+1})/(2-1)$ dá $0{,}5$; $0{,}75$; $0{,}875$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 3 ===================== -->
+  <div class="secao" data-numero="6.3" data-titulo="A função de transição" data-livro="§6.4">
+
+  <section class="passo" data-titulo="Pij(t)">
+   <div class="texto">
+    <h2>A probabilidade de estar em $j$ daqui a $t$</h2>
+    <p>No tempo discreto, a pergunta "onde estarei daqui a $n$ passos" era respondida pela potência da matriz de transição. Aqui a pergunta é a mesma, mas o índice é contínuo.</p>
+    <div class="definicao" data-ref-id="d-pij-t" data-ref-tipo="definicao" data-ref-nome="Função de transição">
+      <p><strong>Função de transição:</strong> $P_{ij}(t) = P\{X(t+s)=j \mid X(s)=i\}$, a probabilidade de, estando em $i$ agora, estar em $j$ um tempo $t$ depois. Por hipótese de estacionariedade, não depende de $s$.</p>
+    </div>
+    <p>Repare na diferença de natureza: no tempo discreto havia uma matriz por valor inteiro de $n$, e todas saíam de multiplicar a primeira por si mesma. Aqui há uma matriz para <em>cada</em> $t$ real positivo, e não existe "a primeira" para multiplicar.</p>
+    <p>Para $t$ pequeno, $P_{ii}(t)$ é quase 1 e $P_{ij}(t)$ é quase 0. Para $t$ grande, em geral $P_{ij}(t)$ se aproxima de um valor que não depende mais de onde se começou. O capítulo é, em boa parte, sobre esses dois extremos: o comportamento local, que dá as equações, e o limite, que dá as proporções de tempo.</p>
+    <div class="ideia">$P_{ij}(t)$ é uma matriz para cada instante, e o que liga umas às outras é uma equação diferencial, não uma potência.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-pij">
+      <p>A simulação roda muitas cópias da <span class="ref" data-ref="ex-engraxataria">engraxataria</span>, todas começando com a loja vazia, e mede a proporção que está em cada estado no instante $t$. Com $t$ crescendo, essas proporções…</p>
+      <div class="alts">
+        <button data-op="a">Voltam para o estado inicial</button>
+        <button data-op="b" data-certa>Estabilizam em três valores</button>
+        <button data-op="c">Oscilam para sempre</button>
+      </div>
+      <div class="explica" hidden><p>Estabilizam. No começo elas se movem rápido, porque todas as cópias partem juntas e trocam de estado por volta dos mesmos instantes; com taxas altas isso chega a produzir uma oscilação amortecida. Essa sincronia se perde, e as proporções convergem para valores que não dependem do estado inicial.</p></div>
+    </div>
+    <div class="sim" id="sim-pij">
+      <label>Taxa de chegada <input type="range" id="pij-lam" min="1" max="10" step="1" value="1"> <strong id="pij-lam-v">1</strong></label>
+      <svg viewBox="0 0 400 210" id="pij-svg" role="img" aria-label="Três curvas com a probabilidade de estar em cada estado em função do tempo"></svg>
+      <p id="pij-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Nascimento puro">
+   <div class="texto">
+    <h2>O caso em que dá para escrever a resposta</h2>
+    <p>Quando o processo só sobe, $P_{ij}(t)$ sai em fórmula fechada. A razão é que "ainda não cheguei a $j$" é a mesma coisa que "a soma dos tempos de subida ainda não passou de $t$":</p>
+    $$X(t) &lt; j \iff T_i + T_{i+1} + \dots + T_{j-1} > t$$
+    <p>e essa soma é de exponenciais independentes com taxas distintas, cuja <span class="ref" data-ref="f-hipo-cauda">cauda já foi calculada</span>. Diferenciando em $j$ sai uma soma alternada de exponenciais que não é agradável de usar.</p>
+    <p>O caso útil é a população que só cresce, com $\lambda_n = n\lambda$. Aí não é preciso usar a fórmula geral: cada um dos $i$ indivíduos iniciais começa a sua própria população, independentemente das outras, e todas têm a mesma lei. Começando com <strong>um</strong> indivíduo,</p>
+    <div class="formula" data-ref-id="f-yule" data-ref-tipo="formula" data-ref-nome="População com taxa de nascimento linear">
+      $$P_{1j}(t) = e^{-\lambda t}\left(1 - e^{-\lambda t}\right)^{j-1}, \qquad j \ge 1$$
+    </div>
+    <p>que é uma distribuição geométrica de parâmetro $e^{-\lambda t}$ e média $e^{\lambda t}$. Com $i$ indivíduos iniciais, a população é a soma de $i$ geométricas independentes, ou seja, binomial negativa.</p>
+    <p>Com $\lambda = 1$ e $t = 1$: a chance de a população ainda ser 1 é $e^{-1} = 0{,}368$; de ser 2, $0{,}233$; de ser 3, $0{,}147$. A média é $e = 2{,}718$, e o desvio padrão é quase igual a ela.</p>
+    <div class="ideia">Quando cada indivíduo age por conta própria, a população total é soma de cópias independentes do processo de um só.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>População com taxa de nascimento linear, $\lambda = 1$ por ano, começando com um indivíduo. Use três casas.</p>
+      <p>$P\{X(1) = 1\} =$ <input class="lacuna" data-resp="0.368" data-tol="0.002" aria-label="probabilidade de um">.</p>
+      <p>$P\{X(1) = 2\} =$ <input class="lacuna" data-resp="0.233" data-tol="0.002" aria-label="probabilidade de dois">.</p>
+      <p>$E[X(1)] =$ <input class="lacuna" data-resp="2.718" data-tol="0.01" aria-label="media da populacao">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: é geométrica com $p = e^{-\lambda t}$, ou seja $P\{X=j\} = p(1-p)^{j-1}$, e média $1/p$.</p>
+      <div class="resolucao" hidden><p>Com $p = e^{-1} = 0{,}368$: $P\{X=1\} = p = 0{,}368$ e $P\{X=2\} = p(1-p)$ $= 0{,}368 \times 0{,}632$ $= 0{,}233$. A média é $1/p = e = 2{,}718$. Confere com a equação da média do passo anterior, que dá $M(t) = e^{\lambda t}$ com $\theta = 0$, $\mu = 0$ e $i = 1$.</p></div>
+    </div>
+    <div class="pare">
+      <p>Por que a fórmula geral do nascimento puro exige que as taxas $\lambda_i$ sejam todas diferentes?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Porque os coeficientes da cauda da soma de exponenciais têm $\lambda_j - \lambda_i$ no denominador: com duas taxas iguais, a expressão não existe. Isso não é um problema do processo, é um problema da fórmula. Com taxas repetidas a soma continua tendo uma distribuição perfeitamente boa (a gama, se todas forem iguais), só que ela se escreve de outro jeito.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 4 ===================== -->
+  <div class="secao" data-numero="6.4" data-titulo="Taxas instantâneas" data-livro="§6.4">
+
+  <section class="passo" data-titulo="As taxas q">
+   <div class="texto">
+    <h2>Uma só grandeza no lugar das duas</h2>
+    <p>Até aqui a cadeia foi descrita por $v_i$ e $P_{ij}$. Há uma forma mais econômica, que é a que se usa daqui para frente.</p>
+    <div class="formula" data-ref-id="f-qij" data-ref-tipo="formula" data-ref-nome="Taxa instantânea de transição">
+      $$\class{s1}{q_{ij}} = \class{s3}{v_i} P_{ij}$$
+      <ul class="legenda">
+        <li><span class="s1">$q_{ij}$</span>: taxa com que o processo, estando em $i$, vai direto para $j$</li>
+        <li><span class="s3">$v_i$</span>: taxa total de saída de $i$</li>
+      </ul>
+    </div>
+    <p>A leitura é direta: $v_i$ é a taxa com que algo acontece e $P_{ij}$ é a chance de esse algo ser a ida para $j$; o produto é a taxa da ida para $j$.</p>
+    <p>E dá para voltar atrás sem perda:</p>
+    $$v_i = \sum_{j} q_{ij}, \qquad P_{ij} = \frac{q_{ij}}{\sum_j q_{ij}}$$
+    <p>Ou seja, dar as taxas instantâneas é dar a cadeia inteira. É por isso que modelos em tempo contínuo são quase sempre especificados assim, por um diagrama com uma taxa em cada seta.</p>
+    <p>Na <span class="ref" data-ref="ex-engraxataria">engraxataria</span>: $q_{01} = 1$, $q_{12} = 2$, $q_{20} = 3$, e todas as outras são zero.</p>
+    <div class="ideia">Uma taxa em cada seta descreve a cadeia por completo: as taxas de saída somam e as probabilidades são as fatias.</div>
+   </div>
+   <aside class="apoio">
+    <svg class="fig" viewBox="0 0 360 170" role="img" aria-label="Diagrama de uma fila com um servidor, com as taxas de chegada e de serviço entre estados vizinhos">
+      <defs><marker id="seta6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+      <g fill="none" stroke="currentColor" stroke-width="1.3" marker-end="url(#seta6b)">
+        <path d="M44 62 Q72 38 100 62"/><path d="M124 62 Q152 38 180 62"/><path d="M204 62 Q232 38 260 62"/><path d="M284 62 Q312 38 340 62"/>
+        <path d="M100 98 Q72 122 44 98"/><path d="M180 98 Q152 122 124 98"/><path d="M260 98 Q232 122 204 98"/><path d="M340 98 Q312 122 284 98"/>
+      </g>
+      <g stroke="currentColor" stroke-width="1.3" fill="none">
+        <circle cx="26" cy="80" r="19"/><circle cx="112" cy="80" r="19"/><circle cx="192" cy="80" r="19"/><circle cx="272" cy="80" r="19"/>
+      </g>
+      <g fill="currentColor" font-size="13" text-anchor="middle">
+        <text x="26" y="85">0</text><text x="112" y="85">1</text><text x="192" y="85">2</text><text x="272" y="85">3</text>
+        <text x="352" y="85">…</text>
+      </g>
+      <g fill="currentColor" font-size="11" text-anchor="middle">
+        <text x="72" y="36">λ</text><text x="152" y="36">λ</text><text x="232" y="36">λ</text><text x="312" y="36">λ</text>
+        <text x="72" y="134">μ</text><text x="152" y="134">μ</text><text x="232" y="134">μ</text><text x="312" y="134">μ</text>
+      </g>
+    </svg>
+    <p style="margin:.4rem 0 0;font-size:.93rem">Fila com um servidor: a seta de cima é a chegada, a de baixo é a saída. A taxa de saída do estado 0 é só $\lambda$; a dos demais é $\lambda + \mu$.</p>
+    <div class="lacunas">
+      <p>Uma cadeia com três estados tem $q_{12} = 2$, $q_{13} = 6$ e nenhuma outra seta saindo de 1.</p>
+      <p>$v_1 =$ <input class="lacuna" data-resp="8" data-tol="0.01" aria-label="taxa de saida de um">.</p>
+      <p>Tempo médio no estado 1: <input class="lacuna" data-resp="0.125" data-tol="0.002" aria-label="tempo medio em um">.</p>
+      <p>$P_{13} =$ <input class="lacuna" data-resp="0.75" data-tol="0.005" aria-label="probabilidade de ir a tres">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $v_1$ é a soma das taxas que saem de 1, e $P_{13}$ é a fatia da seta para 3.</p>
+      <div class="resolucao" hidden><p>$v_1 = 2+6 = 8$; tempo médio $= 1/8 = 0{,}125$; $P_{13} = 6/8 = 0{,}75$. Note que uma taxa grande encurta a estadia e, ao mesmo tempo, aumenta a chance daquele destino.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Janela curta">
+   <div class="texto">
+    <h2>O que acontece numa janela curtíssima</h2>
+    <p>As taxas instantâneas ganham o seu significado exato num limite. Para $h$ pequeno:</p>
+    <div class="formula" data-ref-id="f-limites-h" data-ref-tipo="formula" data-ref-nome="Comportamento em janela curta">
+      $$\lim_{h \to 0}\frac{1 - P_{ii}(h)}{h} = v_i$$
+      $$\lim_{h \to 0}\frac{P_{ij}(h)}{h} = q_{ij}, \quad i \ne j$$
+    </div>
+    <p>A razão é a mesma dos axiomas do capítulo anterior. A chance de duas ou mais transições em tempo $h$ é $o(h)$, porque cada espera é exponencial. Então sair de $i$ em tempo $h$ é essencialmente "houve uma transição", que tem probabilidade $v_i h + o(h)$; e ir parar em $j$ é "houve uma transição e ela foi para $j$", que tem probabilidade $v_i h P_{ij} + o(h) = q_{ij}h + o(h)$.</p>
+    <p>É assim que a descrição local (taxas) e a descrição global ($P_{ij}(t)$) se encontram. Tudo o que vem a seguir sai de juntar esse limite com a decomposição do próximo passo.</p>
+    <div class="ideia">Em janela curta, $P_{ij}(h) \approx q_{ij}h$: a taxa é a derivada da probabilidade de transição na origem.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>A matriz de transição em tempo discreto tinha linhas somando 1. O que soma zero aqui?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>As linhas da matriz de taxas, se você colocar $-v_i$ na diagonal: $\sum_{j \ne i} q_{ij} - v_i = 0$. Faz sentido olhando para $P_{ij}(h) \approx \delta_{ij} + (\text{taxa})h$: para as probabilidades de cada linha continuarem somando 1 em todo $h$, as taxas da linha têm que somar zero. Essa matriz vai aparecer com nome no fim do capítulo.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Chapman-Kolmogorov">
+   <div class="texto">
+    <h2>Para ir de $i$ a $j$ em $t+s$, é preciso estar em algum lugar em $t$</h2>
+    <p>Esta é a identidade que já aparecia em tempo discreto, com a soma sobre os estados intermediários. Em tempo contínuo ela vale para qualquer corte do intervalo:</p>
+    <div class="formula" data-ref-id="f-chapman" data-ref-tipo="formula" data-ref-nome="Equação de Chapman–Kolmogorov">
+      $$P_{ij}(t+s) = \sum_{k=0}^{\infty} P_{ik}(t)\,P_{kj}(s)$$
+    </div>
+    <p>A demonstração é uma linha de condicionamento. Para estar em $j$ no instante $t+s$, o processo está em algum estado $k$ no instante $t$; some sobre todos os $k$ possíveis, e use a propriedade de Markov para dizer que o trecho de $t$ a $t+s$ só depende de $k$.</p>
+    <p>Em tempo discreto isso era a multiplicação de matrizes, e dava a potência. Aqui ela também é multiplicação de matrizes, mas agora com um parâmetro contínuo: $P(t+s) = P(t)P(s)$. Uma família de matrizes com essa propriedade é determinada pelo seu comportamento perto de zero — e é exatamente isso que o passo anterior calculou.</p>
+    <div class="ideia">Cortar o intervalo em dois e somar sobre o estado do corte: essa é a única identidade exata que existe sobre $P_{ij}(t)$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Sobre a identidade que decompõe a transição num instante intermediário, numa cadeia de Markov em tempo contínuo:</p>
+      <div class="alts">
+        <button data-op="a">(a) Ela vale só quando o instante do corte coincide com uma transição.</button>
+        <button data-op="b">(b) Ela vale para qualquer corte, porque o estado no instante do corte resume o passado.</button>
+        <button data-op="c">(c) Ela vale só no limite de intervalos pequenos.</button>
+        <button data-op="d">(d) Ela exige que a cadeia tenha um número finito de estados.</button>
+      </div>
+      <div class="fb" data-op="a">O corte é um instante escolhido por quem faz a conta, não um evento do processo. Aliás, se o corte fosse o instante de uma transição, ele seria aleatório e dependeria da trajetória, e aí o condicionamento não seria tão simples.</div>
+      <div class="fb" data-op="b">Correto. É isso que a propriedade de Markov garante: dado $X(t)=k$, o que acontece depois de $t$ não depende de nada anterior, então as duas probabilidades se multiplicam e basta somar sobre $k$.</div>
+      <div class="fb" data-op="c">Isso confunde a identidade com os limites em janela curta. Ela é exata para quaisquer $t$ e $s$; os limites em janela curta é que são aproximações de primeira ordem.</div>
+      <div class="fb" data-op="d">A soma pode ser infinita sem nenhum problema: numa fila sem limite de capacidade os estados são todos os inteiros, e a identidade continua valendo. O cuidado com espaço infinito aparece noutro lugar, ao trocar limite com somatório nas equações do próximo passo.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 5 ===================== -->
+  <div class="secao" data-numero="6.5" data-titulo="Equações de Kolmogorov" data-livro="§6.4">
+
+  <section class="passo" data-titulo="Para trás">
+   <div class="texto">
+    <h2>Condicionar na primeira transição</h2>
+    <p>Junte as duas peças: corte o intervalo $[0, t+h]$ no instante $h$, pequeno, e use o comportamento em janela curta.</p>
+    $$\begin{aligned}P_{ij}(h+t) &= \sum_{k} P_{ik}(h)P_{kj}(t)\\ &= \sum_{k \ne i} P_{ik}(h)P_{kj}(t) + P_{ii}(h)P_{ij}(t)\end{aligned}$$
+    <p>Subtraia $P_{ij}(t)$, divida por $h$ e use que $P_{ik}(h)/h \to q_{ik}$ e $(1-P_{ii}(h))/h \to v_i$:</p>
+    <div class="formula" data-ref-id="f-kolmo-tras" data-ref-tipo="formula" data-ref-nome="Equações de Kolmogorov para trás">
+      $$P_{ij}'(t) = \sum_{k \ne i} q_{ik}P_{kj}(t) - v_i P_{ij}(t)$$
+    </div>
+    <p>O nome "para trás" vem do corte ter sido feito no <em>começo</em> do intervalo: a conta condiciona na primeira transição. Em palavras: para ir de $i$ a $j$ em tempo $t$, saia de $i$ para algum $k$ (taxa $q_{ik}$) e depois vá de $k$ a $j$; o termo negativo desconta o tempo que o processo gasta parado em $i$.</p>
+    <p>Para um nascimento puro, isso vira $P_{ij}'(t) = \lambda_i P_{i+1,j}(t) - \lambda_i P_{ij}(t)$. Para um nascimento e morte,</p>
+    $$P_{ij}'(t) = \lambda_i P_{i+1,j}(t) + \mu_i P_{i-1,j}(t) - (\lambda_i+\mu_i)P_{ij}(t)$$
+    <div class="ideia">Para trás condiciona na primeira transição: o índice que varia nas taxas é o de origem.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Numa cadeia de dois estados com $q_{01} = \lambda$ e $q_{10} = \mu$, escreva as equações para trás de $P_{00}$ e $P_{10}$, com $\lambda = 1$ e $\mu = 4$.</p>
+      <p>$P_{00}'(t) = 1 \times P_{10}(t) - $ <input class="lacuna" data-resp="1" data-tol="0.01" aria-label="coeficiente de P00"> $\times P_{00}(t)$.</p>
+      <p>$P_{10}'(t) = $ <input class="lacuna" data-resp="4" data-tol="0.01" aria-label="coeficiente de P00 na segunda"> $\times P_{00}(t) - 4 \times P_{10}(t)$.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: na equação de $P_{ij}$, as taxas que aparecem são as que saem de $i$, e o termo negativo usa $v_i$.</p>
+      <div class="resolucao" hidden><p>$P_{00}'(t) = \lambda P_{10}(t) - \lambda P_{00}(t)$ $= P_{10}(t) - P_{00}(t)$.</p><p>$P_{10}'(t) = \mu P_{00}(t) - \mu P_{10}(t)$ $= 4P_{00}(t) - 4P_{10}(t)$.</p><p>Em ambas o índice de origem é o que manda nas taxas, e o segundo índice fica de carona.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Para frente">
+   <div class="texto">
+    <h2>Condicionar na última transição</h2>
+    <p>Faça o mesmo corte, mas no <em>fim</em> do intervalo: escreva $P_{ij}(t+h) = \sum_k P_{ik}(t)P_{kj}(h)$ e deixe $h \to 0$. Agora quem fica preso ao limite é o segundo índice:</p>
+    <div class="formula" data-ref-id="f-kolmo-frente" data-ref-tipo="formula" data-ref-nome="Equações de Kolmogorov para frente">
+      $$P_{ij}'(t) = \sum_{k \ne j} q_{kj}P_{ik}(t) - v_j P_{ij}(t)$$
+    </div>
+    <p>Em palavras: chegue perto de $j$, em algum $k$, e dê o último salto para $j$ (taxa $q_{kj}$); desconte a chance de o processo já estar em $j$ e sair.</p>
+    <p>Há uma ressalva técnica aqui que não existe no caso para trás: a passagem ao limite exige trocar um limite com um somatório infinito, e isso nem sempre é lícito. As equações para frente valem sob condições de regularidade, satisfeitas em todo processo de nascimento e morte e em todo modelo com um número finito de estados — ou seja, em tudo o que aparece neste capítulo.</p>
+    <p>Para um nascimento e morte, a versão para frente é</p>
+    $$P_{ij}'(t) = \lambda_{j-1}P_{i,j-1}(t) + \mu_{j+1}P_{i,j+1}(t) - (\lambda_j+\mu_j)P_{ij}(t)$$
+    <p>Compare com a de trás: lá os índices $i\pm1$ apareciam no $P$; aqui são os $j\pm1$.</p>
+    <div class="ideia">Para frente condiciona na última transição: o índice que varia nas taxas é o de destino.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="d">
+      <p class="enunciado">Duas equações diferenciais descrevem a mesma função de transição de uma cadeia em tempo contínuo: a que condiciona na primeira transição e a que condiciona na última. Qual afirmação é correta?</p>
+      <div class="alts">
+        <button data-op="a">(a) Dão soluções diferentes, e escolhe-se a que for mais fácil de resolver.</button>
+        <button data-op="b">(b) A que condiciona na primeira transição precisa de condições extras para valer.</button>
+        <button data-op="c">(c) A que condiciona na última só vale quando o número de estados é finito.</button>
+        <button data-op="d">(d) Dão a mesma solução, e a que condiciona na última precisa de condições de regularidade.</button>
+      </div>
+      <div class="fb" data-op="a">A função $P_{ij}(t)$ é uma só, então a solução é a mesma. É verdade que uma pode ser mais prática que a outra num problema concreto, e é por isso que vale conhecer as duas; mas a resposta não muda.</div>
+      <div class="fb" data-op="b">É o contrário. A versão que condiciona na primeira transição vale em geral; a outra é que pede regularidade, porque a troca de limite com somatório não é automática nela.</div>
+      <div class="fb" data-op="c">Espaço finito é suficiente, não necessário. Todo processo de nascimento e morte, que tem infinitos estados, também satisfaz as condições.</div>
+      <div class="fb" data-op="d">Correto. As duas descrevem a mesma função; a versão que condiciona na última transição exige trocar limite com um somatório possivelmente infinito, o que vale em todo nascimento e morte e em todo espaço finito.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Dois estados">
+   <div class="texto">
+    <h2>Resolvendo o caso de dois estados até o fim</h2>
+    <p>Uma máquina funciona por um tempo exponencial de média 8 horas e depois quebra; o conserto demora um tempo exponencial de média 2 horas. Com estado 0 = funcionando e 1 = em conserto, isso é um nascimento e morte com $\lambda = 1/8$ e $\mu = 1/2$ por hora.</p>
+    <p>As equações para trás dão $P_{00}'(t) = \lambda[P_{10}(t)-P_{00}(t)]$ e $P_{10}'(t) = \mu[P_{00}(t)-P_{10}(t)]$. Multiplique a primeira por $\mu$, a segunda por $\lambda$ e some: o lado direito se cancela, então $\mu P_{00}(t) + \lambda P_{10}(t)$ é constante. Em $t=0$ ela vale $\mu$, o que dá $\lambda P_{10}(t) = \mu[1-P_{00}(t)]$.</p>
+    <p>Substituindo na primeira equação sobra $P_{00}'(t) = \mu - (\mu+\lambda)P_{00}(t)$, uma equação linear de primeira ordem cuja solução, com $P_{00}(0)=1$, é</p>
+    <div class="formula" data-ref-id="f-dois-estados" data-ref-tipo="formula" data-ref-nome="Transição numa cadeia de dois estados">
+      $$P_{00}(t) = \frac{\class{s2}{\mu}}{\class{s1}{\lambda}+\class{s2}{\mu}} + \frac{\class{s1}{\lambda}}{\class{s1}{\lambda}+\class{s2}{\mu}}e^{-(\class{s1}{\lambda}+\class{s2}{\mu})t}$$
+      <ul class="legenda">
+        <li><span class="s1">$\lambda$</span>: taxa de quebra</li>
+        <li><span class="s2">$\mu$</span>: taxa de conserto</li>
+      </ul>
+    </div>
+    <p>Vale a pena ler essa fórmula devagar. Ela é uma constante mais um termo que some: começa em 1 e cai exponencialmente, com velocidade $\lambda+\mu$, até o valor $\mu/(\lambda+\mu)$. Com os números do exemplo, esse limite é $0{,}8$, e em $t=10$ horas já se tem $P_{00}(10) = 0{,}8004$.</p>
+    <div class="ideia">A memória do estado inicial some a uma taxa $\lambda+\mu$; o que sobra é a proporção de tempo de longo prazo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-dois">
+      <p>Se você dobrar as duas taxas ao mesmo tempo, $\lambda$ e $\mu$, o valor para o qual $P_{00}(t)$ converge…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Não muda</button>
+        <button data-op="b">Dobra</button>
+        <button data-op="c">Cai pela metade</button>
+      </div>
+      <div class="explica" hidden><p>O limite é $\mu/(\lambda+\mu)$, que só depende da <em>razão</em> entre as taxas. Dobrar as duas não muda o limite, só faz a convergência ser duas vezes mais rápida: tudo acontece em dobro, inclusive o esquecimento do estado inicial.</p></div>
+    </div>
+    <div class="sim" id="sim-dois">
+      <label>Taxa de quebra $\lambda$ <input type="range" id="dois-lam" min="25" max="500" step="25" value="125"> <strong id="dois-lam-v">0,125</strong></label>
+      <label>Taxa de conserto $\mu$ <input type="range" id="dois-mu" min="25" max="500" step="25" value="500"> <strong id="dois-mu-v">0,500</strong></label>
+      <svg viewBox="0 0 400 200" id="dois-svg" role="img" aria-label="Curva da probabilidade de a máquina estar funcionando em função do tempo"></svg>
+      <p id="dois-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+    <div class="lacunas">
+      <p>Com $\lambda = 1/8$ e $\mu = 1/2$ por hora. Use três casas.</p>
+      <p>Limite de $P_{00}(t)$: <input class="lacuna" data-resp="0.8" data-tol="0.005" aria-label="limite de P00">.</p>
+      <p>Velocidade do decaimento, $\lambda+\mu$: <input class="lacuna" data-resp="0.625" data-tol="0.005" aria-label="soma das taxas"> por hora.</p>
+      <p>$P_{00}(2) =$ <input class="lacuna" data-resp="0.857" data-tol="0.003" aria-label="P00 em duas horas">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $P_{00}(2) = 0{,}8 + 0{,}2\,e^{-0{,}625 \times 2}$.</p>
+      <div class="resolucao" hidden><p>Limite $= 0{,}5/0{,}625 = 0{,}8$; soma das taxas $= 0{,}625$; e $P_{00}(2) = 0{,}8 + 0{,}2e^{-1{,}25}$ $= 0{,}8 + 0{,}2(0{,}2865)$ $= 0{,}857$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 6 ===================== -->
+  <div class="secao" data-numero="6.6" data-titulo="Longo prazo" data-livro="§6.5">
+
+  <section class="passo" data-titulo="Balanço">
+   <div class="texto">
+    <h2>O que entra tem que sair</h2>
+    <p>Resolver as equações diferenciais é trabalhoso e, quase sempre, desnecessário: o que se quer é o limite $P_j = \lim_{t\to\infty}P_{ij}(t)$, a proporção do tempo que o processo passa em $j$ no longo prazo.</p>
+    <p>Para achá-lo, parta das equações para frente e faça $t \to \infty$. Se $P_{ij}(t)$ converge, a derivada tem que ir a zero (uma função limitada que converge não pode ter derivada com limite diferente de zero). Sobra:</p>
+    <div class="formula" data-ref-id="f-balanco" data-ref-tipo="formula" data-ref-nome="Equações de balanço">
+      $$\class{s3}{v_j} \class{s2}{P_j} = \sum_{k \ne j} \class{s1}{q_{kj}} \class{s2}{P_k} \quad \text{para todo } j$$
+      $$\sum_j \class{s2}{P_j} = 1$$
+      <ul class="legenda">
+        <li><span class="s2">$P_j$</span>: proporção do tempo no estado $j$</li>
+        <li><span class="s3">$v_j$</span>: taxa de saída de $j$</li>
+        <li><span class="s1">$q_{kj}$</span>: taxa de entrada em $j$ vinda de $k$</li>
+      </ul>
+    </div>
+    <p>A leitura é física e vale mais do que a dedução. O processo está em $j$ numa proporção $P_j$ do tempo, e quando está lá sai a uma taxa $v_j$: o lado esquerdo é a <strong>taxa de saídas de $j$</strong>. O processo está em $k$ numa proporção $P_k$ do tempo, e de lá entra em $j$ a uma taxa $q_{kj}$: o lado direito é a <strong>taxa de entradas em $j$</strong>. No longo prazo, entradas e saídas de um estado têm que se igualar, porque elas se alternam.</p>
+    <div class="ideia">Para cada estado, taxa de entrada igual a taxa de saída. Isso e a soma 1 determinam as proporções.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Por que o número de entradas e de saídas de um estado, num intervalo longo, não pode diferir por mais de 1?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Porque elas se alternam: entre duas entradas tem que haver uma saída, e entre duas saídas, uma entrada. A diferença é no máximo 1, dependendo de o intervalo começar e terminar dentro ou fora do estado. Dividindo por um tempo que cresce, essa diferença de 1 vira zero, e as duas taxas ficam iguais. É um argumento de contagem, não de álgebra, e é por isso que a equação de balanço é tão robusta.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Quando existe">
+   <div class="texto">
+    <h2>Quando o limite existe, e o que ele significa</h2>
+    <p>Duas condições bastam, e são as mesmas do tempo discreto.</p>
+    <p><strong>Todos os estados se comunicam:</strong> partindo de qualquer estado há chance positiva de chegar a qualquer outro. Sem isso, o processo pode ficar preso numa parte do espaço, e o limite dependeria de onde se começou.</p>
+    <p><strong>A cadeia é recorrente positiva:</strong> partindo de qualquer estado, o tempo médio para voltar a ele é finito. Sem isso, o processo foge para o infinito e todo $P_j$ vale zero.</p>
+    <p>Satisfeitas as duas, a cadeia é chamada <strong>ergódica</strong> e os $P_j$ têm três leituras que coincidem: o limite de $P_{ij}(t)$; a proporção do tempo em $j$ no longo prazo; e a distribuição que, usada como inicial, faz $P\{X(t)=j\} = P_j$ para todo $t$ — daí serem também chamados de probabilidades estacionárias.</p>
+    <p>Repare no que <em>não</em> é preciso: em tempo discreto havia a chatice da periodicidade, uma cadeia que alterna entre dois grupos de estados e nunca converge. Em tempo contínuo isso não acontece, porque os tempos de permanência são exponenciais e borram qualquer sincronia.</p>
+    <div class="ideia">Comunicação mais recorrência positiva dão o limite, e em tempo contínuo não há periodicidade para atrapalhar.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="c">
+      <p class="enunciado">Numa cadeia de Markov em tempo contínuo com todos os estados se comunicando e tempo médio de retorno finito, o valor $P_j$ obtido das equações de balanço é:</p>
+      <div class="alts">
+        <button data-op="a">(a) A proporção das <em>transições</em> que levam ao estado $j$.</button>
+        <button data-op="b">(b) A probabilidade de $j$ ser o estado visitado com mais frequência.</button>
+        <button data-op="c">(c) A proporção do <em>tempo</em> que o processo passa em $j$ no longo prazo.</button>
+        <button data-op="d">(d) A probabilidade de o processo nunca mais sair de $j$.</button>
+      </div>
+      <div class="fb" data-op="a">Essa é a proporção de visitas, que é outra coisa: é o limite da cadeia dos estados visitados, ignorando o tempo. Os dois só coincidem quando todas as taxas de saída são iguais; em geral, um estado pode ser pouco visitado e ainda assim concentrar tempo, se cada visita for longa.</div>
+      <div class="fb" data-op="b">Frequência de visita e tempo acumulado são coisas diferentes, pelo mesmo motivo. Um estado visitado raramente mas com estadias longas acumula muito tempo.</div>
+      <div class="fb" data-op="c">Correto. É proporção de tempo, e é por isso que a taxa de saída $v_j$ entra na equação de balanço: ela converte tempo em número de saídas.</div>
+      <div class="fb" data-op="d">Isso descreveria um estado absorvente, e numa cadeia em que todos os estados se comunicam não existe nenhum. O processo sai de $j$ e volta infinitas vezes.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Fórmula fechada">
+   <div class="texto">
+    <h2>Num nascimento e morte, o balanço vira um corte</h2>
+    <p>Escrever o balanço de cada estado de um nascimento e morte dá um sistema infinito. Mas há um atalho: em vez de equilibrar as entradas e saídas de um <em>estado</em>, equilibre as travessias de um <em>corte</em>.</p>
+    <p>Corte a reta entre $n$ e $n+1$. Toda passagem para a direita é um nascimento a partir de $n$, e toda passagem para a esquerda é uma morte a partir de $n+1$. Pelo mesmo argumento de alternância do balanço, as duas taxas têm que ser iguais:</p>
+    <div class="formula" data-ref-id="f-corte" data-ref-tipo="formula" data-ref-nome="Balanço de corte">
+      $$\class{s1}{\lambda_n} \class{s2}{P_n} = \class{s1}{\mu_{n+1}} \class{s2}{P_{n+1}}, \qquad n \ge 0$$
+    </div>
+    <p>Isso é uma recursão simples. Iterando a partir de $P_0$:</p>
+    <div class="formula" data-ref-id="f-nm-limite" data-ref-tipo="formula" data-ref-nome="Probabilidades limite de um nascimento e morte">
+      $$P_n = \frac{\lambda_0\lambda_1\cdots\lambda_{n-1}}{\mu_1\mu_2\cdots\mu_n}P_0$$
+    </div>
+    <p>e $P_0$ sai da soma valer 1. O limite só existe se a soma de todas essas razões for finita; essa é a condição que precisa ser verificada antes de qualquer conta.</p>
+    <p>Na fila com um servidor, $\lambda_n=\lambda$ e $\mu_n=\mu$, a razão é $(\lambda/\mu)^n$, uma série geométrica que converge se $\lambda &lt; \mu$. Aí $P_n = (\lambda/\mu)^n(1-\lambda/\mu)$. Com $\lambda=3$ e $\mu=4$: $P_0 = 0{,}25$, $P_1 = 0{,}1875$, e a fila média é 3 clientes. Na fila com $s$ servidores a condição vira $\lambda &lt; s\mu$.</p>
+    <div class="ideia">Num nascimento e morte, cortar a reta entre dois estados vizinhos transforma o balanço numa recursão de um passo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-ocupa">
+      <p>Numa fila com um servidor em equilíbrio, com $\lambda$ metade de $\mu$, o número de clientes mais provável é…</p>
+      <div class="alts">
+        <button data-op="a" data-certa>Zero</button>
+        <button data-op="b">Um</button>
+        <button data-op="c">Dois, metade de quatro</button>
+      </div>
+      <div class="explica" hidden><p>As probabilidades são geométricas, $P_n = (1-\rho)\rho^n$, e caem a cada estado. O mais provável é sempre o zero, qualquer que seja a utilização $\rho$. O que muda com $\rho$ é a velocidade da queda, e portanto a média, que é $\rho/(1-\rho)$ e explode quando $\rho$ se aproxima de 1.</p></div>
+    </div>
+    <div class="sim" id="sim-ocupa">
+      <label>Utilização $\rho = \lambda/\mu$ <input type="range" id="ocupa-rho" min="10" max="92" step="2" value="75"> <strong id="ocupa-rho-v">0,75</strong></label>
+      <svg viewBox="0 0 400 200" id="ocupa-svg" role="img" aria-label="Barras com a proporção de tempo com cada número de clientes na fila"></svg>
+      <p id="ocupa-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+    <div class="lacunas">
+      <p>Fila com um servidor, $\lambda = 3$ e $\mu = 4$ por hora.</p>
+      <p>$P_0 =$ <input class="lacuna" data-resp="0.25" data-tol="0.005" aria-label="proporcao de tempo vazia">.</p>
+      <p>$P_2 =$ <input class="lacuna" data-resp="0.1406" data-tol="0.002" aria-label="proporcao com dois">.</p>
+      <p>Número médio de clientes, $\rho/(1-\rho)$: <input class="lacuna" data-resp="3" data-tol="0.02" aria-label="numero medio">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $\rho = 3/4$, e $P_n = (1-\rho)\rho^n$.</p>
+      <div class="resolucao" hidden><p>$P_0 = 1-0{,}75 = 0{,}25$; $P_2 = 0{,}25(0{,}75)^2 = 0{,}1406$; média $= 0{,}75/0{,}25 = 3$ clientes. Repare que o servidor fica ocioso 25% do tempo e ainda assim há 3 clientes em média: filas são piores do que a intuição sugere.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Sem a fórmula">
+   <div class="texto">
+    <h2>Quando o modelo não é nascimento e morte</h2>
+    <p>A fórmula do produto é tentadora e só vale quando as transições são de um degrau. Na <span class="ref" data-ref="ex-engraxataria">engraxataria</span>, o processo vai de 2 direto para 0: não é nascimento e morte, e a fórmula não se aplica. Aí é o balanço estado a estado:</p>
+    <p>saídas de 0 igual a entradas em 0: $\lambda P_0 = \mu_2 P_2$; saídas de 1 igual a entradas em 1: $\mu_1 P_1 = \lambda P_0$; saídas de 2: $\mu_2 P_2 = \mu_1 P_1$.</p>
+    <p>Resolvendo em função de $P_0$: $P_1 = (\lambda/\mu_1)P_0$ e $P_2 = (\lambda/\mu_2)P_0$. Com a soma 1,</p>
+    $$P_0 = \frac{\mu_1\mu_2}{\mu_1\mu_2 + \lambda(\mu_1+\mu_2)}$$
+    <p>Com $\lambda=1$, $\mu_1=2$ e $\mu_2=3$: $P_0 = 6/11 = 0{,}545$, $P_1 = 3/11 = 0{,}273$, $P_2 = 2/11 = 0{,}182$. Confere com a intuição do ciclo: as três visitas se alternam, e o tempo se reparte proporcionalmente às durações médias $1$; $0{,}5$; $1/3$, cuja soma é $11/6$.</p>
+    <p>Na oficina com 3 máquinas e um técnico, que <em>é</em> nascimento e morte, a fórmula vale: $P = (0{,}451;\ 0{,}338;\ 0{,}169;\ 0{,}042)$, com $0{,}803$ máquina parada em média, ou seja, cada máquina trabalha $73{,}2\%$ do tempo.</p>
+    <div class="ideia">A fórmula do produto é um atalho para transições de um degrau; fora disso, resolva o balanço estado a estado.</div>
+   </div>
+   <aside class="apoio">
+    <div class="acheerro">
+      <p>Um colega calculou as proporções de tempo da engraxataria. Toque na linha com erro.</p>
+      <ol class="linhas">
+        <li data-fb="Certa. O balanço do estado 1 é simples porque só há uma seta entrando e uma saindo.">Do balanço do estado 1: $\mu_1 P_1 = \lambda P_0$, então $P_1 = (\lambda/\mu_1)P_0$.</li>
+        <li data-errada data-fb="Aqui está o erro. Essa é a fórmula do produto de um nascimento e morte, que supõe transições só para vizinhos. Na engraxataria o processo vai de 2 direto para 0, então ela não vale. O balanço do estado 2 dá, na verdade, P2 = (mu1/mu2)P1 = (lambda/mu2)P0, com lambda no numerador e não lambda ao quadrado.">Como é um nascimento e morte, $P_2 = \dfrac{\lambda^2}{\mu_1\mu_2}P_0$.</li>
+        <li data-fb="A conta em si está certa a partir do que veio antes, mas ela herda o erro da linha anterior. Com os valores corretos, a soma é P0(1 + 1/2 + 1/3) = 1, que dá P0 = 6/11.">Somando tudo e igualando a 1, sai o valor de $P_0$.</li>
+      </ol>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 7 ===================== -->
+  <div class="secao" data-numero="6.7" data-titulo="Reversibilidade" data-livro="§6.6">
+
+  <section class="passo" data-titulo="O filme ao contrário">
+   <div class="texto">
+    <h2>Rodar o processo de trás para frente</h2>
+    <p>Pegue uma cadeia ergódica que já roda há muito tempo e filme um trecho. Agora passe o filme de trás para frente. O que se vê?</p>
+    <p>Duas observações. Primeiro, o tempo que o processo passa em $i$ numa visita é o mesmo, visto de frente ou de trás: continua exponencial de taxa $v_i$. Segundo, a sequência de estados visitados é a sequência original invertida, que também é uma cadeia de Markov.</p>
+    <p>O processo revertido é, portanto, outra cadeia em tempo contínuo. Quando ela é <em>igual</em> à original, a cadeia é chamada reversível, e isso acontece exatamente quando</p>
+    <div class="definicao" data-ref-id="d-reversivel" data-ref-tipo="definicao" data-ref-nome="Cadeia reversível no tempo">
+      <p><strong>Reversível:</strong> $P_i q_{ij} = P_j q_{ji}$ para todo par $i, j$.</p>
+      <p>Em palavras: a taxa com que o processo vai <em>diretamente</em> de $i$ para $j$ é igual à taxa com que vai diretamente de $j$ para $i$.</p>
+    </div>
+    <p>Compare com o balanço comum, que igualava a taxa total de entrada e de saída de um estado. Aqui a igualdade é imposta seta a seta, o que é bem mais forte — e, quando vale, bem mais útil.</p>
+    <div class="ideia">Balanço comum iguala o fluxo total de um estado; reversibilidade iguala o fluxo de cada par, nos dois sentidos.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-rev">
+      <p>A simulação mostra a fila com um servidor andando para frente e, embaixo, a mesma trajetória de trás para frente. No filme invertido, os instantes em que a fila <em>sobe</em> correspondem, no filme original, a…</p>
+      <div class="alts">
+        <button data-op="a">Chegadas</button>
+        <button data-op="b" data-certa>Saídas</button>
+        <button data-op="c">Nada em especial</button>
+      </div>
+      <div class="explica" hidden><p>Uma descida no original vira uma subida no invertido. Como as descidas são as saídas de clientes, as subidas do filme invertido são as saídas do original. Esse é o fio que leva ao resultado sobre o processo de saída, dois passos à frente.</p></div>
+    </div>
+    <div class="sim" id="sim-rev">
+      <label>Utilização $\rho$ <input type="range" id="rev-rho" min="20" max="90" step="5" value="60"> <strong id="rev-rho-v">0,60</strong></label>
+      <button class="btn pequeno" id="rev-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 220" id="rev-svg" role="img" aria-label="Trajetória da fila para frente e a mesma trajetória invertida no tempo"></svg>
+      <p id="rev-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Nascimento e morte">
+   <div class="texto">
+    <h2>Todo nascimento e morte ergódico é reversível</h2>
+    <p>E a prova é a mesma contagem do balanço de corte. Entre duas passagens de $i$ para $i+1$ tem que haver uma passagem de $i+1$ para $i$, porque não há outro caminho de volta. Os números de travessias nos dois sentidos diferem no máximo de 1, e dividindo por um tempo grande as taxas se igualam: $P_i q_{i,i+1} = P_{i+1}q_{i+1,i}$.</p>
+    <p>Para os pares não vizinhos, os dois lados são zero. Então a condição vale para todos os pares, e a cadeia é reversível.</p>
+    <p>Isso dá uma ferramenta de cálculo que vale para qualquer cadeia, não só para nascimento e morte:</p>
+    <div class="formula" data-ref-id="f-adivinha" data-ref-tipo="formula" data-ref-nome="Adivinhar e verificar pelas setas">
+      $$\begin{aligned}& \text{Se existem } P_i \ge 0 \text{ com } \sum_i P_i = 1\\ & \text{e } P_i q_{ij} = P_j q_{ji} \text{ para todo } i \ne j,\\ & \text{então a cadeia é reversível}\\ & \text{e esses } P_i \text{ são as proporções de tempo.}\end{aligned}$$
+    </div>
+    <p>A demonstração é de uma linha: some a condição sobre todos os $j \ne i$; o lado esquerdo vira $P_i v_i$ e o direito, $\sum_{j\ne i}P_j q_{ji}$, que são exatamente as equações de balanço. Ou seja, satisfazer as condições seta a seta implica satisfazer o balanço, e a unicidade da solução faz o resto.</p>
+    <p>Na prática: chute uma forma para os $P_i$, teste nas setas; se funcionar, acabou, sem resolver sistema nenhum.</p>
+    <div class="ideia">Se um chute satisfaz a igualdade em cada seta, ele é a resposta: não é preciso verificar o balanço nem resolver o sistema.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Uma cadeia com estados $0, 1, 2$ e taxas $q_{01}=2$, $q_{10}=1$, $q_{12}=3$, $q_{21}=6$, sem outras setas. Verifique a reversibilidade usando $P_1 = 2P_0$ e $P_2 = \tfrac12 P_1$.</p>
+      <p>$P_0 =$ <input class="lacuna" data-resp="0.25" data-tol="0.005" aria-label="proporcao em zero">.</p>
+      <p>$P_1 =$ <input class="lacuna" data-resp="0.5" data-tol="0.005" aria-label="proporcao em um">.</p>
+      <p>$P_2 =$ <input class="lacuna" data-resp="0.25" data-tol="0.005" aria-label="proporcao em dois">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: as relações vêm das setas, $P_0 q_{01} = P_1 q_{10}$ e $P_1 q_{12} = P_2 q_{21}$. Falta só impor que os três somem 1.</p>
+      <div class="resolucao" hidden><p>Das setas: $2P_0 = P_1$ e $3P_1 = 6P_2$, ou seja $P_2 = P_1/2$. Escrevendo tudo em $P_0$: $P_0(1 + 2 + 1) = 1$, então $P_0 = 0{,}25$, $P_1 = 0{,}5$ e $P_2 = 0{,}25$. Como as relações seta a seta foram satisfeitas, a cadeia é reversível e esses são os valores certos.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Saída é Poisson">
+   <div class="texto">
+    <h2>A saída de uma fila exponencial é um processo de Poisson</h2>
+    <p>Esse resultado é surpreendente e sai de graça da reversibilidade.</p>
+    <p>Numa fila com $s$ servidores, chegadas em Poisson de taxa $\lambda$ e serviço exponencial de taxa $\mu$, com $\lambda &lt; s\mu$, o número no sistema é um nascimento e morte, logo reversível. Olhando para frente, os instantes em que o estado <em>sobe</em> formam um processo de Poisson de taxa $\lambda$: são as chegadas.</p>
+    <p>Por reversibilidade, os instantes em que o estado sobe no filme invertido também formam um processo de Poisson de taxa $\lambda$. Mas esses instantes são, no filme original, os instantes em que o estado <em>desce</em>: as partidas.</p>
+    <div class="ideia">Em equilíbrio, os clientes saem de uma fila exponencial exatamente como entram: num processo de Poisson de mesma taxa.</div>
+    <p>Não é óbvio nem um pouco. O tempo entre duas partidas é, às vezes, um tempo de serviço (se há fila) e, às vezes, uma espera por chegada mais um serviço (se o sistema esvaziou). Nenhum dos dois é exponencial de taxa $\lambda$, e ainda assim a mistura, com os pesos certos, é. A reversibilidade entrega isso sem nenhuma conta.</p>
+    <p>Um uso bonito: numa fila que atende por ordem de chegada, suponha que um cliente passou $t$ unidades de tempo no sistema. Quantos estavam à frente dele quando chegou? Exatamente os que partiram enquanto ele esteve lá, ou seja, as chegadas do processo invertido num intervalo de comprimento $t$: uma Poisson de média $\lambda t$.</p>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="a">
+      <p class="enunciado">Numa fila em equilíbrio com chegadas em Poisson de taxa $\lambda$ e um servidor exponencial de taxa $\mu > \lambda$, o processo dos instantes de partida dos clientes é:</p>
+      <div class="alts">
+        <button data-op="a">(a) Poisson de taxa $\lambda$.</button>
+        <button data-op="b">(b) Poisson de taxa $\mu$.</button>
+        <button data-op="c">(c) Poisson de taxa $\mu - \lambda$.</button>
+        <button data-op="d">(d) Não é Poisson, porque os intervalos entre partidas não são exponenciais.</button>
+      </div>
+      <div class="fb" data-op="a">Correto. Em equilíbrio, tudo o que entra sai, então a taxa de saída tem que ser $\lambda$ — se fosse maior, o sistema esvaziaria; se menor, a fila cresceria sem limite. O que a reversibilidade acrescenta é que a saída não é só "na taxa certa": ela é um processo de Poisson completo, com incrementos independentes.</div>
+      <div class="fb" data-op="b">$\mu$ é a taxa de saída <em>enquanto o servidor está ocupado</em>. Como ele fica ocioso parte do tempo, a taxa média de saída é menor, e tem que ser exatamente $\lambda$ para o sistema não explodir nem esvaziar.</div>
+      <div class="fb" data-op="c">$\mu - \lambda$ aparece em outras contas sobre filas, como a velocidade com que a fila se esvazia, mas não é a taxa de partidas. Compare com o balanço: entra $\lambda$, sai $\lambda$.</div>
+      <div class="fb" data-op="d">A observação sobre os intervalos está certa e a conclusão não. Os intervalos entre partidas realmente não são exponenciais um a um, mas a mistura deles, com os pesos de equilíbrio, resulta num processo de Poisson. Esse é justamente o conteúdo não óbvio do resultado.</div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 8 ===================== -->
+  <div class="secao" data-numero="6.8" data-titulo="Truncar e combinar" data-livro="§6.6">
+
+  <section class="passo" data-titulo="Truncar">
+   <div class="texto">
+    <h2>Proibir parte dos estados sem refazer a conta</h2>
+    <p>Uma fila com um servidor que recusa clientes quando já há $N$ no sistema. Esse é o modelo anterior com os estados acima de $N$ cortados fora e as setas que saíam deles apagadas.</p>
+    <p>Quando a cadeia original é reversível, a truncada também é, e as proporções de tempo são simplesmente as antigas renormalizadas:</p>
+    <div class="formula" data-ref-id="f-truncar" data-ref-tipo="formula" data-ref-nome="Truncamento de uma cadeia reversível">
+      $$P^A_j = \frac{P_j}{\sum_{i \in A} P_i}, \qquad j \in A$$
+    </div>
+    <p>A demonstração cabe em duas linhas. Pela regra de adivinhar e verificar, basta checar $P^A_i q_{ij} = P^A_j q_{ji}$ para $i, j$ dentro de $A$. Mas essa igualdade é a da cadeia original dividida dos dois lados pela mesma constante, e ela já valia. Pronto.</p>
+    <p>Na fila com capacidade $N$, as proporções viram $P_j = (\lambda/\mu)^j / \sum_{i=0}^{N}(\lambda/\mu)^i$ — uma geométrica truncada. Com $\lambda=3$, $\mu=4$ e $N=3$: $(0{,}366;\ 0{,}274;\ 0{,}206;\ 0{,}154)$. Compare com a fila sem limite, $(0{,}250;\ 0{,}188;\ 0{,}141;\ 0{,}105)$: o corte empurra todo o peso que estava nos estados altos para baixo, e aumenta todas as proporções que sobraram.</p>
+    <p>Note que, aqui, a condição $\lambda &lt; \mu$ deixa de ser necessária: com um número finito de estados há sempre uma solução. Mesmo com $\lambda > \mu$ a fila limitada funciona, só fica quase sempre cheia.</p>
+    <div class="ideia">Truncar uma cadeia reversível é cortar e renormalizar; nada precisa ser recalculado.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Fila com um servidor e capacidade $N = 3$, com $\lambda = 3$ e $\mu = 4$ por hora. A soma $1 + 0{,}75 + 0{,}5625 + 0{,}4219$ vale $2{,}7344$.</p>
+      <p>$P_0 =$ <input class="lacuna" data-resp="0.3657" data-tol="0.003" aria-label="proporcao vazia na fila limitada">.</p>
+      <p>$P_3 =$ <input class="lacuna" data-resp="0.1543" data-tol="0.003" aria-label="proporcao cheia">.</p>
+      <p>Proporção de clientes recusados, que é $P_3$: <input class="lacuna" data-resp="0.1543" data-tol="0.003" aria-label="proporcao recusada">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $P_j = (3/4)^j$ dividido pela soma dada. Um cliente é recusado quando chega e encontra o sistema cheio.</p>
+      <div class="resolucao" hidden><p>$P_0 = 1/2{,}7344 = 0{,}366$ e $P_3 = 0{,}4219/2{,}7344 = 0{,}154$. Como as chegadas são de Poisson, a proporção de clientes que encontra o sistema cheio é igual à proporção de <em>tempo</em> em que ele está cheio, que é $P_3$. Essa coincidência entre o que o cliente vê e o que o relógio vê é propriedade das chegadas de Poisson, e não vale para outros processos de chegada.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Combinar">
+   <div class="texto">
+    <h2>Juntar cadeias independentes, e depois truncar</h2>
+    <p>Segunda ferramenta: se $X_1(t), \dots, X_n(t)$ são cadeias reversíveis independentes, o vetor delas também é uma cadeia reversível, e as proporções de tempo se multiplicam.</p>
+    <p>Isso é quase imediato: um estado do vetor é uma combinação dos estados de cada uma, a transição muda só uma coordenada por vez, e a condição seta a seta se verifica coordenada a coordenada.</p>
+    <p>Combinando as duas ferramentas sai um modelo bem mais rico. Tome $n$ componentes, o $i$-ésimo funcionando por um tempo exponencial de taxa $\lambda_i$ e sendo consertado em tempo exponencial de taxa $\mu_i$, cada um independente dos outros. Cada componente é um nascimento e morte de dois estados, com</p>
+    $$P_i(\text{funcionando}) = \frac{\mu_i}{\mu_i+\lambda_i}$$
+    $$P_i(\text{falho}) = \frac{\lambda_i}{\mu_i+\lambda_i}$$
+    <p>e, por independência, a proporção de tempo em cada configuração é o produto. Agora acrescente a regra "o sistema para quando só resta um componente funcionando": isso é truncar o vetor, tirando o estado em que todos falharam. As proporções do sistema com a regra são as antigas divididas por $1 - C$, com $C$ a proporção de tempo do estado proibido.</p>
+    <div class="ideia">Produto para juntar componentes independentes, corte e renormalização para impor uma regra: duas operações que preservam a reversibilidade.</div>
+    <details class="demo">
+      <summary>Demonstração: um técnico só, dividindo o esforço entre as máquinas paradas</summary>
+      <p>Mude a regra: há um único técnico, e quando $k$ máquinas estão paradas ele dedica $1/k$ do seu esforço a cada uma. Então a máquina $i$ é consertada a uma taxa $\mu_i/k$, e o estado precisa guardar o <em>conjunto</em> de máquinas paradas. As taxas são</p>
+      $$q_{(i_1,\dots,i_{k-1}),(i_1,\dots,i_k)} = \lambda_{i_k}$$
+      $$q_{(i_1,\dots,i_k),(i_1,\dots,i_{k-1})} = \mu_{i_k}/k$$
+      <p>Tente a igualdade seta a seta, que aqui é $P(i_1,\dots,i_k)\,\mu_{i_k}/k$ $= P(i_1,\dots,i_{k-1})\,\lambda_{i_k}$, ou seja</p>
+      $$P(i_1,\dots,i_k) = \frac{k\lambda_{i_k}}{\mu_{i_k}}P(i_1,\dots,i_{k-1})$$
+      <p>Iterando até o estado sem nenhuma máquina parada, os fatores $k, k-1, \dots, 1$ se acumulam num fatorial:</p>
+      $$P(i_1,\dots,i_k) = k!\prod_{j=1}^{k}\frac{\lambda_{i_j}}{\mu_{i_j}}\,P(\text{nenhuma parada})$$
+      <p>com a última constante fixada pela soma valer 1, sobre todos os subconjuntos não vazios. Como as condições seta a seta foram satisfeitas, isso <em>é</em> a resposta.</p>
+      <p>Duas leituras do resultado. O fatorial aparece porque, com o esforço dividido, consertar fica mais lento quanto mais máquinas estão paradas, e isso empurra probabilidade para os estados cheios. E a expressão não depende da <em>ordem</em> $i_1,\dots,i_k$, só do conjunto: dado quais máquinas estão paradas, todas as ordens de falha são igualmente prováveis.</p>
+    </details>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Duas máquinas independentes. A primeira: $\lambda_1 = 1$, $\mu_1 = 2$. A segunda: $\lambda_2 = 1$, $\mu_2 = 4$.</p>
+      <p>Proporção de tempo com a primeira funcionando: <input class="lacuna" data-resp="0.6667" data-tol="0.005" aria-label="primeira funcionando">.</p>
+      <p>Proporção de tempo com a segunda funcionando: <input class="lacuna" data-resp="0.8" data-tol="0.005" aria-label="segunda funcionando">.</p>
+      <p>Proporção de tempo com as duas funcionando: <input class="lacuna" data-resp="0.5333" data-tol="0.005" aria-label="as duas funcionando">.</p>
+      <p>Proporção de tempo com as duas falhas: <input class="lacuna" data-resp="0.0667" data-tol="0.003" aria-label="as duas falhas">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: cada máquina funciona uma fração $\mu_i/(\mu_i+\lambda_i)$ do tempo, e as duas são independentes, então basta multiplicar.</p>
+      <div class="resolucao" hidden><p>$2/3 = 0{,}667$ e $4/5 = 0{,}8$. As duas funcionando: $0{,}667 \times 0{,}8 = 0{,}533$. As duas falhas: $(1/3)(1/5) = 0{,}067$. Se o sistema parasse quando as duas falham, bastaria dividir as outras três proporções por $1 - 0{,}067 = 0{,}933$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 9 ===================== -->
+  <div class="secao" data-numero="6.9" data-titulo="A cadeia reversa" data-livro="§6.7">
+
+  <section class="passo" data-titulo="Mesmo sem reversibilidade">
+   <div class="texto">
+    <h2>A cadeia revertida existe sempre, mesmo quando é diferente</h2>
+    <p>Reversibilidade é a coincidência de o processo invertido ser igual ao original. Mas o processo invertido existe de qualquer jeito, e é uma cadeia em tempo contínuo com taxas próprias $q^*_{ij}$, definidas por</p>
+    <div class="formula" data-ref-id="f-reversa" data-ref-tipo="formula" data-ref-nome="Taxas da cadeia reversa">
+      $$P_i\, q^*_{ij} = P_j\, q_{ji}, \qquad i \ne j$$
+    </div>
+    <p>A leitura é a de sempre: $P_i q^*_{ij}$ é a taxa com que a cadeia invertida vai de $i$ para $j$, e cada ida de $j$ para $i$ no filme original é vista como uma ida de $i$ para $j$ no filme invertido.</p>
+    <p>Duas propriedades saem direto dessa definição, e são as que tornam a ideia utilizável.</p>
+    <p><strong>As taxas de saída são as mesmas.</strong> Usando a definição e depois o balanço,</p>
+    $$v^*_i = \sum_{j\ne i} q^*_{ij} = \sum_{j \ne i} \frac{P_j q_{ji}}{P_i} = \frac{v_i P_i}{P_i} = v_i$$
+    <p>Faz sentido: a duração de uma visita a $i$ é a mesma nos dois sentidos do filme.</p>
+    <p><strong>As proporções de tempo são as mesmas:</strong> os $P_j$ satisfazem o balanço da cadeia revertida. Também faz sentido, porque o tempo acumulado em cada estado não depende do sentido em que se olha a fita.</p>
+    <div class="ideia">A cadeia revertida tem outras setas, mas as mesmas taxas de saída e as mesmas proporções de tempo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Numa cadeia reversível, o que a definição acima dá para $q^*_{ij}$?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>$q^*_{ij} = P_j q_{ji}/P_i$, que pela condição de reversibilidade é igual a $q_{ij}$. Ou seja, reversível é exatamente o caso $q^*_{ij} = q_{ij}$: a cadeia revertida é a própria cadeia. A definição acima generaliza a reversibilidade em vez de substituí-la.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Adivinhar">
+   <div class="texto">
+    <h2>Adivinhar a cadeia revertida, e ganhar as proporções de brinde</h2>
+    <p>Esta é a técnica mais útil da seção. Se você consegue <em>adivinhar</em> como é a cadeia invertida, a conta das proporções de tempo cai no colo.</p>
+    <div class="formula" data-ref-id="f-verifica-reversa" data-ref-tipo="formula" data-ref-nome="Adivinhar e verificar a cadeia reversa">
+      $$\begin{aligned}& \text{Se existem } q^*_{ij} \text{ e } P_i > 0 \text{ somando 1 com}\\ & P_i q^*_{ij} = P_j q_{ji} \ \text{ e } \ \sum_{j \ne i} q^*_{ij} = \sum_{j \ne i} q_{ij},\\ & \text{então os } q^*_{ij} \text{ são as taxas da revertida}\\ & \text{e os } P_i \text{ são as proporções de tempo.}\end{aligned}$$
+    </div>
+    <p>A prova é a mesma de antes: somando a primeira condição sobre $j \ne i$ e usando a segunda, aparecem as equações de balanço, e a unicidade fecha. A segunda condição é só exigir que as taxas de saída batam, o que o passo anterior mostrou ser obrigatório.</p>
+    <p><strong>Um exemplo.</strong> Uma cadeia nos inteiros não negativos em que, saindo de 0, vai-se para $i$ com probabilidade $\alpha_i$; e, de qualquer $i>0$, vai-se sempre para $i-1$. Ou seja: pula para cima de uma vez só e desce de um em um.</p>
+    <p>Invertida, essa trajetória vira: sobe de um em um e, lá em cima, cai para 0 de uma vez. Se o processo está em $i$, o pulo daquele ciclo foi para algum valor $\ge i$; então, no filme invertido, ele cai para 0 com probabilidade $P\{N=i \mid N \ge i\}$ e sobe para $i+1$ com o complementar, em que $N$ é o tamanho do pulo. Verificando as condições, saem as proporções de tempo</p>
+    $$P_i = \frac{P\{N \ge i\}/v_i}{\sum_{k} P\{N \ge k\}/v_k}$$
+    <div class="ideia">Descrever em palavras o filme invertido é, muitas vezes, mais fácil do que resolver o balanço; e verificar o chute é mecânico.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Na cadeia do exemplo, com $v_i = 1$ para todo $i$ e tamanho do pulo $N$ igual a 1, 2 ou 3 com probabilidade $1/3$ cada.</p>
+      <p>$P\{N \ge 1\} =$ <input class="lacuna" data-resp="1" data-tol="0.01" aria-label="cauda em um">; $P\{N \ge 2\} =$ <input class="lacuna" data-resp="0.6667" data-tol="0.005" aria-label="cauda em dois">; $P\{N \ge 3\} =$ <input class="lacuna" data-resp="0.3333" data-tol="0.005" aria-label="cauda em tres">.</p>
+      <p>$P_0 =$ <input class="lacuna" data-resp="0.3333" data-tol="0.005" aria-label="proporcao em zero">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: $P\{N \ge 0\} = 1$ também. Some as quatro caudas para normalizar.</p>
+      <div class="resolucao" hidden><p>As caudas são $1$; $1$; $2/3$; $1/3$ para $i = 0, 1, 2, 3$, e zero daí em diante. A soma é 3, então $P_0 = 1/3$, $P_1 = 1/3$, $P_2 = 2/9$ e $P_3 = 1/9$. O estado 0 e o 1 empatam porque toda trajetória que sai de 0 passa por 1 na volta.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Duas filas">
+   <div class="texto">
+    <h2>Duas filas em sequência: o resultado mais bonito do capítulo</h2>
+    <p>Clientes chegam ao servidor 1 em Poisson de taxa $\lambda$; terminado o serviço lá (exponencial de taxa $\mu_1$), vão para o servidor 2 (exponencial de taxa $\mu_2$) e depois embora. O estado é o par $(n, m)$: $n$ clientes no primeiro servidor, $m$ no segundo.</p>
+    <p>Pense no filme invertido. As partidas do sistema viram chegadas ao servidor 2; a passagem de 1 para 2 vira passagem de 2 para 1; e as chegadas ao servidor 1 viram partidas. Ou seja, o processo invertido parece <em>o mesmo sistema com a ordem dos servidores trocada</em>: chega no 2, passa para o 1, sai.</p>
+    <p>Chute isso e verifique. A taxa de chegada no processo invertido tem que ser $\lambda$, porque em equilíbrio a taxa de partida do original é $\lambda$. As taxas de saída batem nos dois processos. E as condições seta a seta dão três equações que, resolvidas, levam a</p>
+    <div class="formula" data-ref-id="f-produto" data-ref-tipo="formula" data-ref-nome="Forma produto das duas filas">
+      $$P_{n,m} = \left(\frac{\lambda}{\mu_1}\right)^{\!n}\!\left(1-\frac{\lambda}{\mu_1}\right) \times \left(\frac{\lambda}{\mu_2}\right)^{\!m}\!\left(1-\frac{\lambda}{\mu_2}\right)$$
+    </div>
+    <p>Leia o que isso diz: <strong>em equilíbrio, os números nos dois servidores são independentes</strong>, e cada um se comporta como uma fila isolada com chegadas de Poisson de taxa $\lambda$.</p>
+    <p>É contraintuitivo. O que chega ao servidor 2 é a saída do servidor 1, que depende do que acontece lá; e quando o primeiro está congestionado, parece que o segundo deveria sentir. A explicação está no resultado anterior: a saída do primeiro é um processo de Poisson de taxa $\lambda$, e, mais do que isso, o que ele produziu até agora é independente do seu estado atual.</p>
+    <div class="ideia">Em equilíbrio, as duas filas são independentes e cada uma parece uma fila isolada alimentada por Poisson.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-produto">
+      <p>Nas duas filas em sequência, você observa o sistema num instante qualquer e vê 5 clientes no primeiro servidor. Sobre o número de clientes no segundo, você conclui…</p>
+      <div class="alts">
+        <button data-op="a">Deve estar acima da média</button>
+        <button data-op="b">Deve estar abaixo da média</button>
+        <button data-op="c" data-certa>Nada: a distribuição não muda</button>
+      </div>
+      <div class="explica" hidden><p>Nada. A conjunta se fatora, então saber quantos estão no primeiro não informa nada sobre o segundo. A simulação mostra as duas distribuições condicionais em cima da marginal: elas coincidem.</p></div>
+    </div>
+    <div class="sim" id="sim-produto">
+      <label>$\mu_2$ <input type="range" id="prod-mu2" min="12" max="60" step="2" value="40"> <strong id="prod-mu2-v">4,0</strong></label>
+      <button class="btn pequeno" id="prod-nova">Nova amostra</button>
+      <svg viewBox="0 0 400 210" id="prod-svg" role="img" aria-label="Distribuição do número no segundo servidor, marginal e condicionada ao número no primeiro"></svg>
+      <p id="prod-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 10 ===================== -->
+  <div class="secao" data-numero="6.10" data-titulo="Uniformização" data-livro="§6.8">
+
+  <section class="passo" data-titulo="Transições fictícias">
+   <div class="texto">
+    <h2>Igualar as taxas inventando transições que não mudam nada</h2>
+    <p>Suponha que todos os estados tenham a mesma taxa de saída, $v_i \equiv v$. Então o número de transições até $t$ é um processo de Poisson de taxa $v$, e saber quantas transições houve não diz nada sobre quais estados foram visitados. Condicionando no número de transições:</p>
+    <div class="formula" data-ref-id="f-uniformiza" data-ref-tipo="formula" data-ref-nome="Uniformização">
+      $$P_{ij}(t) = \sum_{n=0}^{\infty} P^n_{ij}\, e^{-vt}\frac{(vt)^n}{n!}$$
+    </div>
+    <p>em que $P^n_{ij}$ é a probabilidade de $n$ passos da cadeia em tempo discreto. Isso resolve o problema: potências de matriz são fáceis, e a série converge rápido.</p>
+    <p>A hipótese $v_i \equiv v$ parece restritiva, mas se contorna com um truque. Escolha $v \ge v_i$ para todo $i$ e finja que, no estado $i$, as transições acontecem à taxa $v$, sendo que só a fração $v_i/v$ delas é de verdade — as outras devolvem o processo ao mesmo estado. Em taxa, nada mudou. A cadeia discreta associada é</p>
+    $$P^*_{ii} = 1 - \frac{v_i}{v}, \qquad P^*_{ij} = \frac{v_i}{v}P_{ij} \ \ (j \ne i)$$
+    <p>Essa é a <strong>uniformização</strong>: transformar uma cadeia em tempo contínuo numa cadeia em tempo discreto observada em instantes de Poisson.</p>
+    <div class="ideia">Transições fictícias de um estado para ele mesmo igualam todas as taxas sem mudar o processo.</div>
+   </div>
+   <aside class="apoio">
+    <div class="prever" data-sim="sim-unifo">
+      <p>Na máquina de dois estados, somando a série termo a termo, quantos termos são necessários para chegar perto do valor exato em $t = 10$?</p>
+      <div class="alts">
+        <button data-op="a">Uns 3</button>
+        <button data-op="b" data-certa>Umas duas dezenas</button>
+        <button data-op="c">Milhares</button>
+      </div>
+      <div class="explica" hidden><p>O número de termos necessário acompanha $vt$ mais alguns desvios padrão, porque os pesos são os de uma Poisson de média $vt$. Com $v = 0{,}625$ e $t = 10$, $vt = 6{,}25$, e vinte termos já cobrem tudo o que tem peso. Para $t$ grande, a conta fica mais cara: é por isso que a uniformização serve bem para horizontes curtos.</p></div>
+    </div>
+    <div class="sim" id="sim-unifo">
+      <label>Termos somados <input type="range" id="unifo-n" min="0" max="30" step="1" value="5"> <strong id="unifo-n-v">5</strong></label>
+      <svg viewBox="0 0 400 200" id="unifo-svg" role="img" aria-label="Soma parcial da série da uniformização se aproximando do valor exato"></svg>
+      <p id="unifo-nota" style="margin:.4rem 0 0;font-size:.93rem"></p>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Tempo de ocupação">
+   <div class="texto">
+    <h2>Quanto tempo o processo passou em um estado até $t$</h2>
+    <p>Pergunta diferente das anteriores: não "onde ele está em $t$", mas "quanto tempo ele passou em 0 entre 0 e $t$". Chame isso de $O(t)$, o tempo de ocupação.</p>
+    <p>A conta é uma troca de integral com esperança. Escrevendo $I(s) = 1$ quando $X(s)=0$ e 0 caso contrário, tem-se $O(t) = \int_0^t I(s)\,ds$, e portanto</p>
+    <div class="formula" data-ref-id="f-ocupacao" data-ref-tipo="formula" data-ref-nome="Tempo médio de ocupação">
+      $$E[O(t)] = \int_0^t P\{X(s)=0\}\,ds = \int_0^t P_{00}(s)\,ds$$
+    </div>
+    <p>Na máquina de dois estados, $P_{00}(s)$ já é conhecida, e a integral sai direto:</p>
+    $$E[O(t)] = \frac{\mu}{\lambda+\mu}t + \frac{\lambda}{(\lambda+\mu)^2}\left(1-e^{-(\lambda+\mu)t}\right)$$
+    <p>Com $\lambda=1/8$ e $\mu=1/2$, em $t=10$ horas: $E[O(10)] = 8 + 0{,}32 = 8{,}32$ horas funcionando. O primeiro termo é a proporção de longo prazo vezes o tempo; o segundo é um bônus que some com $t$, e vem de a máquina ter começado funcionando.</p>
+    <div class="ideia">O tempo médio em um estado é a integral da probabilidade de estar nele, e para $t$ grande ele vira a proporção de longo prazo vezes $t$.</div>
+   </div>
+   <aside class="apoio">
+    <div class="lacunas">
+      <p>Máquina com $\lambda = 1/8$ e $\mu = 1/2$ por hora, começando funcionando.</p>
+      <p>Proporção de longo prazo funcionando: <input class="lacuna" data-resp="0.8" data-tol="0.005" aria-label="proporcao de longo prazo">.</p>
+      <p>Primeiro termo em $t=10$: <input class="lacuna" data-resp="8" data-tol="0.05" aria-label="primeiro termo"> horas.</p>
+      <p>$E[O(10)]$, em horas: <input class="lacuna" data-resp="8.32" data-tol="0.03" aria-label="tempo de ocupacao">.</p>
+      <button class="btn" data-conferir>Conferir</button>
+      <p class="dica" hidden>Dica: o segundo termo é $\lambda/(\lambda+\mu)^2$ vezes algo muito perto de 1, já que $e^{-6{,}25}$ é quase zero.</p>
+      <div class="resolucao" hidden><p>Proporção $= 0{,}5/0{,}625 = 0{,}8$; primeiro termo $= 8$ horas; segundo $= 0{,}125/0{,}390625$ vezes $(1-0{,}0019)$, ou seja $0{,}319$. Total $8{,}32$ horas. O bônus de $0{,}32$ hora é tudo o que sobra de ter começado funcionando: a vantagem do estado inicial vale só esse pouco, e não cresce com $t$.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 11 ===================== -->
+  <div class="secao" data-numero="6.11" data-titulo="Calcular a transição" data-livro="§6.9">
+
+  <section class="passo" data-titulo="Forma matricial">
+   <div class="texto">
+    <h2>As duas equações viram uma só, em matrizes</h2>
+    <p>Junte as taxas numa matriz $R$, colocando fora da diagonal as taxas $q_{ij}$ e na diagonal o negativo da taxa de saída:</p>
+    <div class="formula" data-ref-id="f-matriz-r" data-ref-tipo="formula" data-ref-nome="Matriz de taxas">
+      $$r_{ij} = q_{ij} \ \ (i \ne j), \qquad r_{ii} = -v_i$$
+    </div>
+    <p>Cada linha de $R$ soma zero, pelo que foi visto sobre o comportamento em janela curta. Com $P(t)$ a matriz das $P_{ij}(t)$, as duas equações de Kolmogorov viram</p>
+    $$P'(t) = R\,P(t) \quad (\text{para trás})$$
+    $$P'(t) = P(t)\,R \quad (\text{para frente})$$
+    <p>que é a versão matricial de $f'(t) = cf(t)$. A solução, com $P(0) = I$, é a exponencial de matriz:</p>
+    <div class="formula" data-ref-id="f-exp-matriz" data-ref-tipo="formula" data-ref-nome="Exponencial da matriz de taxas">
+      $$P(t) = e^{Rt} = \sum_{n=0}^{\infty} R^n \frac{t^n}{n!}$$
+    </div>
+    <p>Para a máquina de dois estados, com $\lambda = 1/8$ e $\mu = 1/2$, a matriz é</p>
+    $$R = \begin{bmatrix} -1/8 & 1/8 \\ 1/2 & -1/2 \end{bmatrix}$$
+    <p>e $e^{10R}$ tem primeira linha $(0{,}800;\ 0{,}200)$, o mesmo que a fórmula fechada já dava.</p>
+    <div class="ideia">A matriz de taxas tem linhas somando zero, e a função de transição é a sua exponencial.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="b">
+      <p class="enunciado">Sobre a matriz de taxas de uma cadeia de Markov em tempo contínuo, com as taxas instantâneas fora da diagonal e o negativo das taxas de saída na diagonal:</p>
+      <div class="alts">
+        <button data-op="a">(a) Suas linhas somam 1, como as de uma matriz de transição.</button>
+        <button data-op="b">(b) Suas linhas somam 0, e seus elementos fora da diagonal são não negativos.</button>
+        <button data-op="c">(c) Todos os seus elementos são não negativos.</button>
+        <button data-op="d">(d) Suas colunas somam 0.</button>
+      </div>
+      <div class="fb" data-op="a">Somar 1 é propriedade da matriz de transição de uma cadeia em tempo discreto, cujas entradas são probabilidades. Aqui as entradas são taxas, com unidade de 1 sobre tempo, e somar 1 nem faria sentido dimensional.</div>
+      <div class="fb" data-op="b">Correto. Fora da diagonal estão taxas, que são não negativas; na diagonal está o negativo da soma delas, e por isso cada linha soma zero. É essa propriedade que faz a exponencial da matriz ter linhas somando 1, como convém a probabilidades.</div>
+      <div class="fb" data-op="c">A diagonal é negativa por construção, salvo num estado absorvente, em que ela é zero. É justamente a mistura de sinais que torna o cálculo numérico direto da série uma má ideia.</div>
+      <div class="fb" data-op="d">As colunas em geral não somam nada em particular. É a soma por linhas que o balanço local obriga. Colunas somando zero diria outra coisa, sobre a entrada em cada estado, e não vale em geral.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Na prática">
+   <div class="texto">
+    <h2>Por que não se calcula a série direto</h2>
+    <p>Somar $\sum R^n t^n/n!$ no computador é uma má ideia, por dois motivos. A matriz tem elementos positivos e negativos, então as potências sofrem cancelamento e o erro de arredondamento cresce. E para $t$ grande é preciso somar muitos termos.</p>
+    <p>Dois caminhos melhores usam a mesma identidade, na versão matricial.</p>
+    <p><strong>Primeiro:</strong> $e^{Rt} = \lim_{n\to\infty}\left(I + Rt/n\right)^n$. Tome $n$ como potência de 2, digamos $n = 2^k$, monte $M = I + Rt/n$ e eleve ao quadrado $k$ vezes. São só $k$ multiplicações de matriz. Com $n$ grande o bastante, $M$ fica com todos os elementos não negativos, e aí não há cancelamento nenhum.</p>
+    <p><strong>Segundo:</strong> $e^{Rt} \approx \left[(I - Rt/n)^{-1}\right]^n$, pela mesma identidade com o sinal trocado. Inverta uma vez e eleve ao quadrado $k$ vezes. A matriz $(I-Rt/n)^{-1}$ também tem elementos não negativos.</p>
+    <p>Os dois têm leitura probabilística, e isso explica por que funcionam: o primeiro aproxima o processo por uma cadeia observada em instantes igualmente espaçados; o segundo, por uma cadeia observada em instantes de Poisson, que é a uniformização por outro caminho.</p>
+    <div class="ideia">Elevar ao quadrado $k$ vezes chega a $2^k$ com $k$ multiplicações, e evita o cancelamento que a série direta provoca.</div>
+   </div>
+   <aside class="apoio">
+    <div class="pare">
+      <p>Por que escolher $n$ grande faz $I + Rt/n$ ter todos os elementos não negativos?</p>
+      <button class="btn" data-revelar>Ver resposta</button>
+      <div class="resposta" hidden><p>Fora da diagonal, os elementos são $q_{ij}t/n \ge 0$ para qualquer $n$. Na diagonal, são $1 - v_i t/n$, que fica positivo assim que $n > v_i t$. Basta então tomar $n$ maior que o maior $v_i$ vezes $t$. E aí a matriz é exatamente uma matriz de transição em tempo discreto: linhas não negativas somando 1. Não é coincidência: ela é a matriz de transição da cadeia observada a cada $t/n$ unidades de tempo, aproximada em primeira ordem.</p></div>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <!-- ===================== SEÇÃO 12 ===================== -->
+  <div class="secao" data-numero="6.12" data-titulo="Mapa e armadilhas" data-livro="§6.1–6.9">
+
+  <section class="passo" data-titulo="Mapa de decisão">
+   <div class="texto">
+    <h2>Que ferramenta a questão está pedindo</h2>
+    <p>Quase toda questão do capítulo cai num destes cinco casos.</p>
+    <p><strong>"Modele a situação como uma cadeia em tempo contínuo."</strong> Escolha o estado mínimo que torna o futuro independente do passado, liste os relógios que correm em cada estado, e escreva uma taxa em cada seta.</p>
+    <p><strong>"Qual a proporção de tempo em cada estado?"</strong> Equações de balanço. Se as transições forem só entre vizinhos, use o atalho do corte e a fórmula do produto. Se a cadeia parecer reversível, tente adivinhar e verificar seta a seta. Se ela tiver estrutura de várias partes independentes, tente a forma produto.</p>
+    <p><strong>"Quanto tempo até chegar a tal estado?"</strong> Condicione na primeira transição. Num nascimento e morte, use a recursão dos degraus e some.</p>
+    <p><strong>"Qual a probabilidade de estar em $j$ no instante $t$?"</strong> Equações de Kolmogorov. Com dois estados, resolva até o fim. Com mais, use uniformização ou a exponencial da matriz, salvo em nascimento puro, que tem fórmula.</p>
+    <p><strong>"O que acontece com a saída do sistema?"</strong> Reversibilidade. Numa fila exponencial em equilíbrio a saída é um processo de Poisson de mesma taxa, e isso costuma destravar o resto.</p>
+    <div class="ideia">A primeira pergunta é sempre: o que o estado precisa guardar? Errar isso invalida tudo o que vem depois.</div>
+   </div>
+   <aside class="apoio">
+    <div class="quiz" data-correta="d">
+      <p class="enunciado">Num sistema modelado como cadeia de Markov em tempo contínuo, pergunta-se a proporção de tempo em cada estado. As transições vão de um estado para qualquer outro, não só para vizinhos. Qual caminho é o indicado?</p>
+      <div class="alts">
+        <button data-op="a">(a) A fórmula do produto das taxas de nascimento sobre as de morte.</button>
+        <button data-op="b">(b) As equações de Kolmogorov, resolvidas até o fim.</button>
+        <button data-op="c">(c) A exponencial da matriz de taxas, com $t$ grande.</button>
+        <button data-op="d">(d) As equações de balanço, uma por estado, mais a soma igual a 1.</button>
+      </div>
+      <div class="fb" data-op="a">Essa fórmula depende de as transições serem só para vizinhos: ela vem do atalho de cortar a reta entre dois estados consecutivos. Com setas que pulam estados, o corte deixa de ter um único par atravessando, e a recursão não fecha.</div>
+      <div class="fb" data-op="b">Resolveria, e é trabalho demais. As equações diferenciais dão $P_{ij}(t)$ para todo $t$; para o limite basta igualar as derivadas a zero, que é exatamente o que as equações de balanço fazem.</div>
+      <div class="fb" data-op="c">Também daria a resposta no limite, e é caro: exige escolher um $t$ grande o bastante e fazer contas numéricas, para obter algo que um sistema linear pequeno resolve exatamente.</div>
+      <div class="fb" data-op="d">Correto. O balanço vale para qualquer cadeia ergódica, com qualquer padrão de setas. Os atalhos (corte, reversibilidade, forma produto) são casos particulares que economizam trabalho quando a estrutura permite.</div>
+    </div>
+   </aside>
+  </section>
+
+  <section class="passo" data-titulo="Armadilhas">
+   <div class="texto">
+    <h2>Os erros que mais aparecem</h2>
+    <p><strong>Taxa de saída não é taxa de uma seta.</strong> $v_i$ é a soma de todas as taxas que saem de $i$. Num nascimento e morte, $v_i = \lambda_i + \mu_i$, e não $\lambda_i$.</p>
+    <p><strong>A fórmula do produto só vale entre vizinhos.</strong> Se houver uma seta pulando estados, volte ao balanço estado a estado.</p>
+    <p><strong>Proporção de tempo não é proporção de visitas.</strong> Um estado pouco visitado com estadias longas acumula muito tempo. As duas só coincidem quando todas as taxas de saída são iguais.</p>
+    <p><strong>Balanço detalhado é mais forte que balanço.</strong> Toda cadeia ergódica satisfaz o balanço; só as reversíveis satisfazem a igualdade seta a seta. Usar a segunda sem conferir é supor reversibilidade sem direito.</p>
+    <p><strong>Nas equações de Kolmogorov, o índice que manda muda.</strong> Condicionando na primeira transição, as taxas são as que saem do índice de origem; condicionando na última, são as que chegam ao índice de destino.</p>
+    <div class="ideia">Antes de aplicar qualquer atalho, confira: as transições são só entre vizinhos? A cadeia é reversível? O estado guarda tudo o que precisa?</div>
+   </div>
+   <aside class="apoio">
+    <div class="acheerro">
+      <p>Um colega analisou uma fila com dois servidores, chegadas a taxa 4 e cada servidor atendendo a taxa 3. Toque na linha com erro.</p>
+      <ol class="linhas">
+        <li data-fb="Certa. Com um cliente, só um servidor trabalha; com dois ou mais, os dois trabalham e a taxa total de saída trava em 6.">As taxas de saída do sistema são $\mu_1 = 3$ e $\mu_n = 6$ para $n \ge 2$.</li>
+        <li data-fb="Certa. A condição de existência é que a taxa de chegada seja menor que a capacidade total de atendimento, que aqui é 6.">Como $4 &lt; 6$, as proporções de tempo existem.</li>
+        <li data-errada data-fb="Aqui está o erro. A taxa de saída do estado 1 é a soma das duas taxas em curso: a chegada, 4, e o serviço, 3, portanto 7. O valor 3 é só a taxa da seta que desce. Com v1 = 3 o tempo médio no estado 1 sairia errado, e as probabilidades de transição também.">A taxa de saída do estado 1 é $v_1 = 3$, então o tempo médio nele é $1/3$.</li>
+        <li data-fb="Certa, e é a aplicação correta do atalho do corte: a travessia para cima entre 0 e 1 tem taxa 4 vezes P0, e a de volta tem taxa 3 vezes P1.">Do corte entre 0 e 1: $4P_0 = 3P_1$.</li>
+      </ol>
+    </div>
+   </aside>
+  </section>
+
+  </div>
+
+  <div class="nav">
+    <button id="anterior">Anterior</button>
+    <button id="proximo" class="primario">Próximo</button>
+  </div>
+</div>
+
+<!-- ============ RESUMO ============ -->
+<div id="resumo" hidden>
+  <h2>Resumo</h2>
+  <div class="revisao" id="revisao">
+    <h3>Antes de reler, teste-se</h3>
+    <p class="rev-info"></p>
+    <div id="rev-palco"></div>
+    <div class="rev-acoes">
+      <button class="btn primario" id="rev-iniciar">Começar</button>
+      <button class="btn" id="rev-proxima" hidden>Próxima</button>
+    </div>
+  </div>
+  <div class="resumo-grid">
+  <div>
+  <h3>Ideias centrais</h3>
+  <ul class="resumo-lista">
+    <li>Dado o estado de agora, o futuro não depende do passado nem de há quanto tempo se está nele.</li>
+    <li>A exponencial não é hipótese: é consequência da propriedade de Markov em tempo contínuo.</li>
+    <li>A cadeia é descrita por quanto tempo se fica em cada estado e para onde se vai ao sair, e os dois são independentes.</li>
+    <li>Montar a cadeia é listar os relógios que correm em cada estado.</li>
+    <li>Num nascimento e morte, a taxa de saída soma as duas taxas e o destino é sorteado proporcionalmente.</li>
+    <li>A taxa é a soma dos relógios: $n$ indivíduos gerando dão $n\lambda$; $n$ servidores ocupados dão $n\mu$.</li>
+    <li>Condicionar numa janela curta e descartar o resto dá uma equação diferencial para a média.</li>
+    <li>Para subir um degrau é preciso vencer o anterior quantas vezes for necessário.</li>
+    <li>Há uma matriz de transição para cada instante, ligadas por equação diferencial e não por potência.</li>
+    <li>Quando cada indivíduo age por conta própria, a população é soma de cópias independentes.</li>
+    <li>Uma taxa em cada seta descreve a cadeia por completo.</li>
+    <li>Em janela curta, a probabilidade de transição é a taxa vezes o tempo.</li>
+    <li>Cortar o intervalo e somar sobre o estado do corte é a única identidade exata sobre a transição.</li>
+    <li>Para trás condiciona na primeira transição; para frente, na última.</li>
+    <li>A memória do estado inicial some a uma taxa igual à soma das taxas.</li>
+    <li>No longo prazo, a taxa de entrada em cada estado iguala a de saída.</li>
+    <li>Comunicação mais recorrência positiva dão o limite; não há periodicidade em tempo contínuo.</li>
+    <li>Entre vizinhos, cortar a reta transforma o balanço numa recursão de um passo.</li>
+    <li>A fórmula do produto é um atalho só para transições de um degrau.</li>
+    <li>Reversibilidade iguala o fluxo de cada par nos dois sentidos, não só o total de cada estado.</li>
+    <li>Um chute que satisfaz a igualdade em cada seta é a resposta.</li>
+    <li>A saída de uma fila exponencial em equilíbrio é um processo de Poisson de mesma taxa.</li>
+    <li>Truncar uma cadeia reversível é cortar e renormalizar.</li>
+    <li>Produto para juntar componentes independentes, corte para impor uma regra.</li>
+    <li>A cadeia revertida tem outras setas, mas as mesmas taxas de saída e proporções.</li>
+    <li>Descrever o filme invertido costuma ser mais fácil do que resolver o balanço.</li>
+    <li>Em duas filas em sequência, os dois números são independentes em equilíbrio.</li>
+    <li>Transições fictícias de um estado para ele mesmo igualam as taxas sem mudar o processo.</li>
+    <li>O tempo médio num estado é a integral da probabilidade de estar nele.</li>
+    <li>A matriz de taxas tem linhas somando zero, e a transição é a sua exponencial.</li>
+    <li>Elevar ao quadrado $k$ vezes chega a $2^k$ e evita cancelamento.</li>
+  </ul>
+  </div>
+  <div>
+  <h3>Fórmulas</h3>
+  <p>As duas peças da cadeia, e as taxas instantâneas:</p>
+  $$v_i \ \text{(taxa de saída)}, \quad P_{ij} \ \text{(destino)}$$
+  $$q_{ij} = v_i P_{ij}, \quad v_i = \sum_j q_{ij}, \quad P_{ij} = \frac{q_{ij}}{\sum_j q_{ij}}$$
+  <p>Nascimento e morte, com taxas $\lambda_n$ e $\mu_n$:</p>
+  $$v_0 = \lambda_0, \qquad v_i = \lambda_i + \mu_i$$
+  $$P_{i,i+1} = \frac{\lambda_i}{\lambda_i+\mu_i}$$
+  <p>Tempo médio para subir um degrau, a partir de $E[T_0] = 1/\lambda_0$:</p>
+  $$E[T_i] = \frac{1}{\lambda_i} + \frac{\mu_i}{\lambda_i}E[T_{i-1}]$$
+  <p>Equações de Kolmogorov, condicionando na primeira e na última transição:</p>
+  $$P_{ij}'(t) = \sum_{k \ne i} q_{ik}P_{kj}(t) - v_i P_{ij}(t)$$
+  $$P_{ij}'(t) = \sum_{k \ne j} q_{kj}P_{ik}(t) - v_j P_{ij}(t)$$
+  <p>Balanço e, entre vizinhos, o atalho do corte:</p>
+  $$v_j P_j = \sum_{k \ne j} q_{kj}P_k, \qquad \sum_j P_j = 1$$
+  $$\lambda_n P_n = \mu_{n+1}P_{n+1}$$
+  $$P_n = \frac{\lambda_0\cdots\lambda_{n-1}}{\mu_1\cdots\mu_n}P_0$$
+  <p>Reversibilidade, truncamento e a cadeia revertida:</p>
+  $$P_i q_{ij} = P_j q_{ji}, \qquad P_i q^*_{ij} = P_j q_{ji}$$
+  $$P^A_j = \frac{P_j}{\sum_{i\in A}P_i}$$
+  <p>Uniformização, com $v \ge v_i$ para todo $i$, e a forma matricial:</p>
+  $$P_{ij}(t) = \sum_{n=0}^{\infty} P^{*n}_{ij}\,e^{-vt}\frac{(vt)^n}{n!}$$
+  $$P'(t) = RP(t), \quad P'(t) = P(t)R$$
+  $$P(t) = e^{Rt}$$
+  <h3>Quando usar e quando não usar</h3>
+  <div class="lado">
+    <div><strong>Use quando</strong><ul class="resumo-lista">
+      <li>O estado muda em instantes não marcados por um relógio.</li>
+      <li>Os tempos entre mudanças são exponenciais, ou podem ser montados com fases.</li>
+      <li>O futuro depende só do estado atual, e o estado é escolhido para isso valer.</li>
+      <li>A pergunta é sobre proporção de tempo, tempo de espera ou saída do sistema.</li>
+    </ul></div>
+    <div><strong>Evite quando</strong><ul class="resumo-lista">
+      <li>Os tempos de permanência claramente envelhecem ou rejuvenescem.</li>
+      <li>O estado precisaria guardar o histórico inteiro para o futuro ficar independente dele.</li>
+      <li>O interesse é em tempo discreto, com passos bem definidos.</li>
+    </ul></div>
+  </div>
+  <h3>Armadilhas</h3>
+  <ul class="resumo-lista">
+    <li>$v_i$ é a soma das taxas que saem de $i$, não a taxa de uma seta.</li>
+    <li>A fórmula do produto exige transições só entre vizinhos.</li>
+    <li>Proporção de tempo e proporção de visitas são diferentes quando as taxas de saída diferem.</li>
+    <li>Balanço detalhado vale só nas cadeias reversíveis; balanço comum vale sempre.</li>
+    <li>Nas equações de Kolmogorov, confira se o índice que manda nas taxas é o de origem ou o de destino.</li>
+    <li>A taxa de partida de uma fila em equilíbrio é a de chegada, não a de serviço.</li>
+    <li>Média da população não descreve a população: a dispersão pode ser do tamanho da média.</li>
+    <li>A fórmula fechada do nascimento puro exige taxas todas distintas.</li>
+    <li>A equação que condiciona na última transição precisa de condições de regularidade.</li>
+    <li>Somar a série da exponencial de matriz direto no computador acumula erro de cancelamento.</li>
+  </ul>
+  </div>
+  </div>
+</div>
+
+<div id="painel" hidden>
+  <button class="btn pequeno" id="painel-voltar">← Voltar</button>
+  <h2 id="painel-titulo" style="margin-top:1rem"></h2>
+  <div id="painel-corpo"></div>
+</div>
+
+</div>
+
+<div class="balao" id="balao" role="dialog" aria-live="polite" hidden></div>
+<div class="gaveta" id="gaveta" role="dialog" aria-modal="false" hidden>
+  <div class="gaveta-interno">
+    <div class="gaveta-topo"><strong id="gaveta-titulo"></strong><button class="btn pequeno" id="gaveta-fechar" aria-label="Fechar">✕</button></div>
+    <div id="gaveta-corpo"></div>
+  </div>
+</div>
+
+<script src="../assets/site.js"></script>
+<script src="../assets/refs.js"></script>
+<script src="../assets/estudo.js"></script>
+<script>
+/* Simulações do capítulo 6. Utilitários do estudo.js: svgEl, corVar, fmt, tipografar, recorte. */
+
+function limparSvg(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+function gerador(semente) {
+  var a = semente;
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function expo(r, lam) { return -Math.log(1 - r() * 0.999999) / lam; }
+function eixoX(svg, x0, x1, y, de, ate, passo, casas) {
+  svg.appendChild(svgEl('line', { x1: x0, y1: y, x2: x1, y2: y, stroke: corVar('--border'), 'stroke-width': 1 }));
+  var ini = Math.ceil(de / passo - 1e-9) * passo;
+  for (var v = ini; v <= ate + 1e-9; v += passo) {
+    var x = x0 + (v - de) / (ate - de) * (x1 - x0);
+    svg.appendChild(svgEl('line', { x1: x, y1: y, x2: x, y2: y + 4, stroke: corVar('--border') }));
+    var anc = x > x1 - 12 ? 'end' : x < x0 + 12 ? 'start' : 'middle';
+    svg.appendChild(svgEl('text', { x: x, y: y + 15, 'font-size': 10, fill: corVar('--muted'), 'text-anchor': anc }, fmt(v, casas)));
+  }
+}
+function escrever(id, texto) {
+  var el = document.getElementById(id); if (!el) return;
+  el.innerHTML = texto; if (window.tipografar) tipografar(el);
+}
+function aoTrocarTema(fn) {
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', fn);
+  }
+}
+
+/* ===== 1. Trajetória da engraxataria ===== */
+(function () {
+  var sl = document.getElementById('traj-lam'); if (!sl) return;
+  var svg = document.getElementById('traj-svg'), semente = 3;
+  document.getElementById('traj-nova').addEventListener('click', function () { semente = (semente * 37 + 13) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = +sl.value, taxas = [lam, 2, 3], T = 12, r = gerador(semente * 101 + lam);
+    document.getElementById('traj-lam-v').textContent = lam;
+    var est = 0, t = 0, trechos = [], tempo = [0, 0, 0];
+    while (t < T) {
+      var d = expo(r, taxas[est]), fim = Math.min(t + d, T);
+      trechos.push({ e: est, a: t, b: fim }); tempo[est] += fim - t;
+      t += d; est = (est + 1) % 3;
+    }
+    limparSvg(svg);
+    var x0 = 48, x1 = 392, niv = [142, 100, 58], nomes = ['vazia', 'cadeira 1', 'cadeira 2'];
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    for (var k = 0; k < 3; k++) {
+      svg.appendChild(svgEl('text', { x: x0 - 6, y: niv[k] + 4, 'font-size': 10, fill: corVar('--muted'), 'text-anchor': 'end' }, nomes[k]));
+      svg.appendChild(svgEl('line', { x1: x0, y1: niv[k], x2: x1, y2: niv[k], stroke: corVar('--border'), 'stroke-dasharray': '2 4' }));
+    }
+    var d = '', ant = null;
+    trechos.forEach(function (s) {
+      var y = niv[s.e];
+      if (ant === null) d += 'M' + px(s.a).toFixed(1) + ' ' + y;
+      else d += 'L' + px(s.a).toFixed(1) + ' ' + ant + 'L' + px(s.a).toFixed(1) + ' ' + y;
+      d += 'L' + px(s.b).toFixed(1) + ' ' + y;
+      ant = y;
+    });
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2 }));
+    eixoX(svg, x0, x1, 164, 0, T, 2, 0);
+    escrever('traj-nota', 'Nesta amostra o processo passou ' + fmt(tempo[0] / T * 100, 0) + '% do tempo com a loja vazia, ' +
+      fmt(tempo[1] / T * 100, 0) + '% na cadeira 1 e ' + fmt(tempo[2] / T * 100, 0) + '% na cadeira 2. ' +
+      'As durações médias de cada visita são ' + fmt(1 / taxas[0], 2) + '; ' + fmt(1 / taxas[1], 2) + '; ' + fmt(1 / taxas[2], 2) + ' hora.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 2. Fila com um servidor ===== */
+(function () {
+  var sl = document.getElementById('fila-lam'); if (!sl) return;
+  var sm = document.getElementById('fila-mu'), svg = document.getElementById('fila-svg'), semente = 5;
+  document.getElementById('fila-nova').addEventListener('click', function () { semente = (semente * 43 + 19) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = +sl.value / 10, mu = +sm.value / 10, T = 30, r = gerador(semente * 211 + +sl.value * 41 + +sm.value);
+    document.getElementById('fila-lam-v').textContent = fmt(lam, 1);
+    document.getElementById('fila-mu-v').textContent = fmt(mu, 1);
+    var n = 0, t = 0, pts = [{ t: 0, n: 0 }], nmax = 0, area = 0;
+    while (t < T && pts.length < 4000) {
+      var taxa = lam + (n > 0 ? mu : 0), d = expo(r, taxa);
+      area += n * Math.min(d, T - t);
+      t += d; if (t > T) break;
+      n += (r() < lam / taxa) ? 1 : -1;
+      if (n > nmax) nmax = n;
+      pts.push({ t: t, n: n });
+    }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, y0 = 22, y1 = 158, alto = Math.max(4, nmax);
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    function py(v) { return y1 - v / alto * (y1 - y0); }
+    var d2 = 'M' + px(0) + ' ' + py(0), cur = py(0);
+    pts.forEach(function (p, i) {
+      if (i === 0) return;
+      d2 += 'L' + px(p.t).toFixed(1) + ' ' + cur.toFixed(1) + 'L' + px(p.t).toFixed(1) + ' ' + py(p.n).toFixed(1);
+      cur = py(p.n);
+    });
+    d2 += 'L' + px(T) + ' ' + cur.toFixed(1);
+    svg.appendChild(svgEl('path', { d: d2, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 1.8 }));
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 6, 'font-size': 11, fill: corVar('--muted') }, 'clientes no sistema (máximo ' + nmax + ')'));
+    eixoX(svg, x0, x1, y1, 0, T, 5, 0);
+    var rho = lam / mu;
+    escrever('fila-nota', 'Utilização $\\rho$ = ' + fmt(rho, 2) + '. Média nesta janela curta: ' + fmt(area / T, 2) +
+      (rho < 1 ? '; no longo prazo ela tende a ' + fmt(rho / (1 - rho), 2) + '.' : '; com $\\rho \\ge 1$ não há equilíbrio e a fila cresce sem limite.'));
+  }
+  sl.addEventListener('input', desenhar); sm.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 3. Probabilidade de estar em cada estado ===== */
+(function () {
+  var sl = document.getElementById('pij-lam'); if (!sl) return;
+  var svg = document.getElementById('pij-svg');
+  function desenhar() {
+    var lam = +sl.value, m1 = 2, m2 = 3, T = 8, passos = 1600, dt = T / passos;
+    document.getElementById('pij-lam-v').textContent = lam;
+    var p = [1, 0, 0], hist = [[], [], []];
+    for (var k = 0; k <= passos; k++) {
+      hist[0].push(p[0]); hist[1].push(p[1]); hist[2].push(p[2]);
+      var d0 = -lam * p[0] + m2 * p[2], d1 = lam * p[0] - m1 * p[1], d2 = m1 * p[1] - m2 * p[2];
+      p = [p[0] + d0 * dt, p[1] + d1 * dt, p[2] + d2 * dt];
+    }
+    var den = m1 * m2 + lam * (m1 + m2), lim = [m1 * m2 / den, lam * m2 / den, lam * m1 / den];
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 20, y1 = 162, cores = ['--accent', '--s1', '--s3'], nomes = ['vazia', 'cadeira 1', 'cadeira 2'];
+    for (var e = 0; e < 3; e++) {
+      var d = '';
+      for (var k = 0; k <= passos; k += 4) {
+        d += (k ? 'L' : 'M') + (x0 + k / passos * (x1 - x0)).toFixed(1) + ' ' + (y1 - hist[e][k] * (y1 - y0)).toFixed(1);
+      }
+      svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar(cores[e]), 'stroke-width': 2 }));
+      var yl = y1 - lim[e] * (y1 - y0);
+      svg.appendChild(svgEl('line', { x1: x0, y1: yl, x2: x1, y2: yl, stroke: corVar(cores[e]), 'stroke-dasharray': '3 4', 'stroke-width': 1 }));
+      svg.appendChild(svgEl('text', { x: x1, y: yl - 4, 'font-size': 10, fill: corVar(cores[e]), 'text-anchor': 'end' }, nomes[e] + ': ' + fmt(lim[e], 3)));
+    }
+    eixoX(svg, x0, x1, y1, 0, T, 1, 0);
+    escrever('pij-nota', 'As três curvas começam em 1, 0 e 0 (a loja parte vazia) e estabilizam. Quanto maior a taxa de chegada, ' +
+      'menor a proporção de tempo com a loja vazia.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 4. Dois estados ===== */
+(function () {
+  var sl = document.getElementById('dois-lam'); if (!sl) return;
+  var sm = document.getElementById('dois-mu'), svg = document.getElementById('dois-svg');
+  function desenhar() {
+    var lam = +sl.value / 1000, mu = +sm.value / 1000, T = 20, lim = mu / (lam + mu);
+    document.getElementById('dois-lam-v').textContent = fmt(lam, 3);
+    document.getElementById('dois-mu-v').textContent = fmt(mu, 3);
+    limparSvg(svg);
+    var x0 = 34, x1 = 392, y0 = 28, y1 = 158, base = Math.max(0, lim - 0.22 * (1 - lim)), topo = 1 + 0.04 * (1 - lim);
+    function py(v) { return y1 - (v - base) / (topo - base) * (y1 - y0); }
+    svg.appendChild(svgEl('text', { x: x0 - 2, y: y1 + 2, 'font-size': 10, fill: corVar('--muted'), 'text-anchor': 'end' }, fmt(base, 2)));
+    svg.appendChild(svgEl('text', { x: x0 - 2, y: y0 + 8, 'font-size': 10, fill: corVar('--muted'), 'text-anchor': 'end' }, fmt(topo, 2)));
+    var d = '';
+    for (var k = 0; k <= 200; k++) {
+      var t = k / 200 * T, v = lim + (1 - lim) * Math.exp(-(lam + mu) * t);
+      d += (k ? 'L' : 'M') + (x0 + t / T * (x1 - x0)).toFixed(1) + ' ' + py(v).toFixed(1);
+    }
+    svg.appendChild(svgEl('line', { x1: x0, y1: py(lim), x2: x1, y2: py(lim), stroke: corVar('--ok'), 'stroke-dasharray': '4 3', 'stroke-width': 1.4 }));
+    svg.appendChild(svgEl('text', { x: x1, y: py(lim) - 5, 'font-size': 10, fill: corVar('--ok'), 'text-anchor': 'end' }, 'limite ' + fmt(lim, 3)));
+    svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: corVar('--accent'), 'stroke-width': 2.2 }));
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 6, 'font-size': 11, fill: corVar('--accent') }, 'chance de estar funcionando'));
+    eixoX(svg, x0, x1, y1, 0, T, 4, 0);
+    var meia = Math.log(2) / (lam + mu);
+    escrever('dois-nota', 'A diferença para o limite cai pela metade a cada ' + fmt(meia, 2) +
+      ' hora. Em $t$ = 10, a chance de estar funcionando é ' + fmt(lim + (1 - lim) * Math.exp(-(lam + mu) * 10), 4) + '.');
+  }
+  sl.addEventListener('input', desenhar); sm.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 5. Ocupação da fila ===== */
+(function () {
+  var sl = document.getElementById('ocupa-rho'); if (!sl) return;
+  var svg = document.getElementById('ocupa-svg');
+  function desenhar() {
+    var rho = +sl.value / 100, nmax = 14;
+    document.getElementById('ocupa-rho-v').textContent = fmt(rho, 2);
+    var p = [], atual = 1 - rho;
+    for (var n = 0; n <= nmax; n++) { p.push(atual); atual *= rho; }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, y0 = 24, y1 = 158, bw = (x1 - x0) / (nmax + 1), esc = Math.max(p[0], 0.1) * 1.12;
+    for (var n = 0; n <= nmax; n++) {
+      var h = p[n] / esc * (y1 - y0);
+      svg.appendChild(svgEl('rect', { x: x0 + n * bw + 1, y: y1 - h, width: bw - 2, height: h, fill: corVar('--accent'), opacity: 0.75 }));
+    }
+    var med = rho / (1 - rho), xm = x0 + (med + 0.5) * bw;
+    if (xm < x1) {
+      svg.appendChild(svgEl('line', { x1: xm, y1: y0 - 8, x2: xm, y2: y1, stroke: corVar('--s1'), 'stroke-dasharray': '4 3', 'stroke-width': 1.5 }));
+      svg.appendChild(svgEl('text', { x: Math.min(xm + 4, x1 - 50), y: y0 - 10, 'font-size': 10, fill: corVar('--s1') }, 'média ' + fmt(med, 2)));
+    }
+    eixoX(svg, x0, x1, y1, -0.5, nmax + 0.5, 2, 0);
+    escrever('ocupa-nota', 'Proporção de tempo com a fila vazia: ' + fmt(1 - rho, 3) +
+      '. Número médio de clientes: ' + fmt(med, 2) + '. A barra mais alta é sempre a do zero.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 6. O filme ao contrário ===== */
+(function () {
+  var sl = document.getElementById('rev-rho'); if (!sl) return;
+  var svg = document.getElementById('rev-svg'), semente = 7;
+  document.getElementById('rev-nova').addEventListener('click', function () { semente = (semente * 59 + 23) % 99991; desenhar(); });
+  function desenhar() {
+    var rho = +sl.value / 100, mu = 1, lam = rho * mu, T = 25, r = gerador(semente * 307 + +sl.value);
+    document.getElementById('rev-rho-v').textContent = fmt(rho, 2);
+    var n = 0, t = 0, pts = [{ t: 0, n: 0 }], saidas = [], nmax = 1;
+    while (t < T && pts.length < 3000) {
+      var taxa = lam + (n > 0 ? mu : 0), d = expo(r, taxa);
+      t += d; if (t > T) break;
+      var sobe = r() < lam / taxa;
+      n += sobe ? 1 : -1; if (!sobe) saidas.push(t);
+      if (n > nmax) nmax = n;
+      pts.push({ t: t, n: n });
+    }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, pA = [20, 92], pB = [112, 184];
+    function px(v) { return x0 + v / T * (x1 - x0); }
+    function caminho(inv, ya, yb) {
+      function X(v) { return px(inv ? T - v : v); }
+      var d = '', cur = null;
+      pts.forEach(function (p, i) {
+        var y = yb - p.n / nmax * (yb - ya);
+        if (i === 0) { d = 'M' + X(0).toFixed(1) + ' ' + y.toFixed(1); cur = y; return; }
+        d += 'L' + X(p.t).toFixed(1) + ' ' + cur.toFixed(1) + 'L' + X(p.t).toFixed(1) + ' ' + y.toFixed(1);
+        cur = y;
+      });
+      d += 'L' + X(T).toFixed(1) + ' ' + cur.toFixed(1);
+      return d;
+    }
+    svg.appendChild(svgEl('path', { d: caminho(false, pA[0], pA[1]), fill: 'none', stroke: corVar('--accent'), 'stroke-width': 1.7 }));
+    svg.appendChild(svgEl('path', { d: caminho(true, pB[0], pB[1]), fill: 'none', stroke: corVar('--s1'), 'stroke-width': 1.7 }));
+    svg.appendChild(svgEl('text', { x: x0, y: pA[0] - 6, 'font-size': 11, fill: corVar('--accent') }, 'para frente'));
+    svg.appendChild(svgEl('text', { x: x1, y: pB[0] - 6, 'font-size': 11, fill: corVar('--s1'), 'text-anchor': 'end' }, 'de trás para frente'));
+    saidas.forEach(function (s) {
+      svg.appendChild(svgEl('circle', { cx: px(s), cy: pA[1] + 6, r: 2, fill: corVar('--ok') }));
+      svg.appendChild(svgEl('circle', { cx: px(T - s), cy: pB[1] + 6, r: 2, fill: corVar('--ok') }));
+    });
+    eixoX(svg, x0, x1, 200, 0, T, 5, 0);
+    escrever('rev-nota', 'Os pontos marcam as ' + saidas.length + ' saídas de clientes. No filme invertido eles viram subidas, ' +
+      'e formam um processo de Poisson de taxa ' + fmt(lam, 2) + ', a mesma das chegadas.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 7. Duas filas em sequência ===== */
+(function () {
+  var sl = document.getElementById('prod-mu2'); if (!sl) return;
+  var svg = document.getElementById('prod-svg'), semente = 11;
+  document.getElementById('prod-nova').addEventListener('click', function () { semente = (semente * 71 + 29) % 99991; desenhar(); });
+  function desenhar() {
+    var lam = 1, m1 = 2, m2 = +sl.value / 10, T = 40000, r = gerador(semente * 601 + +sl.value), nmax = 9;
+    document.getElementById('prod-mu2-v').textContent = fmt(m2, 1);
+    var n = 0, m = 0, t = 0, tudo = new Array(nmax + 1).fill(0), cond = new Array(nmax + 1).fill(0), tc = 0, tt = 0, passos = 0;
+    while (t < T && passos++ < 300000) {
+      var taxa = lam + (n > 0 ? m1 : 0) + (m > 0 ? m2 : 0), d = expo(r, taxa);
+      if (m <= nmax) { tudo[m] += d; tt += d; if (n >= 3) { cond[m] += d; tc += d; } }
+      else { tt += d; if (n >= 3) tc += d; }
+      t += d;
+      var u = r() * taxa;
+      if (u < lam) n++;
+      else if (u < lam + (n > 0 ? m1 : 0)) { n--; m++; }
+      else m--;
+    }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, y0 = 30, y1 = 162, bw = (x1 - x0) / (nmax + 1);
+    var esc = Math.max(tudo[0] / tt, 0.05) * 1.15;
+    for (var k = 0; k <= nmax; k++) {
+      var ha = tudo[k] / tt / esc * (y1 - y0), hb = tc ? cond[k] / tc / esc * (y1 - y0) : 0;
+      svg.appendChild(svgEl('rect', { x: x0 + k * bw + 1, y: y1 - ha, width: bw / 2 - 1.5, height: ha, fill: corVar('--accent'), opacity: 0.65 }));
+      svg.appendChild(svgEl('rect', { x: x0 + k * bw + bw / 2, y: y1 - hb, width: bw / 2 - 1.5, height: hb, fill: corVar('--s1'), opacity: 0.8 }));
+    }
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 14, 'font-size': 11, fill: corVar('--accent') }, 'em qualquer instante'));
+    svg.appendChild(svgEl('text', { x: x0, y: y0 - 2, 'font-size': 11, fill: corVar('--s1') }, 'só quando há 3 ou mais no primeiro servidor'));
+    eixoX(svg, x0, x1, y1, -0.5, nmax + 0.5, 1, 0);
+    escrever('prod-nota', 'Distribuição do número de clientes no segundo servidor. A teoria diz que ' +
+      'a chance de ele estar vazio é ' + fmt(1 - lam / m2, 3) + ', com ou sem a condição; observados ' +
+      fmt(tudo[0] / tt, 3) + ' e ' + fmt(tc ? cond[0] / tc : 0, 3) + '.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+
+/* ===== 8. Uniformização ===== */
+(function () {
+  var sl = document.getElementById('unifo-n'); if (!sl) return;
+  var svg = document.getElementById('unifo-svg');
+  function desenhar() {
+    var lam = 0.125, mu = 0.5, v = lam + mu, T = 10, N = +sl.value, nmax = 30;
+    document.getElementById('unifo-n-v').textContent = N;
+    var exato = mu / v + lam / v * Math.exp(-v * T);
+    var somas = [], s = 0, peso = Math.exp(-v * T);
+    for (var n = 0; n <= nmax; n++) {
+      s += (n === 0 ? 1 : mu / v) * peso;
+      somas.push(s);
+      peso = peso * (v * T) / (n + 1);
+    }
+    limparSvg(svg);
+    var x0 = 30, x1 = 392, y0 = 22, y1 = 158, bw = (x1 - x0) / (nmax + 1);
+    function py(val) { return y1 - val / (exato * 1.15) * (y1 - y0); }
+    svg.appendChild(svgEl('line', { x1: x0, y1: py(exato), x2: x1, y2: py(exato), stroke: corVar('--ok'), 'stroke-dasharray': '4 3', 'stroke-width': 1.4 }));
+    svg.appendChild(svgEl('text', { x: x1, y: py(exato) - 5, 'font-size': 10, fill: corVar('--ok'), 'text-anchor': 'end' }, 'valor exato ' + fmt(exato, 4)));
+    for (var n = 0; n <= nmax; n++) {
+      var h = y1 - py(somas[n]);
+      svg.appendChild(svgEl('rect', { x: x0 + n * bw + 1, y: py(somas[n]), width: bw - 2, height: h, fill: corVar(n <= N ? '--accent' : '--border'), opacity: n <= N ? 0.8 : 0.5 }));
+    }
+    eixoX(svg, x0, x1, y1, -0.5, nmax + 0.5, 5, 0);
+    escrever('unifo-nota', 'Com ' + (N + 1) + ' termos a soma vale ' + fmt(somas[N], 5) + ', contra ' + fmt(exato, 5) +
+      ' do valor exato. Os pesos são os de uma distribuição de Poisson de média $vt$ = ' + fmt(v * T, 3) + '.');
+  }
+  sl.addEventListener('input', desenhar); desenhar(); aoTrocarTema(desenhar);
+})();
+</script>
+</body>
+</html>
